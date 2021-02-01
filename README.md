@@ -15,3 +15,29 @@ Also, we've developed a set of classes that can be used to generate Spirent Ansi
 We hope to add support for ACI, DCNM, etc, over time and welcome contributions in these and other areas.
 
 Suggestions and bug reports very much appreciated!
+
+
+## Installing ScriptKit
+
+1. Look at your current python module path
+
+If you are using a virtual env, activate it first, then:
+python3
+import sys
+sys.path
+
+2. cd into one of the directories in sys.path (or add a new directory to the path and cd into that)
+
+3. clone the repo
+
+git clone https://github.com/allenrobel/ask.git
+
+
+Now you should be able to run the unit-test / example scripts.  For example:
+
+```
+(ansible-latest) arobel repos % cd ask/unit_test/cisco/nxos 
+(ansible-latest) arobel nxos % ./unit_test_nxos_banner.py 
+2021-02-01 11:48:16,785 INFO 19.65 unit_test_nxos_banner.<module> wrote playbook /tmp/playbook_nxos_banner.yaml
+(ansible-latest) arobel nxos % 
+```
