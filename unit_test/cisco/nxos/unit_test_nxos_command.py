@@ -13,6 +13,8 @@ log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
     pb = Playbook(log)
+    pb.ansible_connection = 'httpapi' # httpapi, network_cli
+    pb.ansible_password = 'mypassword'
     pb.file = '/tmp/playbook_{}.yaml'.format(ansible_module)
     pb.name = '{} task'.format(ansible_module)
     pb.add_host(ansible_host)
