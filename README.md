@@ -19,19 +19,23 @@ Suggestions and bug reports very much appreciated!
 
 ## Installing ScriptKit
 
-1. Look at your current python module path
+Look at your current python module path
 
 If you are using a virtual env, activate it first, then:
+
+```
 python3
 import sys
 sys.path
+```
 
-2. cd into one of the directories in sys.path (or add a new directory to the path and cd into that)
+cd into one of the directories in sys.path (or add a new directory to the path and cd into that)
 
-3. clone the repo
+clone the repo
 
+```
 git clone https://github.com/allenrobel/ask.git
-
+```
 
 Now you should be able to run the unit-test / example scripts.  For example:
 
