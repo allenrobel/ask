@@ -700,17 +700,3 @@ class NxosBfdGlobal(Task):
             return
         self.verify_nxos_bfd_global_bfd_startup_timer(x)
         self.properties[parameter] = x
-
-    # @property
-    # def _interval(self):
-    #     return self.properties['interval']
-    # @property
-    # def _ipv4_interval(self):
-    #     return self.properties['ipv4_interval']
-    # @property
-    # def _ipv6_interval(self):
-    #     return self.properties['ipv6_interval']
-
-    # @property
-    # def _fabricpath_interval(self):
-    #     return self.properties['fabricpath_interval']
