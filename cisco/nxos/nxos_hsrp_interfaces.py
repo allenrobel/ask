@@ -1,8 +1,6 @@
-# NxosHsrpInterfaces() - python/lib3/nxos_hsrp_interfaces.py
+# NxosHsrpInterfaces() - cisco/nxos/nxos_hsrp_interfaces.py
 our_version = 102
-# standard library
 from copy import deepcopy
-# scriptkit library
 from ask.common.task import Task
 '''
 Name: nxos_hsrp_interfaces.py
@@ -30,7 +28,7 @@ class NxosHsrpInterfaces(Task):
         ansible_module = 'cisco.nxos.nxos_hsrp_interfaces'
         super().__init__(ansible_module, task_log)
         self.lib_version = our_version
-        self._classname = __class__.__name__
+        self.class_name = __class__.__name__
 
         self.properties_set = set()
         self.properties_set.add('name')
@@ -97,7 +95,7 @@ class NxosHsrpInterfaces(Task):
     def verify_nxos_hsrp_interfaces_bfd(self, x, parameter='bfd'):
         if x in self.nxos_hsrp_interfaces_valid_bfd:
             return
-        source_class = self._classname
+        source_class = self.class_name
         source_method = 'verify_nxos_hsrp_interfaces_bfd'
         expectation = ','.join(self.nxos_hsrp_interfaces_valid_bfd)
         self.fail(source_class, source_method, x, parameter, expectation)
@@ -119,7 +117,7 @@ class NxosHsrpInterfaces(Task):
     def verify_nxos_hsrp_interfaces_state(self, x, parameter='state'):
         if x in self.nxos_hsrp_interfaces_valid_state:
             return
-        source_class = self._classname
+        source_class = self.class_name
         source_method = 'verify_nxos_hsrp_interfaces_state'
         expectation = ','.join(self.nxos_hsrp_interfaces_valid_state)
         self.fail(source_class, source_method, x, parameter, expectation)
