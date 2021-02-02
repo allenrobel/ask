@@ -1,171 +1,117 @@
-# AskNxosBgpNeighbor() - python/lib3/ask_task_nxos_bgp_neighbor.py
-our_version = 110
-# Ansible module nxos_bgp_neighbor is DEPRECATED as of 2021.01.27
-# Use nxos_bgp_global instead
-# AskNxosBfdGlobal() - python/lib3/ask_task_nxos_bfd_global.py
+# NxosBgpNeighbor() - cisco/nxos/nxos_bgp_neighbor.py
+our_version = 111
+# Deprecation: Ansible module nxos_bgp_neighbor is DEPRECATED
+# Deprecated on: 2021.01.27
+# Removed after: 2023-01-27
+# Alternative: nxos_bgp_global - cisco/nxos/nxos_bgp_global.py
 #
-# standard library
 import re
-# DSSPERF library
-from ask_task import AskTask
-from ans_playbook_next_gen import AnsPlaybook
+from copy import deepcopy
+from ask.common.task import Task
 '''
-Name: ask_task_nxos_bgp_neighbor.py
-Author: Allen Robel
-Email: arobel@cisco.com
+Name: nxos_bgp_neighbor.py
+
 Description:
 
-AskNxosBgpNeighbor() generates Ansible Playbook tasks conformant with nxos_bgp_neighbor
-which can be fed to AnsPlaybook().add_task()
-
-Revision history: Use git log
+NxosBgpNeighbor() generates Ansible Playbook tasks conformant with nxos_bgp_neighbor
+which can be fed to Playbook().add_task()
 
 Usage example:
+    unit_test/cisco/nxos/unit_test_bgp_neighbor.py
 
-from ans_playbook_next_gen import AnsPlaybook
-from ask_task_nxos_bgp_neighbor import AskNxosBgpNeighbor
-from log import get_logger
-module_name = 'nxos_bgp_neighbor'
-log = get_logger('test_ask_task_{}'.format(module_name), 'INFO', 'DEBUG')
+Properties:
 
-def bgp_neighbor():
-    task = AskBgpNeighbor(log)
-    ipv4_neighbor = '10.8.0.1'
-    task.task_name = 'configure bgp neighbor {}'.format(ipv4_neighbor)
-    task.neighbor = ipv4_neighbor
-    task.asn = '64518'            # i.e. router bgp <asn>
-    task.local_as = '64518'       # as number that our peer uses for us
-    task.remote_as = '64518'      # as number of our peer
-    task.vrf = 'default'
-    task.update_source = 'Ethernet1/49'
-    task.state = 'present'
-    task.task_name = '{}: asn {} local_as {} neighbor {} remote_as {} update_source {}'.format(
-        ansible_module,
-        task.asn,
-        task.local_as,
-        task.neighbor,
-        task.remote_as,
-        task.update_source)
-    task.update()
-    pb.add_task(task)
-
-pb = AnsPlaybook(log)
-pb.file = '/tmp/ans_playbook_{}.yaml'.format(module_name)
-pb.name = '{} task'.format(module_name)
-pb.add_host('dc-101')  # host in Ansible inventory
-
-bgp_neighbor()
-
-pb.append_playbook()
-pb.write_playbook()
-print('wrote {}'.format(pb.file))
+    asn                     - digits, digits.digits
+    bfd                     - enable, disable
+    capability_negotiation  - no, yes
+    connected_check         - no, yes
+    description             - quoted?  
+    dynamic_capability      - no, yes  
+    ebgp_multihop           - int() 2-255, or "default"
+    local_as
+    log_neighbor_changes    - enable, disable, inherit
+    low_memory_exempt       - no, yes
+    maximum_peers           - int() 1-1000, or "default". Accepted only on prefix peers
+    neighbor                - str() IPv4 or IPv6 notation, with or without prefix length
+    pwd                     - str() password for neighbor
+    pwd_type                - 3des, cisco_type_7, default
+    remote_as               - str() asn in ASPLAIN or ASDOT notation
+    remove_private_as       - enable, disable, all, replace-as
+    shutdown
+    suppress_4_byte_as      - no, yes
+    task_name               - int() the Ansible task name
+    timers_holdtime         - int() 0-3600 seconds, or 'default', which is 180
+    timers_keepalive        - int() 0-3600 seconds, or 'default', which is 60
+    transport_passive_only  - no, yes
+    update_source           - str() source interface of BGP session and updates
 
 '''
 
-class AskNxosBgpNeighbor(AnsTask):
+class NxosBgpNeighbor(Task):
     def __init__(self, task_log):
         ansible_module = 'cisco.nxos.nxos_bgp_neighbor'
         super().__init__(ansible_module, task_log)
         self.lib_version = our_version
-        self._classname = __class__.__name__
-        self.ansible_task = dict()
+        self.class_name = __class__.__name__
 
         self.task_log.warning('*******************************************************************************************')
-        self.task_log.warning('AskNxosBgpNeighbor is DEPRECATED as its Ansible module nxos_bgp_neighbor is DEPRECATED.')
-        self.task_log.warning('Use AskNxosBgpGlobal() (nxos_bgp_global) instead.')
+        self.task_log.warning('NxosBgpNeighbor is DEPRECATED as its Ansible module nxos_bgp_neighbor is DEPRECATED.')
+        self.task_log.warning('Use NxosBgpGlobal() (nxos_bgp_global) instead.')
         self.task_log.warning('*******************************************************************************************')
         self.init_properties()
 
-        self.nxos_bgp_neighbor_valid_log_neighbor_changes = ['enable', 'disable', 'inherit']
-        self.nxos_bgp_neighbor_valid_pwd_type = ['3des', 'cisco_type_7', 'default']
-        self.nxos_bgp_neighbor_valid_remove_private_as = ['enable', 'disable', 'all', 'replace-as']
-        self.nxos_bgp_neighbor_valid_state = ['present', 'absent']
+        self.nxos_bgp_neighbor_valid_log_neighbor_changes = set()
+        self.nxos_bgp_neighbor_valid_log_neighbor_changes.add('enable')
+        self.nxos_bgp_neighbor_valid_log_neighbor_changes.add('disable')
+        self.nxos_bgp_neighbor_valid_log_neighbor_changes.add('inherit')
 
-    def update(self):
-        '''
-        update verifies that mandatory module-specific parameters are set
-        '''
-        self.final_verification()
+        self.nxos_bgp_neighbor_valid_pwd_type = set()
+        self.nxos_bgp_neighbor_valid_pwd_type.add('3des')
+        self.nxos_bgp_neighbor_valid_pwd_type.add('cisco_type_7')
+        self.nxos_bgp_neighbor_valid_pwd_type.add('default')
 
-        d = dict()
-        if self.asn != None:
-            d['asn'] = self.asn
-        if self.bfd != None:
-            d['bfd'] = self.bfd
-        if self.capability_negotiation != None:
-            d['capability_negotiation'] = self.capability_negotiation
-        if self.connected_check != None:
-            d['connected_check'] = self.connected_check
-        if self.description != None:
-            d['description'] = self.description
-        if self.dynamic_capability != None:
-            d['dynamic_capability'] = self.dynamic_capability
-        if self.ebgp_multihop != None:
-            d['ebgp_multihop'] = self.ebgp_multihop
-        if self.local_as != None:
-            d['local_as'] = self.local_as
-        if self.log_neighbor_changes != None:
-            d['log_neighbor_changes'] = self.log_neighbor_changes
-        if self.low_memory_exempt != None:
-            d['low_memory_exempt'] = self.low_memory_exempt
-        if self.maximum_peers != None:
-            d['maximum_peers'] = self.maximum_peers
-        if self.neighbor != None:
-            d['neighbor'] = self.neighbor
-        if self.pwd != None:
-            d['pwd'] = self.pwd
-        if self.pwd_type != None:
-            d['pwd_type'] = self.pwd_type
-        if self.remote_as != None:
-            d['remote_as'] = self.remote_as
-        if self.remove_private_as != None:
-            d['remove_private_as'] = self.remove_private_as
-        if self.shutdown != None:
-            d['shutdown'] = self.shutdown
-        if self.state != None:
-            d['state'] = self.state
-        if self.suppress_4_byte_as != None:
-            d['suppress_4_byte_as'] = self.suppress_4_byte_as
-        if self.task_name != None:
-            self.ansible_task['name'] = self.task_name
-        if self.timers_holdtime != None:
-            d['timers_holdtime'] = self.timers_holdtime
-        if self.timers_keepalive != None:
-            d['timers_keepalive'] = self.timers_keepalive
-        if self.transport_passive_only != None:
-            d['transport_passive_only'] = self.transport_passive_only
-        if self.update_source != None:
-            d['update_source'] = self.update_source
+        self.nxos_bgp_neighbor_valid_remove_private_as = set()
+        self.nxos_bgp_neighbor_valid_remove_private_as.add('enable')
+        self.nxos_bgp_neighbor_valid_remove_private_as.add('disable')
+        self.nxos_bgp_neighbor_valid_remove_private_as.add('all')
+        self.nxos_bgp_neighbor_valid_remove_private_as.add('replace-as')
 
-        self.ansible_task[self.ansible_module] = d.copy()
+        self.nxos_bgp_neighbor_valid_state = set()
+        self.nxos_bgp_neighbor_valid_state.add('absent')
+        self.nxos_bgp_neighbor_valid_state.add('present')
+
+        self.properties_set = set()
+        self.properties_set.add('asn')
+        self.properties_set.add('bfd')
+        self.properties_set.add('capability_negotiation')
+        self.properties_set.add('connected_check')
+        self.properties_set.add('description')
+        self.properties_set.add('dynamic_capability')
+        self.properties_set.add('ebgp_multihop')
+        self.properties_set.add('local_as')
+        self.properties_set.add('log_neighbor_changes')
+        self.properties_set.add('low_memory_exempt')
+        self.properties_set.add('maximum_peers')
+        self.properties_set.add('neighbor')
+        self.properties_set.add('pwd')
+        self.properties_set.add('pwd_type')
+        self.properties_set.add('remote_as')
+        self.properties_set.add('remove_private_as')
+        self.properties_set.add('shutdown')
+        self.properties_set.add('state')
+        self.properties_set.add('suppress_4_byte_as')
+        self.properties_set.add('timers_holdtime')
+        self.properties_set.add('timers_keepalive')
+        self.properties_set.add('transport_passive_only')
+        self.properties_set.add('update_source')
+
         self.init_properties()
 
     def init_properties(self):
         self.properties = dict()
-        self.properties['asn'] = None   # digits, digits.digits
-        self.properties['bfd'] = None                              # enable, disable
-        self.properties['capability_negotiation'] = None           # no, yes
-        self.properties['connected_check'] = None                  # no, yes
-        self.properties['description'] = None                      # quoted?  
-        self.properties['dynamic_capability'] = None               # no, yes  
-        self.properties['ebgp_multihop'] = None                    # int() 2-255, or "default"
-        self.properties['local_as'] = None
-        self.properties['log_neighbor_changes'] = None             # enable, disable, inherit
-        self.properties['low_memory_exempt'] = None                # no, yes
-        self.properties['maximum_peers'] = None                    # int() 1-1000, or "default". Accepted only on prefix peers
-        self.properties['neighbor'] = None                         # str() IPv4 or IPv6 notation, with or without prefix length
-        self.properties['pwd'] = None                              # str() password for neighbor
-        self.properties['pwd_type'] = None                         # 3des, cisco_type_7, default
-        self.properties['remote_as'] = None                        # str() asn in ASPLAIN or ASDOT notation
-        self.properties['remove_private_as'] = None                # enable, disable, all, replace-as
-        self.properties['shutdown'] = None
-        self.properties['suppress_4_byte_as'] = None               # no, yes
-        self.properties['task_name'] = None                        # int() the Ansible task name
-        self.properties['timers_holdtime'] = None                  # int() 0-3600 seconds, or 'default', which is 180
-        self.properties['timers_keepalive'] = None                 # int() 0-3600 seconds, or 'default', which is 60
-        self.properties['transport_passive_only'] = None           # no, yes
-        self.properties['update_source'] = None                    # str() source interface of BGP session and updates
-
+        for p in self.properties_set:
+            self.properties[p] = None
+        self.properties['task_name'] = None
 
     def final_verification(self):
         '''
@@ -182,25 +128,40 @@ class AskNxosBgpNeighbor(AnsTask):
             self.task_log.error('exiting. call instance.neighbor before calling instance.update()')
             exit(1)
 
-    def nxos_bgp_neighbor_verify_state(self, x, parameter='state'):
+    def update(self):
+        '''
+        call final_verification()
+        populate ansible_task dict()
+        '''
+        self.final_verification()
+        d = dict()
+        for p in self.properties_set:
+            if self.properties[p] != None:
+                d[p] = self.properties[p]
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = deepcopy(d)
+        if self.task_name != None:
+            self.ansible_task['name'] = self.task_name
+
+    def verify_nxos_bgp_neighbor_state(self, x, parameter='state'):
         if x in self.nxos_bgp_neighbor_valid_state:
             return
-        source_class = self._classname
-        source_method = 'nxos_bgp_neighbor_verify_state'
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_state'
         expectation = ','.join(self.nxos_bgp_neighbor_valid_state)
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_bgp_neighbor_verify_asn(self, x, parameter=''):
+    def verify_nxos_bgp_neighbor_asn(self, x, parameter=''):
         if self.is_digits(x):
             return
         if re.search('^\d+\.\d+$', str(x)):
             return
-        source_class = self._classname
-        source_method = 'nxos_bgp_neighbor_verify_asn'
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_asn'
         expectation = '["digits", "digits.digits", "digits:digits"]'
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_bgp_neighbor_verify_ebgp_multihop(self, x, parameter='ebgp_multihop'):
+    def verify_nxos_bgp_neighbor_ebgp_multihop(self, x, parameter='ebgp_multihop'):
         '''
         verify ebgp_multihop is between 2-255 or == 'default'
         '''
@@ -208,12 +169,12 @@ class AskNxosBgpNeighbor(AnsTask):
             return
         if x in list(range(2,256)):
             return
-        source_class = self._classname
-        source_method = 'nxos_bgp_neighbor_verify_ebgp_multihop'
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_ebgp_multihop'
         expectation = '[2-255, "default"]'
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_bgp_neighbor_verify_neighbor_bgp(self, x, parameter='neighbor_bgp'):
+    def verify_nxos_bgp_neighbor_neighbor_bgp(self, x, parameter='neighbor_bgp'):
         expectation = ''
         if self.maximum_peers == None:
             expectation = "[IPv4 Address, IPv6 Address]"
@@ -227,27 +188,27 @@ class AskNxosBgpNeighbor(AnsTask):
                 return
             if self.is_ipv6_network(x):
                 return
-        source_class = self._classname
-        source_method = 'nxos_bgp_neighbor_verify_neighbor_bgp'
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_neighbor_bgp'
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_bgp_neighbor_verify_pwd_type(self, x, parameter='unspecified'):
+    def verify_nxos_bgp_neighbor_pwd_type(self, x, parameter='unspecified'):
         if x in self.nxos_bgp_neighbor_valid_pwd_type:
             return
-        source_class = self._classname
-        source_method = 'nxos_bgp_neighbor_verify_pwd_type'
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_pwd_type'
         expectation = self.nxos_bgp_neighbor_valid_pwd_type 
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_bgp_neighbor_verify_remove_private_as(self, x, parameter=''):
+    def verify_nxos_bgp_neighbor_remove_private_as(self, x, parameter=''):
         if x in self.nxos_bgp_neighbor_valid_remove_private_as:
             return
-        source_class = self._classname
-        source_method = 'nxos_bgp_neighbor_verify_remove_private_as'
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_remove_private_as'
         expectation = self.nxos_bgp_neighbor_valid_remove_private_as
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_bgp_neighbor_verify_timers(self, x, parameter='timers'):
+    def verify_nxos_bgp_neighbor_timers(self, x, parameter='timers'):
         '''
         verify timers_holdtime and timers_keepalive are between 0-3600 or == 'default'
         '''
@@ -255,8 +216,8 @@ class AskNxosBgpNeighbor(AnsTask):
             return
         if x in list(range(0,3601)):
             return
-        source_class = self._classname
-        source_method = 'nxos_bgp_neighbor_verify_timers'
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_timers'
         expectation = '[2-255, "default"]'
         self.fail(source_class, source_method, x, parameter, expectation)
 
@@ -271,7 +232,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'asn'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_asn(x, parameter)
+        self.verify_nxos_bgp_neighbor_asn(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -348,7 +309,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'ebgp_multihop'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_ebgp_multihop(x, parameter)
+        self.verify_nxos_bgp_neighbor_ebgp_multihop(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -361,7 +322,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'local_as'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_asn(x, parameter)
+        self.verify_nxos_bgp_neighbor_asn(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -376,7 +337,7 @@ class AskNxosBgpNeighbor(AnsTask):
             return
         if x not in self.nxos_bgp_neighbor_valid_log_neighbor_changes:
             expectation = ','.join(self.nxos_bgp_neighbor_valid_log_neighbor_changes)
-            self.fail(self._classname, parameter, x, parameter, expectation)
+            self.fail(self.class_name, parameter, x, parameter, expectation)
         self.properties[parameter] = x
 
     @property
@@ -405,7 +366,7 @@ class AskNxosBgpNeighbor(AnsTask):
         result = 'fail'
         # maximum_peers is valid only with prefix-peering if neighbor
         # is defined, make sure it's a prefix
-        # There is another test for maximum peers in self.nxos_bgp_neighbor_verify_neighbor_bgp()
+        # There is another test for maximum peers in self.verify_nxos_bgp_neighbor_neighbor_bgp()
         # which is called in @property neighbor
         if self.neighbor != None:
             if self.is_ipv4_address_with_prefix(self.neighbor):
@@ -414,7 +375,7 @@ class AskNxosBgpNeighbor(AnsTask):
                 result = 'success'
         if result == 'fail':
             expectation = "[IPv4 Network, IPv6 Network]"
-            self.fail(self._classname, parameter, x, parameter, expectation)
+            self.fail(self.class_name, parameter, x, parameter, expectation)
         self.verify_maximum_peers(x, parameter)
         self.properties[parameter] = x
 
@@ -428,7 +389,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'neighbor'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_neighbor_bgp(x)
+        self.verify_nxos_bgp_neighbor_neighbor_bgp(x)
         self.properties[parameter] = x
 
     @property
@@ -453,7 +414,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'pwd_type'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_pwd_type(x)
+        self.verify_nxos_bgp_neighbor_pwd_type(x)
         self.properties[parameter] = x
 
     @property
@@ -466,7 +427,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'remote_as'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_asn(x, parameter)
+        self.verify_nxos_bgp_neighbor_asn(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -479,7 +440,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'remove_private_as'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_remove_private_as(x, parameter)
+        self.verify_nxos_bgp_neighbor_remove_private_as(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -505,7 +466,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'state'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_state(x, parameter)
+        self.verify_nxos_bgp_neighbor_state(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -522,16 +483,6 @@ class AskNxosBgpNeighbor(AnsTask):
         self.properties[parameter] = x
 
     @property
-    def task_name(self):
-        return self.properties['task_name']
-    @task_name.setter
-    def task_name(self, x):
-        parameter = 'task_name'
-        if self.set_none(x, parameter):
-            return
-        self.properties[parameter] = x
-
-    @property
     def timers_holdtime(self):
         return self.properties['timers_holdtime']
     @timers_holdtime.setter
@@ -541,7 +492,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'timers_holdtime'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_timers(x, parameter)
+        self.verify_nxos_bgp_neighbor_timers(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -554,7 +505,7 @@ class AskNxosBgpNeighbor(AnsTask):
         parameter = 'timers_keepalive'
         if self.set_none(x, parameter):
             return
-        self.nxos_bgp_neighbor_verify_timers(x, parameter)
+        self.verify_nxos_bgp_neighbor_timers(x, parameter)
         self.properties[parameter] = x
 
     @property
