@@ -19,9 +19,9 @@ Suggestions and bug reports very much appreciated!
 
 ## Installing Ansible ScriptKit
 
-Look at your current python module path
-
 If you are using a virtual env, activate it first, then:
+
+Look at your current python module path:
 
 ```
 python3
