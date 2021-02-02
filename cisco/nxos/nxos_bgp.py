@@ -10,16 +10,14 @@ from ask.common.task import Task
 Name: nxos_bgp.py
 
 Description:
-
-NxosBgp() generates Ansible Playbook tasks using nxos_bgp
-which can be fed to Playbook().add_task()
+    NxosBgp() generates Ansible Playbook tasks using nxos_bgp
+    which can be fed to Playbook().add_task()
 
 Example usage:
     unit_test/cisco/nxos/unit_test_nxos_bgp.py
 
 Properties:
-
-    asn   # digits, digits.digits
+    asn                                 -   digits, digits.digits
     bestpath_always_compare_med         -   no, yes
     bestpath_aspath_multipath_relax     -   no, yes
     bestpath_compare_neighborid         -   no, yes
@@ -66,6 +64,7 @@ Properties:
                                             Default: 60
     vrf                                 -   str() vrf name
 '''
+
 class NxosBgp(Task):
     def __init__(self, task_log):
         ansible_module = 'cisco.nxos.nxos_bgp'
@@ -93,6 +92,48 @@ class NxosBgp(Task):
         self.nxos_bgp_valid_state.add('absent')
         self.nxos_bgp_valid_state.add('present')
 
+        self.properties_set = set()
+        self.properties_set.add('asn')
+        self.properties_set.add('bestpath_always_compare_med')
+        self.properties_set.add('bestpath_aspath_multipath_relax')
+        self.properties_set.add('bestpath_compare_neighborid')
+        self.properties_set.add('bestpath_compare_routerid')
+        self.properties_set.add('bestpath_cost_community_ignore')
+        self.properties_set.add('bestpath_med_confed')
+        self.properties_set.add('bestpath_med_missing_as_worst')
+        self.properties_set.add('bestpath_med_non_deterministic')
+        self.properties_set.add('cluster_id')
+        self.properties_set.add('confederation_id')
+        self.properties_set.add('confederation_peers')
+        self.properties_set.add('disable_policy_batching')
+        self.properties_set.add('disable_policy_batching_ipv4_prefix_list')
+        self.properties_set.add('disable_policy_batching_ipv6_prefix_list')
+        self.properties_set.add('enforce_first_as')
+        self.properties_set.add('event_history_cli')
+        self.properties_set.add('event_history_detail')
+        self.properties_set.add('event_history_events')
+        self.properties_set.add('event_history_periodic')
+        self.properties_set.add('fast_external_fallover')
+        self.properties_set.add('flush_routes')
+        self.properties_set.add('graceful_restart')
+        self.properties_set.add('graceful_restart_helper')
+        self.properties_set.add('graceful_restart_timers_restart')
+        self.properties_set.add('graceful_restart_timers_stalepath_time')
+        self.properties_set.add('isolate')
+        self.properties_set.add('local_as')
+        self.properties_set.add('log_neighbor_changes')
+        self.properties_set.add('maxas_limit')
+        self.properties_set.add('neighbor_down_fib_accelerate')
+        self.properties_set.add('reconnect_interval')
+        self.properties_set.add('router_id')
+        self.properties_set.add('shutdown')
+        self.properties_set.add('state')
+        self.properties_set.add('suppress_fib_pending')
+        self.properties_set.add('timer_bestpath_limit')
+        self.properties_set.add('timer_bgp_hold')
+        self.properties_set.add('timer_bgp_keepalive')
+        self.properties_set.add('vrf')
+
         self.init_properties()
 
     def init_properties(self):
@@ -115,11 +156,11 @@ class NxosBgp(Task):
         populate ansible_task dict()
         '''
         self.final_verification()
-
         d = dict()
         for p in self.properties_set:
             if self.properties[p] != None:
                 d[p] = self.properties[p]
+        self.ansible_task = dict()
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
         self.ansible_task[self.ansible_module] = deepcopy(d)
