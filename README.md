@@ -17,7 +17,7 @@ We hope to add support for ACI, DCNM, etc, over time and welcome contributions i
 Suggestions and bug reports very much appreciated!
 
 
-## Installing ScriptKit
+## Installing Ansible ScriptKit
 
 Look at your current python module path
 
