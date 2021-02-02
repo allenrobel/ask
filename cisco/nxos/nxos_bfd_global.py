@@ -19,7 +19,7 @@ class NxosBfdGlobal(Task):
         ansible_module = 'cisco.nxos.nxos_bfd_global'
         super().__init__(ansible_module, task_log)
         self.lib_version = our_version
-        self._classname = __class__.__name__
+        self.class_name = __class__.__name__
         self.ansible_task = dict()
 
         self.init_properties()
@@ -220,7 +220,7 @@ class NxosBfdGlobal(Task):
         for item in self.nxos_bfd_global_valid_echo_interface:
             if item in x:
                 return
-        source_class = self._classname
+        source_class = self.class_name
         source_method = 'nxos_bfd_global_verify_echo_interface'
         expectation = ','.join(self.nxos_bfd_global_valid_echo_interface)
         self.fail(source_class, source_method, x, parameter, expectation)
@@ -266,7 +266,7 @@ class NxosBfdGlobal(Task):
             x,
             self.echo_rx_interval_min,
             self.echo_rx_interval_max,
-            self._classname,
+            self.class_name,
             'echo_rx_interval')
         self.properties[parameter] = x
 
@@ -288,7 +288,7 @@ class NxosBfdGlobal(Task):
             x,
             self.fabricpath_slow_timer_min,
             self.fabricpath_slow_timer_max,
-            self._classname,
+            self.class_name,
             parameter)
         self.properties[parameter] = x
 
@@ -310,7 +310,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_fabricpath_interval_min,
             self.bfd_fabricpath_interval_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_fabricpath_interval = x
 
@@ -332,7 +332,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_fabricpath_min_rx_min,
             self.bfd_fabricpath_min_rx_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_fabricpath_min_rx = x
 
@@ -354,7 +354,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_fabricpath_multiplier_min,
             self.bfd_fabricpath_multiplier_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_fabricpath_multiplier = x
 
@@ -392,7 +392,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_interval_min,
             self.bfd_interval_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_interval = x
 
@@ -414,7 +414,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_interval_min,
             self.bfd_interval_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_min_rx = x
 
@@ -436,7 +436,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_multiplier_min,
             self.bfd_multiplier_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_multiplier = x
 
@@ -457,7 +457,7 @@ class NxosBfdGlobal(Task):
             x,
             self.ipv4_echo_rx_interval_min,
             self.ipv4_echo_rx_interval_max,
-            self._classname,
+            self.class_name,
             parameter)
         self.properties[parameter] = x
 
@@ -473,7 +473,7 @@ class NxosBfdGlobal(Task):
             x,
             self.ipv4_slow_timer_min,
             self.ipv4_slow_timer_max,
-            self._classname,
+            self.class_name,
             parameter)
         self.properties[parameter] = x
 
@@ -495,7 +495,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_ipv4_interval_min,
             self.bfd_ipv4_interval_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_ipv4_interval = x
 
@@ -517,7 +517,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_ipv4_min_rx_min,
             self.bfd_ipv4_min_rx_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_ipv4_min_rx = x
 
@@ -539,7 +539,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_ipv4_multiplier_min,
             self.bfd_ipv4_multiplier_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_ipv4_multiplier = x
 
@@ -559,7 +559,7 @@ class NxosBfdGlobal(Task):
             x,
             self.ipv6_echo_rx_interval_min,
             self.ipv6_echo_rx_interval_max,
-            self._classname,
+            self.class_name,
             parameter)
         self.properties[parameter] = x
 
@@ -575,7 +575,7 @@ class NxosBfdGlobal(Task):
             x,
             self.ipv6_slow_timer_min,
             self.ipv6_slow_timer_max,
-            self._classname,
+            self.class_name,
             parameter)
         self.properties[parameter] = x
 
@@ -597,7 +597,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_ipv6_interval_min,
             self.bfd_ipv6_interval_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_ipv6_interval = x
 
@@ -619,7 +619,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_ipv6_min_rx_min,
             self.bfd_ipv6_min_rx_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_ipv6_min_rx = x
 
@@ -641,7 +641,7 @@ class NxosBfdGlobal(Task):
             x,
             self.bfd_ipv6_multiplier_min,
             self.bfd_ipv6_multiplier_max,
-            self._classname,
+            self.class_name,
             parameter)
         self._bfd_ipv6_multiplier = x
 
@@ -658,7 +658,7 @@ class NxosBfdGlobal(Task):
             x,
             self.slow_timer_min,
             self.slow_timer_max,
-            self._classname,
+            self.class_name,
             parameter)
         self.properties[parameter] = x
 
@@ -674,7 +674,7 @@ class NxosBfdGlobal(Task):
             x,
             self.startup_timer_min,
             self.startup_timer_max,
-            self._classname,
+            self.class_name,
             parameter)
         self.properties[parameter] = x
 
