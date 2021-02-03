@@ -125,16 +125,16 @@ class NxosL3Interfaces(Task):
             self.task_log.error('ipv4_attribute properties: ipv4_address, ipv4_secondary, ipv4_tag')
             self.task_log.error('ipv6_attribute properties: ipv6_address, ipv6_tag')
             exit(1)
-        secondary_count = 0
+        ipv4_without_secondary = 0
         for d in self.ipv4:
-            try:
-                if d['ipv4_secondary'] == 'yes':
-                    secondary_count += 1
-            except:
-                pass
-        if secondary_count > 1:
-            self.task_log.error('exiting. ipv4_secondary allowed for a single ipv4_address.')
-            self.task_log.error('We counted {} ipv4_secondary configured.'.format(secondary_count))
+            if 'secondary' in d:
+                if d['secondary'] == 'no':
+                    ipv4_without_secondary += 1
+            else:
+                ipv4_without_secondary += 1
+        if ipv4_without_secondary > 1:
+            self.task_log.error('exiting. multiple ipv4_address without ipv4_secondary detected.')
+            self.task_log.error('We counted {} ipv4_address without secondary.'.format(ipv4_without_secondary))
             exit(1)
     def update(self):
         '''
