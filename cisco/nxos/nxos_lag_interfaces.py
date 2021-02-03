@@ -1,5 +1,5 @@
 # NxosLagInterfaces() - cisco/nxos/nxos_lag_interfaces.py
-our_version = 104
+our_version = 105
 
 import re
 from copy import deepcopy
@@ -20,9 +20,8 @@ Properties:
     member      -   e.g. Ethernet1/1
     mode        -   Valid values: active, on, passive
     name        -   Valid values: Po name e.g. port-channel20
-    state       -   see self._valid_state
+    state       -   Valid values: deleted, gathered, merged, overridden, parsed, rendered, replaced
     task_name   -   Freeform name for the task
-
 '''
 
 class NxosLagInterfaces(Task):
@@ -39,13 +38,13 @@ class NxosLagInterfaces(Task):
         self.re_lag_interface = re.compile('^port-channel\d+$')
 
         self.lag_valid_state = set()
-        self.lag_valid_state.add('merged')
-        self.lag_valid_state.add('replaced')
-        self.lag_valid_state.add('overridden')
         self.lag_valid_state.add('deleted')
         self.lag_valid_state.add('gathered')
-        self.lag_valid_state.add('rendered')
+        self.lag_valid_state.add('merged')
+        self.lag_valid_state.add('overridden')
         self.lag_valid_state.add('parsed')
+        self.lag_valid_state.add('rendered')
+        self.lag_valid_state.add('replaced')
 
         self.lag_valid_force = set()
         self.lag_valid_force.add('no')
