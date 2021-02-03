@@ -16,6 +16,11 @@ We hope to add support for ACI, DCNM, etc, over time and welcome contributions i
 
 Suggestions and bug reports very much appreciated!
 
+## Reaching us
+
+1. Post questions and suggestions in the Discussion forum.
+2. Email us at [Ansible ScriptKit](mailto:info@scriptkit.org?subject=[GitHub]ScriptKit)
+
 
 ## Installing Ansible ScriptKit
 
