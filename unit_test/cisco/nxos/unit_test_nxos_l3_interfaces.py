@@ -48,11 +48,12 @@ def dual_stack_interface(pb):
     task = NxosL3Interfaces(log)
     task.name = 'Ethernet1/49'
     task.ipv4_address = '10.1.1.1/24'
-    #task.ipv4_secondary = 'yes'
+    #task.ipv4_secondary = 'no'
     task.ipv4_tag = 10
     task.add_ipv4()
     task.ipv4_address = '10.2.1.1/24'
     task.ipv4_tag = 20
+    #task.ipv4_secondary = 'no'
     task.ipv4_secondary = 'yes'
     task.add_ipv4()
     task.ipv6_address = '2001:aaaa::1/64'
