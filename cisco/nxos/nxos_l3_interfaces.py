@@ -75,6 +75,14 @@ class NxosL3Interfaces(Task):
         self.nxos_l3_interfaces_valid_evpn_multisite_tracking.add('fabric-tracking')
         self.nxos_l3_interfaces_valid_evpn_multisite_tracking.add('dci-tracking')
 
+        # map disambiguated user property names back into the names expected by the ansible module
+        self.property_map = dict()
+        self.property_map['ipv4_address'] = 'address'
+        self.property_map['ipv6_address'] = 'address'
+        self.property_map['ipv4_tag'] = 'tag'
+        self.property_map['ipv6_tag'] = 'tag'
+        self.property_map['ipv4_secondary'] = 'secondary'
+
         self.properties_set = set()
         self.properties_set.add('dot1q')
         self.properties_set.add('evpn_multisite_tracking')
@@ -193,7 +201,8 @@ class NxosL3Interfaces(Task):
         d = dict()
         for p in self.ipv4_set:
             if self.properties[p] != None:
-                d[p] = self.properties[p]
+                mapped_p = self.property_map[p]
+                d[mapped_p] = self.properties[p]
         self.ipv4.append(deepcopy(d))
         self.init_ipv4_properties()
 
@@ -202,7 +211,8 @@ class NxosL3Interfaces(Task):
         d = dict()
         for p in self.ipv6_set:
             if self.properties[p] != None:
-                d[p] = self.properties[p]
+                mapped_p = self.property_map[p]
+                d[mapped_p] = self.properties[p]
         self.ipv6.append(deepcopy(d))
         self.init_ipv6_properties()
 
