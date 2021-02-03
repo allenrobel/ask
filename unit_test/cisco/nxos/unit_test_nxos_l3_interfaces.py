@@ -21,14 +21,16 @@ def playbook():
 
 def add_item_to_name(item, item_value, name):
     value = ''
-    if type(item_value) == type(list()):
-        if len(item_value) != 0:
-            value = '{}, {} {}'.format(name, item, item_value)
-    elif item_value != None and type(item_value) != type(list()) :
+    if item == 'ipv4':
+        value = '{}, {}x {}'.format(name, len(item_value), item)
+        return value
+    if item == 'ipv6':
+        value = '{}, {}x {}'.format(name, len(item_value), item)
+        return value
+    if item_value != None:
         value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
+        return value
+    return name
 
 def add_task_name(task):
     task_name = '{} {}'.format(ansible_module, ansible_host)
