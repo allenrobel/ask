@@ -1,5 +1,5 @@
-# Common() - general/common.py
-our_version = 103
+# Common() - common/common.py
+our_version = 104
 '''
 Description: 
 
@@ -29,6 +29,7 @@ class Common(object):
         self.re_ethernet_module_port_subport              = re.compile('^[Ee]thernet\d+\/\d+\/\d+$')
         self.re_ethernet_module_port_subport_subinterface = re.compile('^[Ee]thernet\d+\/\d+\/\d+\.\d+$')
         self.re_loopback_interface = re.compile('^[Ll]oopback\d+$')
+        self.re_management_interface = re.compile('^[Mm]gmt\d+$')
         self.re_vlan_interface = re.compile('^[Vv]lan\d+$')
         self.re_port_channel_interface = re.compile('^[Pp]ort-channel\d+$')
         self.re_port_channel_subinterface = re.compile('^[Pp]ort-channel\d+\.\d+$')
@@ -41,11 +42,11 @@ class Common(object):
         self.min_vlan = 1
         self.max_vlan = 4094
 
-        self.valid_enable_disable = set()           # used by nxos_pim bfd
+        self.valid_enable_disable = set()
         self.valid_enable_disable.add('enable')
         self.valid_enable_disable.add('disable')
 
-        self.valid_enabled_disabled = set()         # used by most other modules
+        self.valid_enabled_disabled = set()
         self.valid_enabled_disabled.add('enabled')
         self.valid_enabled_disabled.add('disabled')
 
@@ -125,15 +126,6 @@ class Common(object):
         self.valid_true_false = set()
         self.valid_true_false.add('false')
         self.valid_true_false.add('true')
-
-        # TODO 2021.01.29 - remove this is no longer needed
-        # SVI and Loopback (and mgmt0) don't have direct peers, but we want to populate rsid in these
-        # cases so that we can either skip these items, or handle them in some other way (e.g. indirect peering)
-        # NO_PEER is a well-known SID number that accomplishes this e.g.:
-        # for lsid in foo_sids:
-        #    if lsid == ans.NO_PEER:
-        #        continue 
-        self.NO_PEER = '99999'
 
     def all_set(self, d):
         '''
@@ -439,14 +431,8 @@ class Common(object):
             return True
         return False
 
-    def is_peering_uuid(self, x):
-        '''
-        peers.json can have 'local_uuid', like 'afi_safi' synthesized by AnsJsonNxosBgpAf(),
-        or peering_uuid, which is a unique incrementing integer.
-
-        is_peering_uuid returns True if x is a peering_uuid and returns False otherwise.
-        '''
-        if self.is_digits(x):
+    def is_management_interface(self, x):
+        if self.re_management_interface.search(x):
             return True
         return False
 
@@ -560,7 +546,7 @@ class Common(object):
 
     def verify_ipv4_ipv6_address_or_network(self, x, parameter='unspecified'):
         '''
-        see ans_task_nxos_bgp_neighbor_af.py where we use to verify BGP peers
+        see nxos_bgp_neighbor_af.py where we use to verify BGP peers
         that may be an address without prefix, or a network (prefix peering)
         '''
         if self.is_ipv4_address(x):
@@ -776,10 +762,10 @@ class Common(object):
     def aggregate(self, x):
         '''
         used by the following Ansible modules:
-        nxos_interface     - Ans*NxosInterface
-        nxos_l2_interface  - Ans*NxosL2Interface
-        nxos_l3_interface  - Ans*NxosL3Interface
-        nxos_vlan          - Ans*NxosVlan
+        nxos_interface     - NxosInterface
+        nxos_l2_interface  - NxosL2Interface
+        nxos_l3_interface  - NxosL3Interface
+        nxos_vlan          - NxosVlan
         '''
         _parameter = 'aggregate'
         if self.set_none(x, _parameter):
