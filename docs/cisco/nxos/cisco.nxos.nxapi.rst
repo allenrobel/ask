@@ -46,7 +46,7 @@ Parameters
                 <div>
                 Controls the operating state of the HTTP protocol as one of the underlying transports for NXAPI. By default, NXAPI will enable the HTTP transport when the feature is first configured. To disable the use of the HTTP transport, set the value of this argument to False.
                 </div>
-            <td>
+            </td>
         </tr>
     </table>
 
