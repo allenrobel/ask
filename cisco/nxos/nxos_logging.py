@@ -384,16 +384,6 @@ class NxosLogging(Task):
         self.properties[parameter] = x
 
     @property
-    def task_name(self):
-        return self.properties['task_name']
-    @task_name.setter
-    def task_name(self, x):
-        parameter = 'task_name'
-        if self.set_none(x, parameter):
-            return
-        self.properties[parameter] = x
-
-    @property
     def timestamp(self):
         return self.properties['timestamp']
     @timestamp.setter
