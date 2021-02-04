@@ -1,7 +1,7 @@
 
-*********************
-cisco.nxos.nxos_nxapi
-*********************
+***********************************
+NxosNxapi() - cisco.nxos.nxos_nxapi
+***********************************
 
 .. contents::
    :local:
@@ -9,15 +9,16 @@ cisco.nxos.nxos_nxapi
 
 ScriptKit Synopsis
 ------------------
-- NxosNxapi() generates Ansible Playbook tasks conformant with nxos_nxapi which can be passed to Playbook().add_task()
+- NxosNxapi() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_nxapi
+- These can then be passed to Playbook().add_task()
 
 Ansible Module Documentation
 ----------------------------
 - `nxos_nxapi <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_nxapi_module.rst>`_
 
-User Properties
----------------
-- All ScriptKit user properties mirror the Ansible Module Documentation
+Properties
+----------
+- NxosNxapi() properties mirror the Ansible Module Documentation
 
 For example:
 
