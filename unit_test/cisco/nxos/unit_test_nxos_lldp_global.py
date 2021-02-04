@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# python/lib3/ut/unit_test_ans_task_nxos_lldp_global.py
+# unit_test/cisco/nxos/unit_test_ans_task_nxos_lldp_global.py
 our_version = 100
 
 from ask.common.playbook import Playbook
@@ -20,7 +20,6 @@ def playbook():
     return pb
 
 def add_item_to_name(item, item_value, name):
-    #value = ''
     if item_value != None:
         value = '{}, {} {}'.format(name, item, item_value)
         return value
