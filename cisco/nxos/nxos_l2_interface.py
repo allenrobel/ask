@@ -5,15 +5,13 @@ from ask.common.task import Task
 '''
 Name: ask_task_nxos_l2_interface.py
 
-Description:
-
 DEPRECATED  Will be removed after 2022-06-01.
             Alternative: cisco/nxos/nxos_l2_interfaces.py
 
+Description:
+
 NxosL2Interface() generates Ansible Playbook tasks conformant with nxos_l2_interface
 which can be fed to Playbook().add_task()
-
-Revision history: Use git log
 
 Example usage:
     unit_test/cisco/nxos/unit_test_nxos_l2_interface.py

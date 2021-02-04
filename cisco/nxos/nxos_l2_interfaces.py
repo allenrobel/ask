@@ -10,8 +10,6 @@ Description:
 NxosL2Interfaces() generates Ansible Playbook tasks conformant with nxos_l2_interfaces
 which can be fed to Playbook().add_task()
 
-Revision history: Use git log
-
 Example usage:
     unit_test/cisco/nxos/unit_test_nxos_l2_interfaces.py
 
