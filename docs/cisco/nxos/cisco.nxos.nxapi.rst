@@ -30,7 +30,7 @@ Parameters
     
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="2">Parameter</th>
+            <th>Parameter</th>
             <th>Valid Values</th>
             <th width="100%">Description</th>
         </tr>
