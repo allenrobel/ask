@@ -80,7 +80,7 @@ class NxosNtpAuth(Task):
     def update(self):
         '''
         call final_verification()
-        populate and append dict() to self.ansible_task[self.ansible_module]['config']
+        populate ansible_task dict()
 
         '''
         self.final_verification()
