@@ -62,7 +62,7 @@ class NxosOverlayGlobal(Task):
         self.properties = dict()
         for p in self.properties_set:
             self.properties[p] = None
-        self.properties['task_name']    = None
+        self.properties['task_name'] = None
 
     def final_verification(self):
         if self.anycast_gateway_mac == None:
