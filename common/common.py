@@ -1,7 +1,12 @@
 # Common() - common/common.py
 our_version = 104
 '''
-Description: 
+====================
+Common() - common.py
+====================
+
+Description
+-----------
 
 Common methods used by Ansible ScriptKit
 
