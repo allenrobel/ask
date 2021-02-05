@@ -61,7 +61,8 @@ class NxosPim(Task):
 
     def update(self):
         '''
-        update verifies that mandatory module-specific parameters are set
+        call final_verification()
+        populate ansible_task dict()
         '''
         self.final_verification()
         d = dict()
