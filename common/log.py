@@ -1,17 +1,24 @@
 #!/usr/bin/env python
 '''
-Name: log.py
-Description: basic logger for ansible_scriptkit
-Synopsis:
+==============
+Log() - log.py
+==============
 
-   from ask.common.log import Log
+Description
+-----------
+Basic logger for ansible_scriptkit
 
-   # create a log instance which will log INFO messages to the console and 
-   # DEBUG messages to a rotating logfile /tmp/my_logger_name.log
-   log = Log('my_logger_name', INFO', 'DEBUG')
+Synopsis
+--------
+from ask.common.log import Log
 
+# create a log instance which will log INFO messages to the console and 
+# DEBUG messages to a rotating logfile /tmp/my_logger_name.log
+log = Log('my_logger_name', INFO', 'DEBUG')
 
-Valid logging levels are: DEBUG, INFO, WARNING, ERROR, CRITICAL
+Notes
+-----
+1. Valid logging levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
 '''
 
 import os
@@ -33,7 +40,10 @@ def Log(_name, _console_level='INFO', _file_level='DEBUG', _capture_warnings=Tru
 
 class Logger(object):
     '''
-    Synopsis:
+    Synopsis
+    --------
+
+    ::
 
     from log import Logger
 
