@@ -1,16 +1,19 @@
 # Playbook() - common/playbook.py
-our_version = 112
+our_version = 113
 from os import path # write_playbook()
 import yaml
-
 '''
-Name: playbook.py
+========================
+Playbook() - playbook.py
+========================
 
-Description:
+Description
+-----------
 
 Playbook() generates Ansible Playbooks
 
-Synopsis:
+Synopsis
+--------
 
 The following writes a playbook file named playbook.yaml with 
 a single task using nxos_interface module.
@@ -29,7 +32,7 @@ interface = 'Ethernet1/49'
 neighbor_interface = 'Ethernet1/1'
 neighbor_hostname = 'oz-201v6'
 
-task = AskNxosInterfaceTask()
+task = NxosInterfaces()
 task.task_name = 'configure interface {}'.format(interface)
 task.interface = interface
 task.mtu = 9216
