@@ -14,7 +14,7 @@ ScriptKit Synopsis
 
 Ansible Module Documentation
 ----------------------------
-- `nxos_nxapi <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospf_interfaces_module.rst>`_
+- `nxos_ospf_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospf_interfaces_module.rst>`_
 
 Properties
 ----------
@@ -48,7 +48,7 @@ multi_areas         multi_areas
 
 ScriptKit Example
 -----------------
-    unit_test/cisco/nxos/unit_test_nxos_nxapi.py
+    unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py
 
 Authors
 ~~~~~~~
