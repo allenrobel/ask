@@ -30,7 +30,8 @@ http            task.http
 
 ScriptKit Example
 -----------------
-    unit_test/cisco/nxos/unit_test_nxos_nxapi.py
+- `unit_test/cisco/nxos/unit_test_nxos_nxapi.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_nxapi.py>`_
+
 
 Authors
 ~~~~~~~
