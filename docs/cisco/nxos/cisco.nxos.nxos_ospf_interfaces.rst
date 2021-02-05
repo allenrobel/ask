@@ -48,7 +48,7 @@ multi_areas         multi_areas
 
 ScriptKit Example
 -----------------
-    unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py
+- `unit_test/cisco/interfaces/unit_test_nxos_ospf_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py>`_
 
 Authors
 ~~~~~~~
