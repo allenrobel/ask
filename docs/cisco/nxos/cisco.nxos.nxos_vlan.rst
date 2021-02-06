@@ -17,7 +17,7 @@ NxosVlan() is deprecated and will be removed after 2022-06-01.  Use NxosVlans() 
 
 Ansible Module Documentation
 ----------------------------
-- `nxos_vlan <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vlan.rst>`_
+- `nxos_vlan <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vlan_module.rst>`_
 
 ScriptKit Example
 -----------------
