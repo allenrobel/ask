@@ -5,6 +5,11 @@ Ansible ScriptKit is a set of classes and example scripts that can be used to ge
 Goals:
    - Remove the need to understand/remember the YAML structure for each of the supported modules
    - Allow for programatic construction of playbooks using familiar python logic constructs
+   - Fail quickly. Catch many errors without having to run the playbook against a device
+   - Fail clearly. Provide detailed error messages for:
+        - Parameters that are mutually-exclusive
+        - Parameter values that are out of valid range
+        - Missing mandatory parameters
 
 Hence, creating an nxos_ospfv2 playbook looks and feels the same as creating a nxos_feature playbook.
 
