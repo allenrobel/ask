@@ -759,20 +759,3 @@ class Common(object):
         else:
             s.add(item)
         return s
-
-    @property
-    def aggregate(self):
-        return self.feature_dict[self.ansible_module]['aggregate']
-    @aggregate.setter
-    def aggregate(self, x):
-        '''
-        used by the following Ansible modules:
-        nxos_interface     - NxosInterface
-        nxos_l2_interface  - NxosL2Interface
-        nxos_l3_interface  - NxosL3Interface
-        nxos_vlan          - NxosVlan
-        '''
-        _parameter = 'aggregate'
-        if self.set_none(x, _parameter):
-            return
-        self.feature_dict[self.ansible_module][_parameter] = x
