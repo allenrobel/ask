@@ -14,7 +14,6 @@ which can be fed to Playbook().add_task()
 
 Example usage
 -------------
-
     unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py
 
 Properties
