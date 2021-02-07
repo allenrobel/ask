@@ -19,24 +19,10 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-
 def add_task_name(task):
-    def add_item_to_name(item, item_value, name):
-        value = ''
-        if item_value != None:
-            value = '{}, {} {}'.format(name, item, item_value)
-        else:
-            value = name
-        return value
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('delay', task.delay, task_name)
-    task_name = add_item_to_name('interfaces', task.interfaces, task_name)
-    task_name = add_item_to_name('name', task.name, task_name)
-    task_name = add_item_to_name('mapped_vni', task.mapped_vni, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('vlan_id', task.vlan_id, task_name)
-    task_name = add_item_to_name('vlan_state', task.vlan_state, task_name)
-    task.task_name = task_name
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def add_task(pb):
     task = NxosVlan(log)
