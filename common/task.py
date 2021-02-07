@@ -45,7 +45,7 @@ class Task(Common):
 
             - Append item to self.task_name
             - This allows to append any value, for example, ansible_hostname, directly to self.task_name
-        If item is a key in self.properties::
+        If item is a key in self.properties and item's value is not None::
 
             - Append item and item's value to self.task_name
         '''
