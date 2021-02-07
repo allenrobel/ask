@@ -1,5 +1,5 @@
 # Task() - common/task.py
-our_version = 102
+our_version = 103
 '''
 ==========================
 Task() = common/task.pu
@@ -50,7 +50,7 @@ class Task(Common):
             - Append item and item's value to self.task_name
         '''
         if self.task_name == None:
-            self.task_name = "{}".format(self.ansible_module)
+            self.task_name = "[{} : v.{}]".format(self.ansible_module, self.lib_version)
         if item not in self.properties:
             self.task_name += ", {}".format(item)
             return
