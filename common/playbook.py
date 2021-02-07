@@ -1,5 +1,6 @@
 # Playbook() - common/playbook.py
 our_version = 113
+from copy import deepcopy
 from os import path # write_playbook()
 import yaml
 '''
@@ -221,11 +222,11 @@ class Playbook(object):
 
     def add_task(self, x):
         '''
-        x is an instance of a subclass of AskTask() e.g. AskTaskNxosL3Interfaces()
+        x is an instance of a subclass of AskTask() e.g. NxosL3Interfaces()
         '''
         if x == None:
             return
-        self.playbook['tasks'].append(x.ansible_task.copy())
+        self.playbook['tasks'].append(deepcopy(x.ansible_task))
 
     @property
     def ansible_module(self):
@@ -268,5 +269,5 @@ class Playbook(object):
                 new_vars[var] = self.playbook['vars'][var]
         self.playbook['vars'] = new_vars
         self.playbook['hosts'] = ','.join(self._hosts)
-        self.stream.append(self.playbook.copy())
+        self.stream.append(deepcopy(self.playbook))
         self.init_playbook()
