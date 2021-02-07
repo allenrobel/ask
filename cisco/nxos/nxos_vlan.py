@@ -139,6 +139,10 @@ class NxosVlan(Task):
             exit(1)
 
     def update(self):
+        '''
+        call final_verification()
+        populate ansible_task dict()
+        '''
         self.final_verification()
         d = dict()
         if len(self.aggregate_list) != 0:
