@@ -19,28 +19,9 @@ def playbook():
     return pb
 
 def add_task_name(task):
-    def add_item_to_name(item, item_value, name):
-        value = ''
-        if item_value != None:
-            value = '{}, {} {}'.format(name, item, item_value)
-        else:
-            value = name
-        return value
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('auto_recovery', task.auto_recovery, task_name)
-    task_name = add_item_to_name('auto_recovery_reload_delay', task.auto_recovery_reload_delay, task_name)
-    task_name = add_item_to_name('delay_restore', task.delay_restore, task_name)
-    task_name = add_item_to_name('delay_restore_interface_vlan', task.delay_restore_interface_vlan, task_name)
-    task_name = add_item_to_name('delay_restore_orphan_port', task.delay_restore_orphan_port, task_name)
-    task_name = add_item_to_name('domain', task.domain, task_name)
-    task_name = add_item_to_name('peer_gw', task.peer_gw, task_name)
-    task_name = add_item_to_name('pkl_dest', task.pkl_dest, task_name)
-    task_name = add_item_to_name('pkl_src', task.pkl_src, task_name)
-    task_name = add_item_to_name('pkl_vrf', task.pkl_vrf, task_name)
-    task_name = add_item_to_name('role_priority', task.role_priority, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('system_priority', task.system_priority, task_name)
-    task.task_name = task_name
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def add_task(pb):
     task = NxosVpc(log)
