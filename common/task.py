@@ -1,12 +1,21 @@
 # Task() - common/task.py
-our_version = 101
+our_version = 102
 '''
-Description: Task() is the base class for Ansible Playbook Task classes
+==========================
+Task() = common/task.pu
+==========================
 
-Synopsis:
+Description
+-----------
+
+Task() is the base class for Ansible Playbook Task classes
+
+Example usage
+-------------
 
 from ask.common.task import Task
 class NxosBgpGlobal(Task):
+    ...
 '''
 from ask.common.common import Common
 
@@ -26,6 +35,27 @@ class Task(Common):
         self.task_properties = dict()
         for p in self.task_properties_set:
             self.task_properties[p] = None
+
+    def append_to_task_name(self, item):
+        '''
+        If self.task_name hasn't been set yet::
+
+            - Append the ansible module name to self.task_name
+        If item is not a key in self.properties::
+
+            - Append item to self.task_name
+            - This allows to append any value, for example, ansible_hostname, directly to self.task_name
+        If item is a key in self.properties::
+
+            - Append item and item's value to self.task_name
+        '''
+        if self.task_name == None:
+            self.task_name = "{}".format(self.ansible_module)
+        if item not in self.properties:
+            self.task_name += ", {}".format(item)
+            return
+        if self.properties[item] != None:
+            self.task_name += ", {}: {}".format(item, self.properties[item])
 
     @property
     def register(self):
