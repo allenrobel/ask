@@ -185,7 +185,7 @@ class NxosVpc(Task):
         d = dict()
         for p in self.properties_set:
             if self.properties[p] != None:
-                d[p] = self.properties[p]
+                d[p] = str(self.properties[p])
         self.ansible_task = dict()
         self.ansible_task[self.ansible_module] = deepcopy(d)
         if self.task_name != None:
