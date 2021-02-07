@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_vpc_interface.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -20,19 +20,9 @@ def playbook():
     return pb
 
 def add_task_name(task):
-    def add_item_to_name(item, item_value, name):
-        value = ''
-        if item_value != None:
-            value = '{}, {} {}'.format(name, item, item_value)
-        else:
-            value = name
-        return value
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('portchannel', task.portchannel, task_name)
-    task_name = add_item_to_name('peer_link', task.peer_link, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('vpc', task.vpc, task_name)
-    task.task_name = task_name
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def add_task_vpc_peer_link(pb):
     task = NxosVpcInterface(log)
