@@ -32,8 +32,8 @@ The heusistc used for disambiguation is to include the name(s) of the enclosing 
 in the property name.
 
 For example, Property name ``not_advertise`` is disambiguated into ``ranges_not_advertise``
-and ``summary_address_not_advertise`` since this property name appears in both the ranges
-and the summary_address dictionaries.
+and ``summary_address_not_advertise`` since this property name appears in both the ``ranges``
+and the ``summary_address`` dictionaries.
 
 ======================================  ==================================================
 Property                                Description
