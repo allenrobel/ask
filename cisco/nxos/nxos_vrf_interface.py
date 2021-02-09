@@ -42,12 +42,14 @@ state                                   Manages desired state of the resource::
 
                                             - Type: str()
                                             - Valid values: absent, present
-                                            - Example: task.state = 'present'
+                                            - Examples:
+                                                - task.state = 'present'
 
 vrf                                     Name of VRF to be managed::
 
                                             - Type: str()
-                                            - Example: task.vrf = 'my_vrf'
+                                            - Examples:
+                                                - task.vrf = 'my_vrf'
 
 ======================================  ==================================================
 
