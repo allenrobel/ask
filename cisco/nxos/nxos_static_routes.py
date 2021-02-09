@@ -1,5 +1,5 @@
 # NxosStaticRoutes() - cisco/nxos/nxos_static_routes.py
-our_version = 101
+our_version = 102
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -118,6 +118,22 @@ class NxosStaticRoutes(Task):
 
         self.nxos_static_routes_track_min = 1
         self.nxos_static_routes_track_max = 512
+
+        # properties_set is not currently used in this class,
+        # but it can be used by scripts to set task_name.
+        # See Task().append_to_task_name() method in common/task.py
+        self.properties_set = set()
+        self.properties_set.add('afi')
+        self.properties_set.add('dest')
+        self.properties_set.add('admin_distance')
+        self.properties_set.add('dest_vrf')
+        self.properties_set.add('forward_router_address')
+        self.properties_set.add('interface')
+        self.properties_set.add('route_name')
+        self.properties_set.add('tag')
+        self.properties_set.add('track')
+        self.properties_set.add('vrf')
+        self.properties_set.add('state')
 
         self.init_properties()
 
