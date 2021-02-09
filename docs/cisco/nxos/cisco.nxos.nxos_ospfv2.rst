@@ -14,7 +14,7 @@ ScriptKit Synopsis
 
 Ansible Module Documentation
 ----------------------------
-- `nxos_nxapi <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst>`_
+- `cisco.nxos.nxos_ospfv2 <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst>`_
 
 
 ScriptKit Example
