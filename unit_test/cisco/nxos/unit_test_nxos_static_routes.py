@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_static_routes.py
-our_version = 101
+our_version = 102
 '''
 ========================================
 unit_test_ans_task_nxos_static_routes.py
@@ -27,27 +27,11 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
-def task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('afi', task.afi, task_name)
-    task_name = add_item_to_name('admin_distance', task.admin_distance, task_name)
-    task_name = add_item_to_name('dest', task.dest, task_name)
-    task_name = add_item_to_name('dest_vrf', task.dest_vrf, task_name)
-    task_name = add_item_to_name('forward_router_address', task.forward_router_address, task_name)
-    task_name = add_item_to_name('interface', task.interface, task_name)
-    task_name = add_item_to_name('route_name', task.route_name, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('tag', task.tag, task_name)
-    task_name = add_item_to_name('track', task.track, task_name)
-    task.task_name = task_name
+def add_task_name(task):
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def add_ipv4_next_hops_vrf(pb):
     task = NxosStaticRoutes(log)
@@ -69,7 +53,8 @@ def add_ipv4_next_hops_vrf(pb):
     task.route_name = 'ipv4_route_2'
     task.tag = 16
     task.vrf = 'vrf2'
-    task_name(task)
+    # task_name will display only the last next_hop's info
+    add_task_name(task)
     task.add_next_hop()
     task.state = 'merged'
 
@@ -93,7 +78,7 @@ def add_ipv6_next_hops_no_vrf(task):
 
     task.forward_router_address = '2000:15:15::15'
     task.interface = 'Ethernet1/19'
-    task_name(task)
+    add_task_name(task)
     task.add_next_hop()
 
     task.forward_router_address = '2000:16:16::16'
@@ -104,7 +89,7 @@ def add_next_hops_no_vrf(pb):
     task = NxosStaticRoutes(log)
     add_ipv4_next_hops_no_vrf(task)
     add_ipv6_next_hops_no_vrf(task)
-    task_name(task)
+    add_task_name(task)
     task.state = 'merged'
     task.update()
     pb.add_task(task)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_system.py
-our_version = 104
+our_version = 105
 from ask.common.playbook import Playbook
 from ask.common.log import Log
 from ask.cisco.nxos.nxos_system import NxosSystem
@@ -19,22 +19,10 @@ def playbook():
     return pb
 
 def add_task_name(task):
-    def add_item_to_name(item, item_value, name):
-        value = ''
-        if item_value != None:
-            value = '{}, {} {}'.format(name, item, item_value)
-        else:
-            value = name
-        return value
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('hostname', task.hostname, task_name)
-    task_name = add_item_to_name('domain_lookup', task.domain_lookup, task_name)
-    task_name = add_item_to_name('domain_name', task.domain_name, task_name)
-    task_name = add_item_to_name('domain_search', task.domain_search, task_name)
-    task_name = add_item_to_name('name_servers', task.name_servers, task_name)
-    task_name = add_item_to_name('system_mtu', task.system_mtu, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def hostname(pb):
     task = NxosSystem(log)
