@@ -1,3 +1,27 @@
+*******************************************
+NxosVxlanVtepVni() - nxos_vxlan_vtep_vni.py
+*******************************************
+
+.. contents::
+   :local:
+   :depth: 1
+
+ScriptKit Synopsis
+------------------
+NxosVxlanVtepVni() generates Ansible task instances conformant with cisco.nxos.nxos_vxlan_vtep_vni.
+These task instances can then be passed to Playbook().add_task()
+
+Ansible Module Documentation
+----------------------------
+- `nxos_vxlan_vtep_vni <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vxlan_vtep_vni_module.rst>`_
+
+ScriptKit Example
+-----------------
+- `unit_test/cisco/interfaces/unit_test_nxos_vxlan_vtep_vni.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_vxlan_vtep_vni.py>`_
+
+Properties
+----------
+
 ================================        ==================================================
 Property                                Description
 ================================        ==================================================
@@ -127,4 +151,4 @@ task_name                               Freeform name for the task (ansible-play
                                             - Examples:
                                                 - task.task_name = 'configure vni'
 
-================================    ==================================================
+================================        ==================================================
