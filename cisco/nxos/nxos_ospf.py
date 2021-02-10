@@ -1,5 +1,5 @@
 # NxosOspf() - cisco/nxos/nxos_ospf.py
-our_version = 110
+our_version = 111
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -47,10 +47,10 @@ class NxosOspf(Task):
 
     def final_verification(self):
         if self.ospf == None:
-            self.log.error('exiting. call instance.ospf before calling instance.update()')
+            self.task_log.error('exiting. call instance.ospf before calling instance.update()')
             exit(1)
         if self.state == None:
-            self.log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
 
     def update(self):
