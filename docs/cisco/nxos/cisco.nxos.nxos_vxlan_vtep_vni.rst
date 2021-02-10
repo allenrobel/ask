@@ -13,7 +13,7 @@ These task instances can then be passed to Playbook().add_task()
 
 Ansible Module Documentation
 ----------------------------
-- `nxos_vrf <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vxlan_vtep_vni_module.rst>`_
+- `nxos_vxlan_vtep_vni <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vxlan_vtep_vni_module.rst>`_
 
 ScriptKit Example
 -----------------
