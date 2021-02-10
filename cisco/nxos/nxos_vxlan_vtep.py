@@ -27,9 +27,9 @@ ScriptKit Example
 Properties
 ----------
 
-================================        ==================================================
+====================================    ==================================================
 Property                                Description
-================================        ==================================================
+====================================    ==================================================
 description                             Description of the NVE interface::
 
                                             - Type: str()
@@ -47,24 +47,28 @@ global_ingress_replication_bgp          Configures ingress replication protocol 
                                                 - Platform: Nexus 9000
                                                 - Software: NX-OS 9.2(x) or higher
 
-global_mcast_group_L2                   Global multicast IP prefix for L2 VNIs or the
-                                        keyword 'default'.::
+global_mcast_group_L2                   Global multicast IP prefix for L2 VNIs::
 
                                             - Type: str()
-                                            - Valid values: An ipv4 multicast ip address
+                                            - Valid values:
+                                                - ipv4 multicast ip address
+                                                - keyword: default
                                             - Examples:
-                                                - task.global_mcast_group_L2 = '225.1.2.3'
+                                                - task.global_mcast_group_L2 = '225.2.1.1'
+                                                - task.global_mcast_group_L2 = 'default'
                                             - Availability:
                                                 - Platform: Nexus 9000
                                                 - Software: NX-OS 9.2(x) or higher
 
-global_mcast_group_L2                   Global multicast IP prefix for L3 VNIs or the
-                                        keyword 'default'.
+global_mcast_group_L3                   Global multicast IP prefix for L3 VNIs.::
 
                                             - Type: str()
-                                            - Valid values: An ipv4 multicast ip address
+                                            - Valid values:
+                                                - ipv4 multicast ip address
+                                                - keyword: default
                                             - Examples:
-                                                - task.global_mcast_group_L2 = '225.1.2.3'
+                                                - task.global_mcast_group_L3 = '225.3.1.1'
+                                                - task.global_mcast_group_L3 = 'default'
                                             - Availability:
                                                 - Platform: Nexus 9000
                                                 - Software: NX-OS 9.2(x) or higher
@@ -87,7 +91,7 @@ host_reachability                       Specify mechanism for host reachability 
                                               reachability advertisement.
                                             - Other host reachability advertisement protocols 
                                               (e.g. OpenFlow, controller, etc.) are not
-                                              supported.::
+                                              supported.
 
                                             - Type: str()
                                             - Valid values: no, yes
@@ -156,7 +160,8 @@ task_name                               Freeform name for the task (ansible-play
                                             - Examples:
                                                 - task.task_name = 'configure vni'
 
-================================    ==================================================
+====================================    ==================================================
+
 
 '''
 class NxosVxlanVtep(Task):
