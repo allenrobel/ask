@@ -1,5 +1,5 @@
 # Pause() - python/lib3/ask_task_pause.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -50,7 +50,7 @@ class Pause(Task):
 
     def final_verification(self):
         if self.seconds == None:
-            self.log.error('exiting. call instance.seconds before calling instance.update()')
+            self.task_log.error('exiting. call instance.seconds before calling instance.update()')
             exit(1)
 
     def update(self):
