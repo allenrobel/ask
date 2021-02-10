@@ -1,5 +1,5 @@
 *******************************************
-NxosVxlanVtepVni() - nxos_vxlan_vtep_vni.py
+NxosVxlanVtep() - nxos_vxlan_vtep.py
 *******************************************
 
 .. contents::
@@ -8,16 +8,16 @@ NxosVxlanVtepVni() - nxos_vxlan_vtep_vni.py
 
 ScriptKit Synopsis
 ------------------
-NxosVxlanVtepVni() generates Ansible task instances conformant with cisco.nxos.nxos_vxlan_vtep_vni.
+NxosVxlanVtep() generates Ansible task instances conformant with cisco.nxos.nxos_vxlan_vtep.
 These task instances can then be passed to Playbook().add_task()
 
 Ansible Module Documentation
 ----------------------------
-- `nxos_vxlan_vtep_vni <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vxlan_vtep_vni_module.rst>`_
+- `nxos_vxlan_vtep <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vxlan_vtep_module.rst>`_
 
 ScriptKit Example
 -----------------
-- `unit_test/cisco/interfaces/unit_test_nxos_vxlan_vtep_vni.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_vxlan_vtep_vni.py>`_
+- `unit_test/cisco/interfaces/unit_test_nxos_vxlan_vtep.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_vxlan_vtep.py>`_
 
 Properties
 ----------
