@@ -1,5 +1,5 @@
 # Common() - common/common.py
-our_version = 104
+our_version = 105
 '''
 ====================
 Common() - common.py
@@ -35,6 +35,7 @@ class Common(object):
         self.re_ethernet_module_port_subport_subinterface = re.compile('^[Ee]thernet\d+\/\d+\/\d+\.\d+$')
         self.re_loopback_interface = re.compile('^[Ll]oopback\d+$')
         self.re_management_interface = re.compile('^[Mm]gmt\d+$')
+        self.re_nve_interface = re.compile('^[Nn]ve\d+$')
         self.re_vlan_interface = re.compile('^[Vv]lan\d+$')
         self.re_port_channel_interface = re.compile('^[Pp]ort-channel\d+$')
         self.re_port_channel_subinterface = re.compile('^[Pp]ort-channel\d+\.\d+$')
@@ -438,6 +439,11 @@ class Common(object):
 
     def is_management_interface(self, x):
         if self.re_management_interface.search(x):
+            return True
+        return False
+
+    def is_nve_interface(self, x):
+        if self.re_nve_interface.search(x):
             return True
         return False
 
