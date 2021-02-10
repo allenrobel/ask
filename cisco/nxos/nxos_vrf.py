@@ -1,5 +1,5 @@
 # NxosVrf() - cisco/nxos/nxos_vrf.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 import ipaddress
 import re
@@ -211,8 +211,6 @@ class NxosVrf(Task):
         call final_verification()
         populate ansible_task dict()
         '''
-        self.final_verification()
-        d = dict()
         self.final_verification()
         d = dict()
         if len(self.aggregate_list) != 0:
