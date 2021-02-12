@@ -39,7 +39,7 @@ ScriptKit Example
 ====================================    ==================================================
 Property /Method                        Description
 ====================================    ==================================================
-action                                  Create or delete the BGP emulated device::
+action                                  Create or delete Spirent ports::
 
                                             - Type: str()
                                             - Spirent name: action
