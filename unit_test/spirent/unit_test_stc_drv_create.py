@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_drv_create.py
-our_version = 100
+our_version = 101
 '''
 Name: unit_test_stc_drv_create.py
 
@@ -34,7 +34,6 @@ def playbook():
 
 def add_task_stc_drv_create_default(pb):
     task = StcDrvCreate(log)
-    #task.task_name = 'create DRV with default select_properties'
     task.update()
     pb.add_task(task)
 
@@ -46,7 +45,7 @@ def add_task_stc_drv_create_custom(pb):
     task.select_properties = 'StreamBlock.DroppedFrameDuration'
     task.sort_by = "StreamBlock.DroppedFrameCount"
     #task.sort_by = 'StreamBlock.TxFrameCount' # negative test, sort_by not in select_properties
-    #task.sort_by = 'StreamBlock.TxFrameCount' # negative test, unknown 
+    #task.sort_by = 'StreamBlock.FooBar' # negative test, unknown select_property
     task.sort_direction = "DESCENDING"
     task.disable_auto_grouping = False
     task.reset_existing = True
