@@ -1,4 +1,6 @@
-# ask - Ansible ScriptKit README version 102
+# ask - Ansible ScriptKit
+
+*README version 102*
 
 Ansible ScriptKit is a set of classes and example scripts that can be used to generate playbooks.  We use this internally for some of our customer proof of concepts and thought we'd open-source it for anyone else to use and to contribute to.
 
