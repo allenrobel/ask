@@ -1,4 +1,4 @@
-# ask - Ansible ScriptKit
+# ask - Ansible ScriptKit README version 102
 
 Ansible ScriptKit is a set of classes and example scripts that can be used to generate playbooks.  We use this internally for some of our customer proof of concepts and thought we'd open-source it for anyone else to use and to contribute to.
 
@@ -13,11 +13,11 @@ Goals:
 
 Hence, creating an nxos_ospfv2 playbook looks and feels the same as creating a nxos_feature playbook.
 
-Most NX-OS Ansible modules are supported, but not all have been added to the repo yet.  We will be adding them over the next several days and hope to be finished with the initial set by 2021.02.07.
+We have completed the initial commit for all NX-OS Ansible modules supported to date.  We will be adding support for the remaining modules over the coming weeks/months.  We actively monitor the NX-OS Ansible Collections repo and will strive for quick turnaround on additions/changes to the modules that ScriptKit supports.
 
-Also, we've developed a set of classes that can be used to generate Spirent Ansible playbooks (e.g. reserve ports, create emulated devices (including BGP), create StreamBlocks, and start/stop devices and traffic).  These are not comprehensive, but get the job done for most simple ipv4/ipv6 traffic use-cases.  These, too, will be added by 2021.02.07.
+Also, we've developed a set of classes that can be used to generate Spirent Ansible playbooks (e.g. reserve ports, create emulated devices (including BGP), create StreamBlocks, and start/stop devices and traffic).  These are NOT comprehensive.  Rather, they focus on our (perhaps relatively simple) use-cases.  These get the job done for us for things like ipv4/ipv6 traffic, and convergence test cases.  We have added about 50% of what we have, and will try to add the remaining by 2021.02.21.  At that time, we will also add a few complete convergence test case playbook generation scripts (configure DUT(s), configure Spirent, start traffic, initiate perturbance, stop traffic, collect statistics).
 
-We hope to add support for ACI, DCNM, etc, over time and welcome contributions in these and other areas.
+Over time (longer-term roadmap) we hope to add support for ACI, DCNM, etc.  We welcome contributions in these and other areas.
 
 Suggestions and bug reports very much appreciated!
 
