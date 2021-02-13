@@ -1,5 +1,5 @@
 # Common() - common/common.py
-our_version = 105
+our_version = 106
 '''
 ====================
 Common() - common.py
@@ -689,11 +689,16 @@ class Common(object):
         if x not in self.valid_true_false:
             _expectation = ','.join(self.valid_true_false)
             self.fail(self.class_name, parameter, x, parameter, _expectation)
-    def verify_boolean(self, x, parameter=''):
-        if x not in [True, False]:
-            _expectation = ','.join([str(True), str(False)])
-            self.fail(self.class_name, parameter, x, parameter, _expectation)
 
+    def is_boolean(self, x):
+        if x in [True, False]:
+            return True
+        return False
+    def verify_boolean(self, x, parameter=''):
+        if self.is_boolean(x):
+            return
+        expectation = 'bool(): True or False'
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_vlan(self, x, expectation, parameter='verify_vlan'):
         self.verify_integer_range(x, self.min_vlan, self.max_vlan, self.class_name, 'verify_vlan')
