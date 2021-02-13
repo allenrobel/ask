@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_drv_create.py
-our_version = 101
+our_version = 102
 '''
-Name: unit_test_stc_drv_create.py
+****************************
+unit_test_stc_drv_create.py
+****************************
 
-Description:
+Description
+-----------
 
 Generates Ansible playbook conformant with Spirent Ansible module: stc
-This playbook creates Spirent device
+This playbook creates a Dynamic Result View (DRV)
 '''
 from ask.common.playbook import Playbook
 from ask.common.log import Log
