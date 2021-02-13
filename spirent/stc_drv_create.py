@@ -81,7 +81,7 @@ reset_existing                          Reset any existing results::
                                             - Type: bool()
                                             - Valid values: False, True
                                             - Default: False
-                                            - Spirent name: ResetExisting
+                                            - Spirent name: reset_existing
                                             - Examples:
                                                 - task.reset_existing = True
 
