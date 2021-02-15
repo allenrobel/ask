@@ -1,5 +1,5 @@
 # StcPorts() - spirent/stc_ports.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -75,22 +75,32 @@ port                                    Port number::
 
 name                                    Name/Handle for the port.  This will be used
                                         to refer to the port in other Spirent tasks,
-                                        e.g. when adding a device to a port.  If
-                                        not set, the default port handle will look
-                                        like Stc1/2/1, chassis 1, module 2, port 1::
+                                        e.g. in StcPortControl() to attach/detach ports.
+                                        If not set, a default port handle is assigned
+                                        with the following format:
+
+                                            StcC/M/P where:
+                                               C - Chassis (from task.chassis)
+                                               M - Module  (from task.module)
+                                               P - Port    (from task.port)
+
+                                        For example:
+
+                                            Stc1/2/3, chassis 1, module 2, port 3::
 
                                             - Type: str()
                                             - Spirent name: name
                                             - Default: Stc/C/M/P
                                                 Where:
-                                                    C = chassis
-                                                    M = module
-                                                    P = port
+                                                    C = task.chassis
+                                                    M = task.module
+                                                    P = task.port
                                             - Examples:
-                                                - task.name = 'my_port'
+                                                - task.name = 'MyPort1'
 
-add_port()                              After setting chassis, module, and port, call
-                                        task.add_port().  This appends the port to a 
+add_port()                              After setting task.chassis, task.module, and
+                                        task.port, and optionally setting task.name, 
+                                        call task.add_port().  This appends the port to a 
                                         list() in a format Spirent expects, and clears
                                         chassis, module, port so that you can set them
                                         again to add the next port.  Once all ports have
