@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-our_version = 103
+our_version = 104
 # unit_test/cisco/nxos/unit_test_nxos_snmp_host.py
 
 from ask.common.playbook import Playbook
@@ -12,9 +12,9 @@ log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
     pb = Playbook(log)
-    pb.ansible_connection = 'httpapi' # httpapi, network_cli
+    pb.profile_nxos()
     pb.ansible_password = 'mypassword'
-    pb.file = '/tmp/playbook_{}.yaml'.format(ansible_module)
+    pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = '{} task'.format(ansible_module)
     pb.add_host(ansible_host)
     return pb

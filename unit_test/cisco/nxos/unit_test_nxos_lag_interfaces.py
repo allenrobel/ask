@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/nxos/cisco/unit_test_nxos_lag_interfaces.py
-our_version = 102
+our_version = 103
 '''
 Name: unit_test_ans_task_nxos_lag_interfaces.py
 
@@ -18,9 +18,9 @@ log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
     pb = Playbook(log)
-    pb.ansible_connection = 'httpapi' # httpapi, network_cli
+    pb.profile_nxos()
     pb.ansible_password = 'mypassword'
-    pb.file = '/tmp/playbook_{}.yaml'.format(ansible_module)
+    pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = '{} task'.format(ansible_module)
     pb.add_host(ansible_host)
     return pb

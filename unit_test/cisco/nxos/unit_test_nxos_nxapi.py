@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_nxapi.py
-our_version = 100
+our_version = 101
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -12,9 +12,14 @@ log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
     pb = Playbook(log)
-    pb.ansible_connection = 'httpapi' # httpapi, network_cli
+    pb.profile_nxos()
+    # Since profile_nxos() sets ansible_connection to httpapi,
+    # we need to change it here to network_cli since NxosNxapi()
+    # can change httpapi-related parameters, like http port, 
+    # etc, which would break our connection when using httpapi.
+    pb.ansible_connection = 'network_cli'
     pb.ansible_password = 'mypassword'
-    pb.file = '/tmp/playbook_{}.yaml'.format(ansible_module)
+    pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = '{} task'.format(ansible_module)
     pb.add_host(ansible_host)
     return pb

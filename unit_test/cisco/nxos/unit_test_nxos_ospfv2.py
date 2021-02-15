@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_ospfv2.py
-our_version = 111
+our_version = 112
 '''
 =================================
 unit_test_ans_task_nxos_ospfv2.py
@@ -27,9 +27,9 @@ log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
     pb = Playbook(log)
-    pb.ansible_connection = 'httpapi' # httpapi, network_cli
+    pb.profile_nxos()
     pb.ansible_password = 'mypassword'
-    pb.file = '/tmp/playbook_{}.yaml'.format(ansible_module)
+    pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = '{} task'.format(ansible_module)
     pb.add_host(ansible_host)
     return pb
