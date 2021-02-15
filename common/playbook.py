@@ -26,6 +26,9 @@ from ask.cisco.nxos.nxos_interfaces import NxosInterfaces
 log = Log('test_playbook', 'INFO', 'DEBUG')
 
 pb = Playbook(log)
+pb.profile_nxos() # commonly used NXOS settings
+pb.ansible_connection = 'network_cli' # profile_nxos() sets this to httpapi
+pb.ansible_password = 'mypassword'
 pb.file = 'playbook.yaml'
 pb.add_host('t301')  # host in Ansible inventory
 
@@ -48,6 +51,7 @@ task.neighbor_port = neighbor_interface
 task.add_neighbor()
 
 pb.add_task(task)
+pb.append_playbook()
 pb.write_playbook()
 '''
 class Playbook(object):
@@ -78,7 +82,7 @@ class Playbook(object):
         # ansible_paramiko_pty:no
         self.playbook['vars'] = dict()
         self.playbook['vars']['ansible_command_timeout'] = 90
-        self.playbook['vars']['ansible_connection'] = 'httpapi'   # httpapi, paramiko, ssh
+        self.playbook['vars']['ansible_connection'] = 'httpapi'   # httpapi, network_cli, local, paramiko, ssh
         self.playbook['vars']['ansible_host_key_checking'] = 'no'
         self.playbook['vars']['ansible_httpapi_use_ssl'] = True
         self.playbook['vars']['ansible_httpapi_validate_certs'] = False
@@ -90,7 +94,6 @@ class Playbook(object):
         self.playbook['vars']['ansible_ssh_common_args'] = None
         self.playbook['vars']['ansible_user'] = 'admin'
         self.playbook['tasks'] = list()
-
 
     def profile_spirent(self):
         self.ansible_connection = 'paramiko'
