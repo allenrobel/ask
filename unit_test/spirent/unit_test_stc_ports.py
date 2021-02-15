@@ -41,17 +41,9 @@ log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
     pb = Playbook(log)
+    pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.ansible_connection = 'paramiko'
-    pb.ansible_password = None
-    pb.ansible_network_os = None
-    pb.ansible_host_key_checking = 'no'
-    pb.ansible_ssh_pass = 'spirent'
-    pb.ansible_ssh_common_args = '/bin/ssh'
-    pb.ansible_paramiko_pty = 'no'
-    pb.ansible_httpapi_validate_certs = None
-    pb.ansible_httpapi_use_ssl = None
     pb.add_host('labserver-2001')
     return pb
 
@@ -69,9 +61,9 @@ task = StcPorts(log)
 task.action = 'create' # create, delete
 
 chassis = 1
-for module in [1,2]:
-    for port in [1,2,3]:
-        add_stc_port(task, chassis, module, port)
+module = 1
+for port in [1,5]:
+    add_stc_port(task, chassis, module, port)
 
 task.update()
 pb.add_task(task)
