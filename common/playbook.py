@@ -101,8 +101,8 @@ class Playbook(object):
         self.ansible_ssh_pass = 'spirent'
         self.ansible_ssh_common_args = '/bin/ssh'
         self.ansible_paramiko_pty = 'no'
+        self.ansible_user = 'admin'
         self.ansible_password = None
-        self.ansible_user = None
         self.ansible_network_os = None
         self.ansible_httpapi_validate_certs = None
         self.ansible_httpapi_use_ssl = None
