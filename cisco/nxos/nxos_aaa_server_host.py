@@ -3,47 +3,91 @@ our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_aaa_server_host.py
 
-Description:
+====================
+NxosAaaServerHost() 
+====================
 
-NxosAaaServerHost() generates Ansible Playbook tasks conformant with Ansible module: nxos_aaa_server_host
+ScriptKit Synopsis
+------------------
+NxosAaaServerHost() generates Ansible task instances conformant with cisco.nxos.nxos_aaa_server_host.
+These task instances can then be passed to Playbook().add_task()
 
-This task can then be fed to Playbook().add_task()
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_aaa_server_host.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_aaa_server_host.py>`_
 
-Usage example:
-    unit_test/cisco/nxos/unit_test_nxos_aaa_server_host.py
+Ansible Module Documentation
+----------------------------
+- `nxos_aaa_server_host <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_host.rst>`_
 
-Properties:
+|
 
-    acct_port       - Alternate UDP port for RADIUS accounting or keyword 'default'
-                        Type: str()
-    address         - Address or name of the radius or tacacs host
-                        Type: str()
-                        Valid values: ip address or hostname
-                        Mandatory
-    auth_port       - Alternate UDP port for RADIUS authentication or keyword 'default'
-                        Type: str()
-    encrypt_type    - The state of encryption applied to the entered global key
-                        Type-6 encryption is not supported
-                        Type: str()
-                        Valid values: 0, 7
-                            0 - clear text
-                            7 - encrypted
-    host_timeout    - Timeout period for specified host, in seconds or keyword 'default
-                        Type: str()
-                        Range: 1-60
-    key             - Shared secret for the specified host or keyword 'default'
-                        Type: str()
-    server_type     - The authentication protocol used by the server
-                        Type: str()
-                        Valid values: radius, tacacs
-    state           - State of the resource
-                        Type: str()
-                        Valid values: present, default
-                        Default: present
-    tacacs_port     - Alternate TCP port TACACS Server or keyword 'default'
-                      Type: str()
+============================    ==============================================
+Property                        Description
+============================    ==============================================
+acct_port                       Alternate UDP port for RADIUS accounting.::
+
+                                    - Type: str()
+                                    - Valid values: int() range: UDP port-range, or keyword 'default'
+                                    - NOTES:
+                                      - auto-converted to str()
+
+address                         Address or name of the radius or tacacs host.::
+
+                                    - Type: str()
+                                    - Valid values: ip address or hostname
+                                    - Required
+
+auth_port                       Alternate UDP port for RADIUS authentication.::
+
+                                    - Type: str()
+                                    - Valid values: int() range: UDP port-range, or keyword 'default'
+                                    - NOTES:
+                                      - auto-converted to str()
+
+encrypt_type                    The state of encryption applied to the entered global key.
+                                Type-6 encryption is not supported.::
+
+                                    - Type: str()
+                                    - Valid values: 0, 7
+                                        0 - clear text
+                                        7 - encrypted
+                                    - NOTES:
+                                      - auto-converted to str()
+
+host_timeout                    Timeout period for specified host.::
+
+                                    - Type: str()
+                                    - Units: seconds
+                                    - Valid values: int() range: 1-60, or keyword 'default'
+                                    - NOTES:
+                                      - auto-converted to str()
+
+key                             Shared secret for the specified host.::
+
+                                    - Type: str()
+                                    - Valid values: str(), or keyword 'default'
+
+server_type                     The authentication protocol used by the server.::
+
+                                    - Type: str()
+                                    - Valid values: radius, tacacs
+
+state                           State of the resource after playbook execution.::
+
+                                    - Type: str()
+                                    - Valid values: present, default
+                                    - Default: present
+
+tacacs_port                     Alternate TCP port TACACS Server.::
+
+                                    - Type: str()
+                                    - Valid values: int() range: TCP port-range, or keyword 'default'
+                                    - NOTES:
+                                      - auto-converted to str()
+
+============================    ==============================================
 
 '''
 
