@@ -304,47 +304,47 @@ tx_protocol                             The protocol of the tx entity.  This is 
 tx_selector                             An optional selector that determines how
                                         tx_name is interpreted.::
 
-                                        - Type: str()
-                                        - Valid values:
-                                          - EQUAL        "=": Selector.equal
-                                          - NOT_EQUAL    "!=" Selector.different
-                                          - CONTAINS     "~=" Selector.contains
-                                          - STARTS_WITH  "^=" Selector.startswith
-                                        - DEFAULT: EQUAL
-                                        - Examples:
+                                            - Type: str()
+                                            - Valid values:
+                                              - EQUAL        "=": Selector.equal
+                                              - NOT_EQUAL    "!=" Selector.different
+                                              - CONTAINS     "~=" Selector.contains
+                                              - STARTS_WITH  "^=" Selector.startswith
+                                            - DEFAULT: EQUAL
+                                            - Examples:
 
-                                        If tx_name is set to "tx_host", then the following hold:
+                                            If tx_name is set to "tx_host", then the following hold:
 
-                                        - tx_selector = 'EQUAL'
-                                        
-                                            "tx_host" is selected (single device)
+                                            - tx_selector = 'EQUAL'
+                                            
+                                                "tx_host" is selected (single device)
 
-                                        - tx_selector = 'NOT_EQUAL'
-                                        
-                                            Multiple devices would be selected, if their
-                                            name (tx_name) does not contain "tx_host" e.g.:
+                                            - tx_selector = 'NOT_EQUAL'
+                                            
+                                                Multiple devices would be selected, if their
+                                                name (tx_name) does not contain "tx_host" e.g.:
 
-                                            "rx_host"
-                                            "rx_host_45"
-                                            "foobar_server"
+                                                "rx_host"
+                                                "rx_host_45"
+                                                "foobar_server"
 
-                                        - tx_selector = 'CONTAINS'
-                                        
-                                            Multiple devices would be selected, if their
-                                            name (tx_name) contains "tx_host" e.g.:
+                                            - tx_selector = 'CONTAINS'
+                                            
+                                                Multiple devices would be selected, if their
+                                                name (tx_name) contains "tx_host" e.g.:
 
-                                            "my_tx_host"
-                                            "tx_host_45"
-                                            "tx_host"
+                                                "my_tx_host"
+                                                "tx_host_45"
+                                                "tx_host"
 
-                                        - rx_selector = 'STARTS_WITH'
-                                        
-                                            Multiple devices would be selected, if their
-                                            name (tx_name) starts with "tx_host" e.g.:
+                                            - rx_selector = 'STARTS_WITH'
+                                            
+                                                Multiple devices would be selected, if their
+                                                name (tx_name) starts with "tx_host" e.g.:
 
-                                            "tx_host_44"
-                                            "tx_host_EAST"
-                                            "tx_host"
+                                                "tx_host_44"
+                                                "tx_host_EAST"
+                                                "tx_host"
 
 tx_type                                 The type of the tx entity.  This currently
                                         allows for a single value: device. This is used, 
