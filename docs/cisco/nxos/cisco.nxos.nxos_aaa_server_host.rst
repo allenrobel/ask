@@ -14,7 +14,7 @@ ScriptKit Example
 
 Ansible Module Documentation
 ----------------------------
-- `nxos_aaa_server_host <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_host.rst>`_
+- `nxos_aaa_server_host <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_host_module.rst>`_
 
 |
 
