@@ -48,16 +48,15 @@ Caveats
         under: ref:/Port[@Name='POD1_TOR2_PORT10']
 
     If there are SrcBinding-targets hosted on other ports, for
-    this StreamBlock, this will be an invalid configuration.  The
-    correct configuration in this case would be for the user NOT
-    to set port_name, which would result in the correct:
-
-        under: ref:/project
-
-    Spirent will not detect this invalid configuration and will accept
+    this StreamBlock, this will be an invalid configuration. Spirent 
+    will not detect this invalid configuration and will accept
     the StreamBlock (and configure it).  Later, when the user tries 
     to start ArpNd, and/or start traffic, an error will be thrown.
 
+    The correct configuration in this case would be for the user NOT
+    to set port_name, which would result in:
+
+        under: ref:/project
 
 Ansible Module Documentation
 ----------------------------
