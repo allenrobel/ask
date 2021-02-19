@@ -198,6 +198,8 @@ class StcBgpDevice(Task):
         self.ansible_task[self.ansible_module]['count'] = self.count
         self.ansible_task[self.ansible_module]['under'] = self.under
         self.ansible_task[self.ansible_module]['objects'].append(deepcopy(d))
+        if self.task_name != None:
+            self.ansible_task['name'] = self.task_name
 
     #-----------------------------------------------------------------
     # bgp_router_config properties

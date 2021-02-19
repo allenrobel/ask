@@ -165,8 +165,10 @@ class StcDeviceConfig(Task):
         for p in self.stc_device_properties_set:
             mapped_property = self.property_map[p]
             d['properties'][stc_ip_version][mapped_property] = self.properties[p]
+
         self.ansible_task = dict()
-        self.ansible_task['name'] = self.task_name
+        if self.task_name != None:
+            self.ansible_task['name'] = self.task_name
         self.ansible_task[self.ansible_module] = deepcopy(d)
 
     def verify_stc_device_config_count(self, x, parameter='count'):
