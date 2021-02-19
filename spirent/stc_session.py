@@ -34,8 +34,9 @@ These task instances can then be passed to Playbook().add_task()
 Caveats
 -------
 
-1.  Sessions currently cannot be deleted using Ansible.  To delete
-    a session, use the Session Manager GUI. 
+1.  Sessions currently cannot be deleted using Ansible.  This is
+    a current limitation of Spirent's Ansible implementation.
+    To delete a session, use the Session Manager GUI. 
 
 Ansible Module Documentation
 ----------------------------
