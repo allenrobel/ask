@@ -46,18 +46,10 @@ log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
     pb = Playbook(log)
+    pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.ansible_connection = 'paramiko'
-    pb.ansible_password = None
-    pb.ansible_network_os = None
-    pb.ansible_host_key_checking = 'no'
-    pb.ansible_ssh_pass = 'spirent'
-    pb.ansible_ssh_common_args = '/bin/ssh'
-    pb.ansible_paramiko_pty = 'no'
-    pb.ansible_httpapi_validate_certs = None
-    pb.ansible_httpapi_use_ssl = None
-    pb.add_host(ansible_host)
+    pb.add_host('labserver-2001')
     return pb
 
 def add_task_name(task):
