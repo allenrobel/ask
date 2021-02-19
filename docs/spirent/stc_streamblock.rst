@@ -149,7 +149,10 @@ port_name                               The name of the port under which to crea
 
                                             1.  If tx_device is set to a partial device name that
                                                 expands to devices that exist on multiple ports,
-                                                port_name must NOT be set.  For example, the following is invalid (assuming a device named Device511 lives on MyPort1 and a device named Device512 lives on, say, MyPort2.
+                                                port_name must NOT be set.  For example, the following
+                                                is invalid (assuming a device named Device511 lives on 
+                                                MyPort1 and a device named Device512 lives on, say, 
+                                                MyPort2.
 
                                                 task.tx_name = 'Device51'
                                                 task.tx_type = 'device'
