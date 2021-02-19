@@ -193,7 +193,7 @@ rx_name                                 The name of the rx entity.  If rx_type i
                                             - Required if action is create
 
 rx_protocol                             The protocol of the rx entity.  This is used, 
-                                        along with rx, and rx_type, to construct
+                                        along with rx_name, and rx_type, to construct
                                         the Spirent DstBinding-targets value::
 
                                             - Type: str()
@@ -205,7 +205,7 @@ rx_protocol                             The protocol of the rx entity.  This is 
 
 rx_type                                 The type of the rx entity.  This currently
                                         allows for a single value: device. This is used, 
-                                        along with rx, and rx_protocol, to construct
+                                        along with rx_name, and rx_protocol, to construct
                                         the Spirent DstBinding-targets value::
 
                                             - Type: str()
@@ -292,7 +292,7 @@ tx_name                                 The name of the tx entity.  If tx_type i
                                             - Required if action is create
 
 tx_protocol                             The protocol of the tx entity.  This is used, 
-                                        along with tx, and tx_type, to construct
+                                        along with tx_name, and tx_type, to construct
                                         the Spirent SrcBinding-targets value::
 
                                             - Type: str()
@@ -349,7 +349,7 @@ tx_selector                             An optional selector that determines how
 
 tx_type                                 The type of the tx entity.  This currently
                                         allows for a single value: device. This is used, 
-                                        along with tx, and tx_protocol, to construct
+                                        along with tx_name, and tx_protocol, to construct
                                         the Spirent SrcBinding-targets value::
 
                                             - Type: str()
