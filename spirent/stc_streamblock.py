@@ -146,46 +146,43 @@ port_name                               The name of the port under which to crea
                                         the StreamBlock.  If not set, the StreamBlock
                                         will be created under ref:/project.  If set,
                                         use the name you gave to the port when you
-                                        created the port.
+                                        created the port.::
 
-                                        - Type: str()
-                                        - Spirent name: under
-                                        - Default: ref:/project
-                                        - NOTES:
+                                            - Type: str()
+                                            - Spirent name: under
+                                            - Default: ref:/project
+                                            - NOTES:
 
-                                        1.  If tx_device is set to a partial device name that
-                                            expands to devices that exist on multiple ports,
-                                            port_name must NOT be set.  For example, the following 
-                                            is invalid (assuming a device named Device511 lives on
-                                            MyPort1 and a device named Device512 lives on, say,
-                                            MyPort2):
+                                            1.  If tx_device is set to a partial device name that
+                                                expands to devices that exist on multiple ports,
+                                                port_name must NOT be set.  For example, the following is invalid (assuming a device named Device511 lives on MyPort1 and a device named Device512 lives on, say, MyPort2.
 
-                                            task.tx_name = 'Device51'
-                                            task.tx_type = 'device'
-                                            task.tx_selector = 'STARTS_WITH'
-                                            task.tx_protocol = 'ipv4'
-                                            task.port_name = 'MyPort1'
+                                                task.tx_name = 'Device51'
+                                                task.tx_type = 'device'
+                                                task.tx_selector = 'STARTS_WITH'
+                                                task.tx_protocol = 'ipv4'
+                                                task.port_name = 'MyPort1'
 
-                                            Spirent Ansible will accept the above without,
-                                            error, but it will generate an error later when
-                                            you try to start traffic and/or start ArpNd.
+                                                Spirent Ansible will accept the above without,
+                                                error, but it will generate an error later when
+                                                you try to start traffic and/or start ArpNd.
 
-                                        Examples:
+                                            Examples:
 
-                                        
-                                            task.port_name = 'MyPort5'
+                                            
+                                                task.port_name = 'MyPort5'
 
-                                            The above results in the 'under' property being 
-                                            set as follows:
+                                                The above results in the 'under' property being 
+                                                set as follows:
 
-                                            under: ref:/Port[@Name='MyPort5']
+                                                under: ref:/Port[@Name='MyPort5']
 
-                                            task.port_name = None (or, omitting task.port_name)
+                                                task.port_name = None (or, omitting task.port_name)
 
-                                            The above results in the 'under' property being set 
-                                            as follows:
+                                                The above results in the 'under' property being set 
+                                                as follows:
 
-                                            under: ref:/project
+                                                under: ref:/project
 
 rx_name                                 The name of the rx entity.  If rx_type is
                                         device, then rx_name should be the name of an
@@ -223,49 +220,49 @@ rx_type                                 The type of the rx entity.  This current
                                             - Required if action is create
 
 rx_selector                             An optional selector that determines how
-                                        rx_name is interpreted.
+                                        rx_name is interpreted.::
 
-                                        - Type: str()
-                                        - Valid values:
-                                          - EQUAL        "=": Selector.equal
-                                          - NOT_EQUAL    "!=" Selector.different
-                                          - CONTAINS     "~=" Selector.contains
-                                          - STARTS_WITH  "^=" Selector.startswith
-                                        - DEFAULT: EQUAL
-                                        - Examples:
+                                            - Type: str()
+                                            - Valid values:
+                                              - EQUAL        "=": Selector.equal
+                                              - NOT_EQUAL    "!=" Selector.different
+                                              - CONTAINS     "~=" Selector.contains
+                                              - STARTS_WITH  "^=" Selector.startswith
+                                            - DEFAULT: EQUAL
+                                            - Examples:
 
-                                        If rx_name is set to "rx_host", then the following hold:
+                                            If rx_name is set to "rx_host", then the following hold:
 
-                                        - rx_selector = 'EQUAL'
+                                            - rx_selector = 'EQUAL'
 
-                                            "rx_host" is selected (single device)
+                                                "rx_host" is selected (single device)
 
-                                        - rx_selector = 'NOT_EQUAL'
+                                            - rx_selector = 'NOT_EQUAL'
 
-                                            Multiple devices would be selected, if their
-                                            name (rx_name) does not contain "rx_host" e.g.:
+                                                Multiple devices would be selected, if their
+                                                name (rx_name) does not contain "rx_host" e.g.:
 
-                                            "tx_host"
-                                            "rx_host_45"
-                                            "foobar_server"
+                                                "tx_host"
+                                                "rx_host_45"
+                                                "foobar_server"
 
-                                        - rx_selector = 'CONTAINS'
+                                            - rx_selector = 'CONTAINS'
 
-                                            Multiple devices would be selected, if their
-                                            name (rx_name) contains "rx_host" e.g.:
+                                                Multiple devices would be selected, if their
+                                                name (rx_name) contains "rx_host" e.g.:
 
-                                            "my_rx_host"
-                                            "rx_host_45"
-                                            "rx_host"
+                                                "my_rx_host"
+                                                "rx_host_45"
+                                                "rx_host"
 
-                                        - rx_selector = 'STARTS_WITH'
+                                            - rx_selector = 'STARTS_WITH'
 
-                                            Multiple devices would be selected, if their
-                                            name (rx_name) starts with "rx_host" e.g.:
+                                                Multiple devices would be selected, if their
+                                                name (rx_name) starts with "rx_host" e.g.:
 
-                                            "rx_host_44"
-                                            "rx_host_EAST"
-                                            "rx_host"
+                                                "rx_host_44"
+                                                "rx_host_EAST"
+                                                "rx_host"
 
 stream_only_generation                  Set to True to use streams rather than VFDs 
                                         (Variable Field Definitions) to generate traffic
@@ -279,7 +276,7 @@ stream_only_generation                  Set to True to use streams rather than V
                                                 - task.stream_only_generation = False
 
 traffic_pattern                         Determines the pattern used between sources
-                                        and destinations.
+                                        and destinations.::
 
                                             - Type: str()
                                             - Valid values: BACKBONE, MESH, PAIR
@@ -310,49 +307,49 @@ tx_protocol                             The protocol of the tx entity.  This is 
                                             - Required if action is create
 
 tx_selector                             An optional selector that determines how
-                                        tx_name is interpreted.
+                                        tx_name is interpreted.::
 
-                                        - Type: str()
-                                        - Valid values:
-                                          - EQUAL        "=": Selector.equal
-                                          - NOT_EQUAL    "!=" Selector.different
-                                          - CONTAINS     "~=" Selector.contains
-                                          - STARTS_WITH  "^=" Selector.startswith
-                                        - DEFAULT: EQUAL
-                                        - Examples:
+                                            - Type: str()
+                                            - Valid values:
+                                              - EQUAL        "=": Selector.equal
+                                              - NOT_EQUAL    "!=" Selector.different
+                                              - CONTAINS     "~=" Selector.contains
+                                              - STARTS_WITH  "^=" Selector.startswith
+                                            - DEFAULT: EQUAL
+                                            - Examples:
 
-                                        If tx_name is set to "tx_host", then the following hold:
+                                            If tx_name is set to "tx_host", then the following hold:
 
-                                        - tx_selector = 'EQUAL'
-                                        
-                                            "tx_host" is selected (single device)
+                                            - tx_selector = 'EQUAL'
+                                            
+                                                "tx_host" is selected (single device)
 
-                                        - tx_selector = 'NOT_EQUAL'
-                                        
-                                            Multiple devices would be selected, if their
-                                            name (tx_name) does not contain "tx_host" e.g.:
+                                            - tx_selector = 'NOT_EQUAL'
+                                            
+                                                Multiple devices would be selected, if their
+                                                name (tx_name) does not contain "tx_host" e.g.:
 
-                                            "rx_host"
-                                            "rx_host_45"
-                                            "foobar_server"
+                                                "rx_host"
+                                                "rx_host_45"
+                                                "foobar_server"
 
-                                        - tx_selector = 'CONTAINS'
-                                        
-                                            Multiple devices would be selected, if their
-                                            name (tx_name) contains "tx_host" e.g.:
+                                            - tx_selector = 'CONTAINS'
+                                            
+                                                Multiple devices would be selected, if their
+                                                name (tx_name) contains "tx_host" e.g.:
 
-                                            "my_tx_host"
-                                            "tx_host_45"
-                                            "tx_host"
+                                                "my_tx_host"
+                                                "tx_host_45"
+                                                "tx_host"
 
-                                        - rx_selector = 'STARTS_WITH'
-                                        
-                                            Multiple devices would be selected, if their
-                                            name (tx_name) starts with "tx_host" e.g.:
+                                            - rx_selector = 'STARTS_WITH'
+                                            
+                                                Multiple devices would be selected, if their
+                                                name (tx_name) starts with "tx_host" e.g.:
 
-                                            "tx_host_44"
-                                            "tx_host_EAST"
-                                            "tx_host"
+                                                "tx_host_44"
+                                                "tx_host_EAST"
+                                                "tx_host"
 
 tx_type                                 The type of the tx entity.  This currently
                                         allows for a single value: device. This is used, 
