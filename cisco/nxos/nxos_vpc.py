@@ -1,30 +1,30 @@
 # NxosVpc() - cisco/nxos/nxos_vpc.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
-==========================================
+******************************************
 NxosVpc() - nxos_vpc.py
-==========================================
+******************************************
 
-Description
------------
+.. contents::
+   :local:
+   :depth: 1
+
+ScriptKit Synopsis
+------------------
 NxosVpc() generates Ansible task instances conformant with its identically-named Ansible module.
 These task instances can then be passed to Playbook().add_task()
 
-Example usage
--------------
-unit_test/cisco/nxos/unit_test_nxos_vpc.py
+Ansible Module Documentation
+----------------------------
+- `nxos_vpc <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc.rst>`_
 
-Properties
-----------
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_vpc.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_vpc.py>`_
 
-- Property names are identical to the nxos_vpc module.
-
-Properties
-----------
-
-- Property names are identical to the cisco.nxos.nxos_vpc module.
+|
 
 ============================    ===========
 Property                        Description
@@ -110,6 +110,13 @@ system_priority                 System device priority. Value must match on both
                                 - Valid values: int() range: 1-65535
                                 - Example: task.system_priority = 2000
 ============================    ===========
+
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 class NxosVpc(Task):
     def __init__(self, task_log):

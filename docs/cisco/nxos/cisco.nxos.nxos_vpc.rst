@@ -19,10 +19,7 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_vpc.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_vpc.py>`_
 
-Properties
-----------
-
-- Property names are identical to the cisco.nxos.nxos_vpc module.
+|
 
 ============================    ===========
 Property                        Description
