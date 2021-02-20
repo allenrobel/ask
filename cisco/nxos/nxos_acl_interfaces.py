@@ -1,38 +1,91 @@
 # NxosAclInterfaces() - cisco/nxos/nxos_acl_interfaces.py
-our_version = 102
+our_version = 103
 # standard library
 from copy import deepcopy
 # scriptkit library
 from ask.common.task import Task
 '''
-Name: nxos_acl_interfaces.py
+******************************************
+NxosAclInterfaces()
+******************************************
 
-Description:
+ScriptKit Synopsis
+------------------
+NxosAclInterfaces() generates Ansible task instances conformant with cisco.nxos.nxos_acl_interfaces.
+These task instances can then be passed to Playbook().add_task()
 
-NxosAclInterfaces() generates Ansible Playbook tasks conformant with nxos_acl_interfaces
-which can be fed to Playbook().add_task()
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_acl_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_acl_interfaces.py>`_
 
-Properties:
+Ansible Module Documentation
+----------------------------
+- `nxos_acl_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acl_interfaces_module.rst>`_
 
-    acl_direction   - Direction to be applied for the ACL
-                        Valid values: in, out
-                        Required
-    acl_name        - Name of the ACL to be added/removed
-                        Required
-    acl_port        - Use ACL as port policy
-                        If 'yes', interface must be a switchport
-                        If 'no', interface must be a routed port (i.e. no switchport)
-                        Valid values: no, yes
-    afi             - Address Family Indicator of the ACLs to be configured
-                        Valid values: ipv4, ipv6
-                        Required
-    name            - Name of the interface e.g. Ethernet1/1
-    state           - The state the configuration should be left in
-                        Valid values: See self.nxos_acl_interfaces_valid_state
-    task_name       - Name of the task. Ansible will display this when executing the playbook
+|
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_acl_interfaces.py
+============================    ==============================================
+Property                        Description
+============================    ==============================================
+acl_direction                   Direction to be applied for the ACL::
+
+                                    - Type: str()
+                                    - Valid values: in, out
+                                    - Required
+
+acl_name                        Name of the ACL to be added/removed::
+
+                                    - Type: str()
+                                    - Required
+
+acl_port                        Use ACL as port policy::
+
+                                    If 'yes', interface must be a switchport
+                                    If 'no', interface must be a routed port (i.e. no switchport)
+
+                                    - Type: str()
+                                    - Valid values: no, yes
+
+afi                             Address Family Indicator of the ACLs to be configured::
+
+                                    - Type: str()
+                                    - Valid values: ipv4, ipv6
+                                    - Required
+
+name                            Name of the interface on which the ACL is applied::
+
+                                    - Type: str()
+                                    - Examples:
+                                        - task.name = 'Ethernet1/1'
+                                        - task.name = 'Vlan10'
+                                    - Required
+
+state                           The state after playbook has executed::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - deleted
+                                        - gathered
+                                        - merged
+                                        - overridden
+                                        - parsed
+                                        - rendered
+                                        - replaced
+                                    - Required
+
+task_name                       Name of the task. Ansible will display this when
+                                executing the playbook::
+
+                                    - Type: str()
+                                    - Default: Task name is not displayed
+
+============================    ==============================================
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 
 class NxosAclInterfaces(Task):

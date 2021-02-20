@@ -1,12 +1,11 @@
 # NxosAaaServerHost() - cisco/nxos/nxos_aaa_server_host.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 from ask.common.task import Task
 '''
-
-====================
+******************************************
 NxosAaaServerHost() 
-====================
+******************************************
 
 ScriptKit Synopsis
 ------------------
@@ -88,6 +87,11 @@ tacacs_port                     Alternate TCP port TACACS Server.::
                                       - auto-converted to str()
 
 ============================    ==============================================
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 

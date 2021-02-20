@@ -3,9 +3,9 @@ our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
-====================
+******************************************
 NxosAaaServer() 
-====================
+******************************************
 
 ScriptKit Synopsis
 ------------------
@@ -73,6 +73,11 @@ state                           State of the resource after playbook execution::
                                     - Default: present
 
 ============================    ==============================================
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 
