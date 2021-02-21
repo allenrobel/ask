@@ -30,11 +30,15 @@ bfd                             Enable/Disable Bidirectional Forwarding Detectio
 
                                     - Type: str()
                                     - Valid values: enable, disable
+                                    - Examples:
+                                        - task.bfd = 'enable'
 
 echo                            Enable/Disable BFD Echo functionality on the interface::
 
                                     - Type: str()
                                     - Valid values: enable, disable
+                                    - Examples:
+                                        - task.echo = 'disable'
 
 name                            Full name of interface::
 
@@ -55,11 +59,15 @@ state                           The state of the resource after playbook
                                         - parsed
                                         - rendered
                                         - replaced
+                                    - Examples:
+                                        - task.state = 'deleted'
 
 task_name                       Name of the task. Ansible will display this
                                 when the playbook is run::
 
                                     - Type: str()
+                                    - Examples:
+                                        - task.task_name = 'my task'
 
 ============================    ==============================================
 
