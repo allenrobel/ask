@@ -1,66 +1,180 @@
 # NxosBfdGlobal() - cisco/nxos/nxos_bfd_global.py
-our_version = 109
+our_version = 110
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_bfd_global.py
+***********************************
+NxosBfdGlobal()
+***********************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosBfdGlobal() generates Ansible Playbook tasks conformant with nxos_bfd_global
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosBfdGlobal() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_bfd_global
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_bfd_global.py
+Ansible Module Documentation
+----------------------------
+- `nxos_bfd_global <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bfd_global_module.rst>`_
 
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_bfd_global.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bfd_global.py>`_
+
+Notes
+-----
 This class deviates from the Ansible module for certain property
-names to disambiguate them. See __init__() interval_properties_set
-for details.
+names to disambiguate them. See the table below for details.
 
-User properties (these are populated by the user of this class):
-    bfd_fabricpath_interval     Populates fabricpath_interval {tx: ms, min_rx: ms, multiplier: x}
-    bfd_fabricpath_min_rx
-    bfd_fabricpath_multiplier
+|
 
-    bfd_interval                Populates interval {tx: ms, min_rx: ms, multiplier: x}
-    bfd_min_rx
-    bfd_multiplier
+============================    ==============================================
+Property                        Description
+============================    ==============================================
+bfd_fabricpath_interval         BFD fabricpath session interval::
 
-    bfd_ipv4_interval           Populates ipv4_interval {tx: ms, min_rx: ms, multiplier: x}
-    bfd_ipv4_min_rx
-    bfd_ipv4_multiplier
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999  
 
-    bfd_ipv6_interval           Populates ipv6_interval {tx: ms, min_rx: ms, multiplier: x}
-    bfd_ipv6_min_rx
-    bfd_ipv6_multiplier
+bfd_fabricpath_min_rx           Minimum RX interval for fabricpath sessions::
 
-    echo_interface          -   str() LoopbackX, or 'deleted'
-    echo_rx_interval        -   int() in milliseconds
-    fabricpath_slow_timer   -   int() milliseconds
-    fabricpath_vlan         -   int() vlan ID
-    ipv4_echo_rx_interval   -   int() milliseconds
-    ipv4_slow_timer         -   int() milliseconds BFD IPv4 slow rate timer
-    ipv6_echo_rx_interval   -   int() milliseconds
-    ipv6_slow_timer         -   int() milliseconds BFD IPv6 slow rate timer
-    slow_timer              -   int() milliseconds BFD slow rate timer
-    startup_timer           -   int() seconds BFD delayed startup timer
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999  
 
 
-Ansible module properties (these are written to the generated Ansible playbook):
-    echo_interface          -   str() LoopbackX, or 'deleted'
-    echo_rx_interval        -   int() in milliseconds
-    fabricpath_interval     -   dict() {tx: ms, min_rx: ms, multiplier: x}
-    fabricpath_slow_timer   -   int() milliseconds
-    fabricpath_vlan         -   int() vlan ID
-    interval                -   dict() {tx: ms, min_rx: ms, multiplier: x} BFD interval timer values
-    ipv4_echo_rx_interval   -   int() milliseconds
-    ipv4_interval           -   dict() {tx: ms, min_rx: ms, multiplier: x} BFD IPv4 interval timer values
-    ipv4_slow_timer         -   int() milliseconds BFD IPv4 slow rate timer
-    ipv6_echo_rx_interval   -   int() milliseconds
-    ipv6_interval           -   dict() {tx: ms, min_rx: ms, multiplier: x} BFD IPv6 interval timer values
-    ipv6_slow_timer         -   int() milliseconds BFD IPv6 slow rate timer
-    slow_timer              -   int() milliseconds BFD slow rate timer
-    startup_timer           -   int() seconds BFD delayed startup timer
+bfd_fabricpath_multiplier       Detect multiplier for fabricpath bfd sessions::
+
+                                    - Type: int()
+                                    - Valid values: range: 1-50
+
+bfd_interval                    TX interval::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999  
+
+bfd_min_rx                      Minimum RX interval::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999  
+
+bfd_multiplier                  Detect multiplier for bfd sessions::
+
+                                    - Type: int()
+                                    - Valid values: range: 1-50
+
+bfd_ipv4_interval               TX interval for ipv4 sessions::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999  
+
+bfd_ipv4_min_rx                 Minimum RX interval for ipv4 sessions::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999  
+
+bfd_ipv4_multiplier             Detect multiplier for ipv4 bfd sessions::
+
+                                    - Type: int()
+                                    - Valid values: range: 1-50
+
+bfd_ipv6_interval               TX interval for ipv6 sessions::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999  
+
+bfd_ipv6_min_rx                 Minimum RX interval for ipv6 sessions::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999  
+
+bfd_ipv6_multiplier             Detect multiplier for ipv6 bfd sessions::
+
+                                    - Type: int()
+                                    - Valid values: range: 1-50
+
+echo_interface                  Interface used for bfd echo frames::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - A loopback interface
+                                        - The keyword 'deleted'
+                                    - Examples:
+                                        - task.echo_interface = 'Loopback2'
+                                        - task.echo_interface = 'deleted'
+
+echo_rx_interval                BFD session echo rx interval::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 1-50
+
+fabricpath_slow_timer           BFD fabricpath slow rate timer::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 1-50
+
+fabricpath_vlan                 BFD fabricpath control vlan::
+
+                                    - Type: int()
+                                    - Unit: vlan ID
+
+ipv4_echo_rx_interval           Echo rx-interval for ipv4 BFD session::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999
+
+ipv4_slow_timer                 Slow mode timer for ipv4 BFD session::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 1000-30000
+
+ipv6_echo_rx_interval           Echo rx-interval for ipv6 BFD session::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 50-999
+
+ipv6_slow_timer                 Slow mode timer for ipv6 BFD session::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 1000-30000
+
+
+slow_timer                      Slow mode timer for BFD session::
+
+                                    - Type: int()
+                                    - Unit: milliseconds
+                                    - Valid values: range: 1000-30000
+
+startup_timer                   Delayed Start Up timer for BFD sessions::
+
+                                    - Type: int()
+                                    - Unit: seconds
+                                    - Valid values: range: 0-30
+
+============================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 
@@ -227,6 +341,7 @@ class NxosBfdGlobal(Task):
                 self.bfd_fabricpath_interval,
                 self.bfd_fabricpath_min_rx,
                 self.bfd_fabricpath_multiplier)
+
         if self.bfd_interval != None:
             self.properties['interval'] = self.make_bfd_dict(
                 self.bfd_interval,
