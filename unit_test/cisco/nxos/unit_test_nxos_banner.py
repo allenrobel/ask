@@ -31,16 +31,19 @@ Project: Customer PoC
 
 motd_banner = "This device is going down for maintenance on April Fool's Day"
 
+def add_task_name(task):
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        if key == 'text':
+            continue
+        task.append_to_task_name(key)
+
 def banner_exec(pb):
     task = NxosBanner(log)
     task.banner = 'exec'
     task.text = exec_banner
     task.state = 'present'
-    task.task_name = '{} v{}: banner {}, state {}'.format(
-        ansible_module,
-        our_version,
-        task.banner,
-        task.state)
+    task.task_name = add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -49,11 +52,7 @@ def banner_motd(pb):
     task.banner = 'motd'
     task.text = motd_banner
     task.state = 'present'
-    task.task_name = '{} v{}: banner {}, state {}'.format(
-        ansible_module,
-        our_version,
-        task.banner,
-        task.state)
+    task.task_name = add_task_name(task)
     task.update()
     pb.add_task(task)
 

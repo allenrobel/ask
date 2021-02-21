@@ -1,31 +1,69 @@
 # NxosBanner() - cisco/nxos/nxos_banner.py
-our_version = 103
-# standard library
+our_version = 104
 from copy import deepcopy
-# scriptkit library
 from ask.common.task import Task
 '''
-Name: nxos_banner.py
+**************************************
+NxosBanner() - cisco.nxos.nxos_banner
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosBanner() generates Ansible Playbook tasks conformant with nxos_banner
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosBanner() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_banner
+- These can then be passed to Playbook().add_task()
 
-Properties:
+Ansible Module Documentation
+----------------------------
+- `nxos_banner <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_banner_module.rst>`_
 
-    banner      - Specifies which banner that should be configured on the remote device
-                    Valid values: exec, motd
-                    Required
-    text        - The banner text that should be present in the remote device running configuration.
-                    This argument accepts a multiline string, with no empty lines. 
-                    Requires state=present
-    state       - The state the configuration should be left in
-                    Valid values: See self.nxos_banner_valid_state
-    task_name   - Name of the task. Ansible will display this when executing the playbook
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_banner.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_banner.py>`_
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_banner.py
+
+|
+
+============================    ==============================================
+Property                        Description
+============================    ==============================================
+banner                          Specifies which banner to configure on the 
+                                remote device::
+
+                                    - Type: str()
+                                    - Valid values: exec, motd
+                                    - Required
+
+text                            The banner text that should be present in the
+                                remote device running configuration. This 
+                                argument accepts a multiline string, with no
+                                empty lines::
+
+                                    - Type: str()
+                                    - Requires: task.state = 'present'
+
+state                           Controls whether banner should be configured
+                                on the remote device::
+
+                                    - Type: str()
+                                    - Valid values: absent, present
+
+task_name                       Name of the task. Ansible will display this
+                                when the playbook is run::
+
+                                    - Type: str()
+
+============================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 
