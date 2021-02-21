@@ -1,5 +1,5 @@
 # Common() - common/common.py
-our_version = 106
+our_version = 107
 '''
 ====================
 Common() - common.py
@@ -505,10 +505,39 @@ class Common(object):
             if not self.is_valid_rd(item):
                 self.fail(source_class, source_method, x, parameter, expectation)
 
-    def verify_bgp_asn(self, x, parameter=''):
+    def is_16_bit(self, x):
+        if not self.is_digits(x):
+            return False
+        x = int(str(x))
+        if x >= 0 and x <= 65535:
+            return True
+        return False
+
+    def is_32_bit(self, x):
+        if not self.is_digits(x):
+            return False
+        x = int(str(x))
+        if x >= 0 and x <= 4294967295:
+            return True
+        return False
+
+    def is_bgp_asn(self, x):
         if self.is_digits(x):
-            return
-        if re.search('^\d+\.\d+$', str(x)):
+            if self.is_32_bit and x >= 1:
+                return True
+        m = re.search('^(\d+)\.(\d+)$', str(x))
+        if not m:
+            return False
+        if not self.is_16_bit(m.group(1)):
+            return False
+        if not self.is_16_bit(m.group(2)):
+            return False
+        if int(m.group(1)) <= 0:
+            return False
+        return True
+
+    def verify_bgp_asn(self, x, parameter='asn'):
+        if self.is_bgp_asn(x):
             return
         source_class = self.class_name
         source_method = 'verify_bgp_asn'
@@ -518,42 +547,42 @@ class Common(object):
     def verify_digits(self, x, parameter='unspecified'):
         if self.is_digits(x):
             return
-        _expectation = 'digits'
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = 'digits'
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_digits_or_default(self, x, parameter='unspecified'):
         if self.is_default(x):
             return
         if self.is_digits(x):
             return
-        _expectation = "[digits, 'default']"
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = "[digits, 'default']"
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ipv4_ipv6(self, x, parameter='unspecified'):
         if self.is_ipv4_address(x):
             return
         if self.is_ipv6_address(x):
             return
-        _expectation = "[ipv4_address, ipv6_address]"
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = "[ipv4_address, ipv6_address]"
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ipv4_multicast_address(self, x, parameter='unspecified'):
         if self.is_ipv4_multicast_address(x):
             return
-        _expectation = "[ipv4 multicast address without prefix e.g. X.X.X.X]"
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = "[ipv4 multicast address without prefix e.g. X.X.X.X]"
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ipv4_address_with_prefix(self, x, parameter='unspecified'):
         if self.is_ipv4_interface(x):
             return
-        _expectation = "[ipv4 address with prefixlen e.g. X.X.X.X/Y]"
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = "[ipv4 address with prefixlen e.g. X.X.X.X/Y]"
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ipv6_address_with_prefix(self, x, parameter='unspecified'):
         if self.is_ipv6_interface(x):
             return
-        _expectation = "[ipv6 address with prefixlen e.g. 2001:aaaa::1/64]"
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = "[ipv6 address with prefixlen e.g. 2001:aaaa::1/64]"
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ipv4_ipv6_address_or_network(self, x, parameter='unspecified'):
         '''
@@ -568,8 +597,8 @@ class Common(object):
             return
         if self.is_ipv6_network(x):
             return
-        _expectation = "[ipv4_address, ipv4_network, ipv6_address, ipv6_network]"
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = "[ipv4_address, ipv4_network, ipv6_address, ipv6_network]"
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ipv4_ipv6_or_default(self, x, parameter='unspecified'):
         if self.is_default(x):
@@ -578,8 +607,8 @@ class Common(object):
             return
         if self.is_ipv6_address(x):
             return
-        _expectation = "[ipv4_address, ipv6_address, 'default']"
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = "[ipv4_address, ipv6_address, 'default']"
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_enable_disable(self, x, parameter=''):
         '''
@@ -590,8 +619,8 @@ class Common(object):
         for value in self.valid_enable_disable:
             if value in x:
                 return
-        _expectation = self.valid_enable_disable
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = self.valid_enable_disable
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_enabled_disabled(self, x, parameter=''):
         '''
@@ -600,8 +629,8 @@ class Common(object):
         for value in self.valid_enabled_disabled:
             if value in x:
                 return
-        _expectation = self.valid_enabled_disabled
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = self.valid_enabled_disabled
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_file_exists(self, x, parameter=''):
         if path.exists(x):
@@ -613,15 +642,15 @@ class Common(object):
         for value in self.valid_interface:
             if value.lower() in x.lower():
                 return
-        _expectation = self.valid_interface
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = self.valid_interface
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ip_interface(self, x, parameter=''):
         for value in self.valid_ip_interface:
             if value.lower() in x.lower():
                 return
-        _expectation = self.valid_ip_interface
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = self.valid_ip_interface
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def is_lldp_interface(self, x):
         for value in self.valid_lldp_interface:
@@ -633,62 +662,60 @@ class Common(object):
         for value in self.valid_lldp_interface:
             if value.lower() in x.lower():
                 return
-        _expectation = self.valid_lldp_interface
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = self.valid_lldp_interface
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_interface_or_default(self, x, parameter=''):
         for value in self.valid_interface_or_default:
             if value.lower() in x.lower():
                 return
-        _expectation = self.valid_interface_or_default
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = self.valid_interface_or_default
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_list(self, x, parameter='unspecified'):
         if type(x) == type(list()):
             return
-        _expectation = 'list, e.g. [x, y, z]'
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = 'list, e.g. [x, y, z]'
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_list_of_dict(self, x, parameter='unspecified'):
-        _result = False
-        _expectation = 'list_of_dict, e.g. [{"x1": 1, "x2": "foo"}, {"y1": 10, "y2": "bar", "y3": "baz"}]'
+        expectation = 'list_of_dict, e.g. [{"x1": 1, "x2": "foo"}, {"y1": 10, "y2": "bar", "y3": "baz"}]'
         if type(x) != type(list()):
-            self.fail(self.class_name, parameter, x, parameter, _expectation)
+            self.fail(self.class_name, parameter, x, parameter, expectation)
         for d in x:
             if type(d) != type(dict()):
-                self.fail(self.class_name, parameter, x, parameter, _expectation)
+                self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_list_of_list(self, x, parameter='unspecified'):
-        _result = False
-        _expectation = 'list_of_list, e.g. [[x, y], [z]]'
+        expectation = 'list_of_list, e.g. [[x, y], [z]]'
         if type(x) != type(list()):
-            self.fail(self.class_name, parameter, x, parameter, _expectation)
+            self.fail(self.class_name, parameter, x, parameter, expectation)
         for l in x:
             if type(l) != type(list()):
-                self.fail(self.class_name, parameter, x, parameter, _expectation)
+                self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_list_or_default(self, x, parameter='unspecified'):
         if type(x) == type(list()):
             return
         if self.is_default(x):
             return
-        _expectation = 'list_or_default, e.g. [x, y, z] or default'
-        self.fail(self.class_name, parameter, x, parameter, _expectation)
+        expectation = 'list_or_default, e.g. [x, y, z] or default'
+        self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_state(self, x, parameter=''):
         if x not in self.valid_state:
-            _expectation = ','.join(self.valid_state)
-            self.fail(self.class_name, parameter, x, parameter, _expectation)
+            expectation = ','.join(self.valid_state)
+            self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_toggle(self, x, parameter=''):
         if x not in self.valid_toggle:
-            _expectation = ','.join(self.valid_toggle)
-            self.fail(self.class_name, parameter, x, parameter, _expectation)
+            expectation = ','.join(self.valid_toggle)
+            self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_true_false(self, x, parameter=''):
         if x not in self.valid_true_false:
-            _expectation = ','.join(self.valid_true_false)
-            self.fail(self.class_name, parameter, x, parameter, _expectation)
+            expectation = ','.join(self.valid_true_false)
+            self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def is_boolean(self, x):
         if x in [True, False]:
