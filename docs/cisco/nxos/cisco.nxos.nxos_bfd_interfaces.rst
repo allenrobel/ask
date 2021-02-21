@@ -26,12 +26,12 @@ ScriptKit Example
 Property                        Description
 ============================    ==============================================
 bfd                             Enable/Disable Bidirectional Forwarding Detection 
-                                (BFD) on the interface
+                                (BFD) on the interface::
 
                                     - Type: str()
                                     - Valid values: enable, disable
 
-echo                            Enable/Disable BFD Echo functionality on the interface
+echo                            Enable/Disable BFD Echo functionality on the interface::
 
                                     - Type: str()
                                     - Valid values: enable, disable
