@@ -17,6 +17,11 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_acls.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_acls.py>`_
 
+Caveats
+-------
+- dscp int() values are currently broken in the cisco.nxos.nxos_acls module.  The following issue has been filed:
+   `#253 nxos_acls : dscp: 31 results in KeyError on Nexus9000 <https://github.com/ansible-collections/cisco.nxos/issues/253>`_
+
 Ansible Module Documentation
 ----------------------------
 - `nxos_acls <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acls_module.rst>`_
