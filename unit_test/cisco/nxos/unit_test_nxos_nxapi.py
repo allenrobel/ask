@@ -24,27 +24,12 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('http', task.http, task_name)
-    task_name = add_item_to_name('http_port', task.http_port, task_name)
-    task_name = add_item_to_name('https', task.https, task_name)
-    task_name = add_item_to_name('https_port', task.https_port, task_name)
-    task_name = add_item_to_name('sandbox', task.sandbox, task_name)
-    task_name = add_item_to_name('ssl_strong_ciphers', task.ssl_strong_ciphers, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('tlsv1_0', task.tlsv1_0, task_name)
-    task_name = add_item_to_name('tlsv1_1', task.tlsv1_1, task_name)
-    task_name = add_item_to_name('tlsv1_2', task.tlsv1_2, task_name)
-    task.task_name = task_name
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        if key == 'text':
+            continue
+        task.append_to_task_name(key)
 
 def add_task(pb):
     task = NxosNxapi(log)
