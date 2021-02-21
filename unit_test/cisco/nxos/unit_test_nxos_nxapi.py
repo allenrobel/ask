@@ -48,16 +48,16 @@ def add_task_name(task):
 
 def add_task(pb):
     task = NxosNxapi(log)
-    task.http = 'yes'
+    task.http = True
     task.http_port = 80
-    task.https = 'yes'
+    task.https = True
     task.https_port = 443
-    #task.sandbox = 'yes'          # Not supported on N9K as of 9.3(6)
-    task.ssl_strong_ciphers = 'no'
+    #task.sandbox = True # Not supported on N9K as of 9.3(6)
+    task.ssl_strong_ciphers = False
     task.state = 'present'
-    task.tlsv1_0 = 'yes'
-    task.tlsv1_1 = 'yes'
-    task.tlsv1_2 = 'yes'
+    task.tlsv1_0 = True
+    task.tlsv1_1 = True
+    task.tlsv1_2 = True
     add_task_name(task)
     task.update()
     pb.add_task(task)
