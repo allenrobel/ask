@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_acls.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -24,6 +24,7 @@ def add_ipv4_ace_10(task):
     task.grant = 'permit'
     task.protocol = 'ip'
     task.sequence = 10
+    task.dscp = 'af31'
     task.destination_address = '1.2.2.2'
     task.destination_wildcard_bits = '0.0.255.255'
     task.source_address = '1.1.1.1'
@@ -44,7 +45,7 @@ def add_ipv4_ace_30(task):
     task.grant = 'deny'
     task.sequence = 30
     task.protocol = 'igmp'
-    task.igmp_host_query = 'yes'
+    task.igmp_host_query = True
     task.destination_address = '2.2.2.2'
     task.destination_wildcard_bits = '0.0.255.255'
     task.source_address = '2.1.1.1'
@@ -55,7 +56,7 @@ def add_ipv4_ace_40(task):
     task.grant = 'deny'
     task.sequence = 40
     task.protocol = 'igmp'
-    task.igmp_host_report = 'yes'
+    task.igmp_host_report = True
     task.destination_address = '2.2.2.2'
     task.destination_wildcard_bits = '0.0.255.255'
     task.source_address = '2.1.1.1'
@@ -66,7 +67,7 @@ def add_ipv4_ace_50(task):
     task.grant = 'deny'
     task.sequence = 50
     task.protocol = 'icmp'
-    task.icmp_echo = 'yes'
+    task.icmp_echo = True
     task.destination_address = '2.2.2.2'
     task.destination_wildcard_bits = '0.0.255.255'
     task.source_address = '2.1.1.1'
@@ -94,7 +95,7 @@ def add_ipv6_ace_30(task):
     task.grant = 'deny'
     task.sequence = 30
     task.protocol = 'icmp'
-    task.icmp_echo_reply = 'yes'
+    task.icmp_echo_reply = True
     task.destination_prefix = '2002:2:2:2::/64'
     task.source_prefix = '2002:1:1:1::/64'
     task.add_ace()
@@ -103,7 +104,7 @@ def add_ipv6_ace_40(task):
     task.grant = 'deny'
     task.sequence = 40
     task.protocol = 'icmp'
-    task.icmp_echo_request = 'yes'
+    task.icmp_echo_request = True
     task.destination_prefix = '2002:2:2:2::/64'
     task.source_prefix = '2002:1:1:1::/64'
     task.add_ace()
