@@ -41,7 +41,7 @@ additional_paths_install        Install a backup path into the forwarding table:
 
 additional_paths_receive        Advertise the capability to receive additional
                                 paths from the neighbors under this
-                                address family (afi) for which the capability
+                                address family ``afi`` for which the capability
                                 has not been disabled::
 
                                     - Type: bool()
@@ -59,7 +59,7 @@ additional_paths_selection      Determines which prefix(es) are eligible for ins
 
 additional_paths_send           Advertise the capability to send additional
                                 paths to all of the neighbors under this
-                                address family (afi) for which the capability
+                                address family ``afi`` for which the capability
                                 has not been disabled::
 
                                     - Type: bool()
@@ -87,7 +87,7 @@ afi                             Address Family Identifier::
                                         task.afi = 'ipv4'
                                     - Required
 
-asn                             BGP autonomous system number, in ASPLAIN or ASDOT notation::
+asn                             BGP autonomous system number, in ``ASPLAIN`` or ``ASDOT`` notation::
 
                                     - Type: int() or str()
                                     - Valid values:
@@ -140,7 +140,8 @@ dampening_max_suppress_time     Maximum suppress time for stable route::
                                         - keyword: 'default'
                                     - Units: minutes
                                     - NOTES:
-                                        - higher values require higher dampening_half_time values
+                                        - higher values require higher
+                                          dampening_half_time values
                                     - Examples:
                                         task.dampening_max_suppress_time = 10
 
@@ -154,7 +155,8 @@ dampening_reuse_time            Value to start reusing a route::
                                     - Examples:
                                         task.dampening_reuse_time = 20
                                     - NOTES:
-                                        - dampening_reuse_time must be less than dampening_suppress_time
+                                        - dampening_reuse_time must be less than
+                                          dampening_suppress_time
 
 dampening_routemap              Specify which prefix(es) are subject to route-flap dampening::
 
@@ -177,7 +179,8 @@ dampening_suppress_time         Value to start suppressing a route::
                                         - keyword: 'default'
                                     - Units: int()
                                     - NOTES:
-                                        - dampening_suppress_time must be greater than dampening_reuse_time
+                                        - dampening_suppress_time must be greater
+                                          than dampening_reuse_time
                                     - Examples:
                                         task.dampening_suppress_time = 40
                                         task.dampening_suppress_time = 'default'
@@ -240,10 +243,10 @@ inject_map                      An array of route-map names which will specify
 
                                     - Type: list() of list()
                                     - Example:
-                                        inject_map_list = list()
-                                        inject_map_list.append(['INJECT_1', 'EXIST_1', 'copy-attributes'])
-                                        inject_map_list.append(['INJECT_2', 'EXIST_2'])
-                                        task.inject_map = inject_map_list.copy()
+                                        inject = list()
+                                        inject.append(['INJECT_1', 'EXIST_1', 'copy-attributes'])
+                                        inject.append(['INJECT_2', 'EXIST_2'])
+                                        task.inject_map = inject.copy()
 
 maximum_paths                   Maximum number of equal-cost paths for load sharing::
 
@@ -265,10 +268,10 @@ networks                        Networks to configure.  Specified as a list() of
 
                                     - Type: list() of list()
                                     - Example:
-                                        network_list = list()
-                                        network_list.append(['10.0.0.0/16', 'routemap_LA'])
-                                        network_list.append(['192.168.2.0/24'])
-                                        task.networks = network_list.copy()
+                                        networks = list()
+                                        networks.append(['10.0.0.0/16', 'routemap_LA'])
+                                        networks.append(['192.168.2.0/24'])
+                                        task.networks = networks.copy()
 
 next_hop_route_map              A route-map which specifies/selects valid nexthops::
 
@@ -288,10 +291,10 @@ redistribute                    A list of redistribute directives.
 
                                     - Type: list() of list()
                                     - Example:
-                                        redistribute_list = list()
-                                        redistribute_list.append(['direct'])
-                                        redistribute_list.append(['ospf', 'ROUTE_MAP_OSPF'])
-                                        task.redistribute = redistribute_list.copy()
+                                        redistribute = list()
+                                        redistribute.append(['direct'])
+                                        redistribute.append(['ospf', 'ROUTE_MAP_OSPF'])
+                                        task.redistribute = redistribute.copy()
 
 retain_route_target             Retains all of the routes or the routes which are
                                 part of configured route-map::
@@ -313,7 +316,10 @@ retain_route_target             Retains all of the routes or the routes which ar
 safi                            Sub Address Family Identifier::
 
                                     - Type: str()
-                                    - Valid values: unicast, multicast, evpn
+                                    - Valid values:
+                                        - unicast
+                                        - multicast
+                                        - evpn
                                     - Examples:
                                         - task.safi = 'unicast'
                                     - Required
@@ -322,7 +328,9 @@ state                           Determines whether the config should be present 
                                 not on the remote device::
 
                                     - Type: str()
-                                    - Valid values: absent, present
+                                    - Valid values:
+                                        - absent
+                                        - present
                                     - Examples:
                                         - task.state = 'present'
                                     - Required
