@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_af.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -31,6 +31,42 @@ def additional_paths_install(pb, asn, afi, safi, vrf):
     task.safi = safi
     task.vrf = vrf
     task.additional_paths_install = True
+    task.state = 'present'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def dampening_default(pb, asn, afi, safi, vrf):
+    task = NxosBgpAf(log)
+    task.asn = asn
+    task.afi = afi
+    task.safi = safi
+    task.vrf = vrf
+    task.dampen_igp_metric = 'default'
+    task.dampening_half_time = 'default'
+    task.dampening_max_suppress_time = 'default'
+    task.dampening_reuse_time = 'default'
+    task.dampening_suppress_time = 'default'
+    # uncomment to test verification mutual-exclusivity
+    # task.dampening_state = True
+    task.state = 'present'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def dampening_non_default(pb, asn, afi, safi, vrf):
+    task = NxosBgpAf(log)
+    task.asn = asn
+    task.afi = afi
+    task.safi = safi
+    task.vrf = vrf
+    task.dampen_igp_metric = 100
+    task.dampening_half_time = 10
+    task.dampening_suppress_time = 25
+    task.dampening_max_suppress_time = 30
+    task.dampening_reuse_time = 20
+    # uncomment to test verification mutual-exclusivity
+    # task.dampening_state = True
     task.state = 'present'
     task.task_name = add_task_name(task)
     task.update()
@@ -85,11 +121,14 @@ vrf = 'default'
 additional_paths_install(pb, asn, afi, safi, vrf)
 networks(pb, asn, afi, safi, vrf)
 maximum_paths(pb, asn, afi, safi, vrf)
-
+dampening_default(pb, asn, afi, safi, vrf)
+dampening_non_default(pb, asn, afi, safi, vrf)
 afi = 'ipv6'
 additional_paths_install(pb, asn, afi, safi, vrf)
 networks(pb, asn, afi, safi, vrf)
 maximum_paths(pb, asn, afi, safi, vrf)
+dampening_default(pb, asn, afi, safi, vrf)
+dampening_non_default(pb, asn, afi, safi, vrf)
 
 pb.append_playbook()
 pb.write_playbook()

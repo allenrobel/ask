@@ -1,5 +1,5 @@
 # NxosBgpAf() - cisco/nxos/nxos_bgp_af.py
-our_version = 113
+our_version = 114
 
 from copy import deepcopy
 import re
@@ -445,6 +445,12 @@ class NxosBgpAf(Task):
         self.properties_set.add('state')
         self.init_properties()
 
+        self.dampening_set = set()
+        self.dampening_set.add('dampening_half_time')
+        self.dampening_set.add('dampening_suppress_time')
+        self.dampening_set.add('dampening_reuse_time')
+        self.dampening_set.add('dampening_max_suppress_time')
+
         self.nxos_bgp_af_maximum_paths_min = 1
         self.nxos_bgp_af_maximum_paths_max = 64
 
@@ -457,6 +463,44 @@ class NxosBgpAf(Task):
             self.properties[p] = None
         self.properties['task_name'] = None
 
+    def final_verification_dampening_reuse_vs_suppress(self):
+        lesser = self.dampening_reuse_time
+        greater = self.dampening_suppress_time
+        lesser_str = 'dampening_reuse_time'
+        greater_str = 'dampening_suppress_time'
+        if self.is_digits(lesser) and self.is_digits(greater):
+            if int(lesser) >= int(greater):
+                self.task_log.error('exiting. {} must be less than {}'.format(
+                    lesser_str,
+                    greater_str)
+                )
+                exit(1)
+
+    def final_verification_dampening_state(self):
+        '''
+        The ansible nxos_bgp_af module (perhaps incorrectly),
+        tests for mutual-exclusivity even if values for the
+        properties in self.dampening_set set to 'default'.
+        If the ansible module ever corrects this (assuming it
+        is not correct), we can change the if statement below
+        to:
+
+        if self.is_digits(self.properties[p]):
+        '''
+        if self.dampening_state != True:
+            return
+        test = False
+        for p in self.dampening_set:
+            if self.properties[p] != None:
+                test = True
+                self.task_log.error('{} mutually-exclusive with {}'.format(
+                    'dampening_state',
+                    p)
+                )
+        if test == True:
+            self.task_log.error('exiting')
+            exit(1)
+
     def final_verification(self):
         if self.asn == None:
             self.task_log.error('exiting. call instance.asn before calling instance.update()')
@@ -467,6 +511,8 @@ class NxosBgpAf(Task):
         if self.safi == None:
             self.task_log.error('exiting. call instance.safi before calling instance.update()')
             exit(1)
+        self.final_verification_dampening_state()
+        self.final_verification_dampening_reuse_vs_suppress()
 
     def update(self):
         '''
@@ -636,7 +682,7 @@ class NxosBgpAf(Task):
         if self.set_none(x, parameter):
             return
         self.verify_digits_or_default(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def dampening_half_time(self):
@@ -647,7 +693,7 @@ class NxosBgpAf(Task):
         if self.set_none(x, parameter):
             return
         self.verify_digits_or_default(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def dampening_max_suppress_time(self):
@@ -658,7 +704,7 @@ class NxosBgpAf(Task):
         if self.set_none(x, parameter):
             return
         self.verify_digits_or_default(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def dampening_reuse_time(self):
@@ -669,7 +715,7 @@ class NxosBgpAf(Task):
         if self.set_none(x, parameter):
             return
         self.verify_digits_or_default(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def dampening_routemap(self):
@@ -701,7 +747,7 @@ class NxosBgpAf(Task):
         if self.set_none(x, parameter):
             return
         self.verify_digits_or_default(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def default_information_originate(self):
