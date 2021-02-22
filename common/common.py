@@ -523,7 +523,7 @@ class Common(object):
 
     def is_bgp_asn(self, x):
         if self.is_digits(x):
-            if self.is_32_bit and x >= 1:
+            if self.is_32_bit and int(x) >= 1:
                 return True
         m = re.search('^(\d+)\.(\d+)$', str(x))
         if not m:
