@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_af.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,78 +19,77 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
-def add_task_name_ipv4(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('afi', task.afi, task_name)
-    task_name = add_item_to_name('asn', task.asn, task_name)
-    task_name = add_item_to_name('maximum_paths', task.maximum_paths, task_name)
-    task_name = add_item_to_name('maximum_paths_ibgp', task.maximum_paths_ibgp, task_name)
-    task_name = add_item_to_name('safi', task.safi, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('vrf', task.vrf, task_name)
-    task.task_name = task_name
-
-def ipv4(pb):
-    ipv4_networks = list()
-    ipv4_networks.append(['10.239.0.0/32', 'ORIGINATE_TOR_LOOPBACK'])
-    ipv4_networks.append(['15.224.0.0/25', 'ORIGINATE_TOR_SUBNETS'])
-    ipv4_networks.append(['15.224.0.128/25', 'ORIGINATE_TOR_SUBNETS'])
-
+def additional_paths_install(pb, asn, afi, safi, vrf):
     task = NxosBgpAf(log)
-    task.afi = 'ipv4'
-    task.asn = '65100.0'
-    task.maximum_paths = 8
-    task.maximum_paths_ibgp = 8
-    task.networks = ipv4_networks
-    task.safi = 'unicast'
+    task.asn = asn
+    task.afi = afi
+    task.safi = safi
+    task.vrf = vrf
+    task.additional_paths_install = True
     task.state = 'present'
-    task.vrf = 'default'
-    task.task_name = add_task_name_ipv4(task)
+    task.task_name = add_task_name(task)
     task.update()
     pb.add_task(task)
 
-def add_task_name_ipv6(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('afi', task.afi, task_name)
-    task_name = add_item_to_name('asn', task.asn, task_name)
-    task_name = add_item_to_name('maximum_paths', task.maximum_paths, task_name)
-    task_name = add_item_to_name('maximum_paths_ibgp', task.maximum_paths_ibgp, task_name)
-    task_name = add_item_to_name('safi', task.safi, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('vrf', task.vrf, task_name)
-    task.task_name = task_name
-
-def ipv6(pb):
-    ipv6_networks = list()
-    ipv6_networks.append(['2001:aaaa::0/128', 'ORIGINATE_TOR_LOOPBACK'])
-    ipv6_networks.append(['2001:aaaa:bbbb::/64', 'ORIGINATE_TOR_SUBNETS'])
-    ipv6_networks.append(['2001:aaaa:cccc::/64', 'ORIGINATE_TOR_SUBNETS'])
+def networks(pb, asn, afi, safi, vrf):
+    networks_list = list()
+    if afi == 'ipv6':
+        #pass
+        networks_list.append(['2001:aaaa::0/128', 'ORIGINATE_TOR_LOOPBACK'])
+        networks_list.append(['2001:aaaa:bbbb::/64', 'ORIGINATE_TOR_SUBNETS'])
+        networks_list.append(['2001:aaaa:cccc::/64', 'ORIGINATE_TOR_SUBNETS'])
+    elif afi == 'ipv4':
+        #pass
+        networks_list.append(['10.239.0.0/32', 'ORIGINATE_TOR_LOOPBACK'])
+        networks_list.append(['15.224.0.0/25', 'ORIGINATE_TOR_SUBNETS'])
+        networks_list.append(['15.224.0.128/25', 'ORIGINATE_TOR_SUBNETS'])
+    else:
+        log.error('exiting. unknown afi {}'.format(afi))
+        exit(1)
 
     task = NxosBgpAf(log)
-    task.afi = 'ipv6'
-    task.asn = '65101.0'
+    task.asn = asn
+    task.afi = afi
+    task.safi = safi
+    task.networks = networks_list
+    task.vrf = vrf
+    task.state = 'present'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def maximum_paths(pb, asn, afi, safi, vrf):
+    task = NxosBgpAf(log)
+    task.asn = asn
+    task.afi = afi
+    task.safi = safi
+    task.vrf = vrf
     task.maximum_paths = 16
     task.maximum_paths_ibgp = 16
-    task.networks = ipv6_networks
-    task.safi = 'unicast'
     task.state = 'present'
-    task.vrf = 'default'
-    task.task_name = add_task_name_ipv6(task)
+    task.task_name = add_task_name(task)
     task.update()
     pb.add_task(task)
 
 pb = playbook()
 
-ipv4(pb)
-ipv6(pb)
+asn = '2301.0'
+afi = 'ipv4'
+safi = 'unicast'
+vrf = 'default'
+additional_paths_install(pb, asn, afi, safi, vrf)
+networks(pb, asn, afi, safi, vrf)
+maximum_paths(pb, asn, afi, safi, vrf)
+
+afi = 'ipv6'
+additional_paths_install(pb, asn, afi, safi, vrf)
+networks(pb, asn, afi, safi, vrf)
+maximum_paths(pb, asn, afi, safi, vrf)
 
 pb.append_playbook()
 pb.write_playbook()
