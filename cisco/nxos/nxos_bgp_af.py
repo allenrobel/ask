@@ -1,5 +1,5 @@
 # NxosBgpAf() - cisco/nxos/nxos_bgp_af.py
-our_version = 112
+our_version = 113
 
 from copy import deepcopy
 import re
@@ -614,7 +614,7 @@ class NxosBgpAf(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_bgp_af_asn(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def client_to_client(self):
