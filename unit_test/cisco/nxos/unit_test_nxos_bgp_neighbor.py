@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor.py
-our_version = 102
+our_version = 103
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,24 +19,13 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('asn', task.asn, task_name)
-    task_name = add_item_to_name('neighbor', task.neighbor, task_name)
-    task_name = add_item_to_name('remote_as', task.remote_as, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('vrf', task.vrf, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
-def add_task(pb):
+def ipv4_neighbor(pb):
     task = NxosBgpNeighbor(log)
     task.asn = '12000.0'
     task.neighbor = '10.1.1.1'
@@ -47,8 +36,76 @@ def add_task(pb):
     task.update()
     pb.add_task(task)
 
+def ipv4_neighbor_prefix_peer(pb):
+    task = NxosBgpNeighbor(log)
+    task.asn = '12000'
+    task.neighbor = '10.1.1.0/24'
+    #task.neighbor = '10.1.1.1' # negative test
+    task.remote_as = '6201.0'
+    task.maximum_peers = 20
+    task.state = 'present'
+    task.vrf = 'default'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def ipv4_neighbor_and_local_as(pb):
+    task = NxosBgpNeighbor(log)
+    task.asn = '12000.0'
+    task.local_as = '23100'
+    task.neighbor = '10.1.1.1'
+    task.remote_as = '6201.0'
+    task.state = 'present'
+    task.vrf = 'default'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def ipv4_neighbor_peer_type(pb):
+    task = NxosBgpNeighbor(log)
+    task.asn = '12000'
+    task.neighbor = '10.1.1.1'
+    task.remote_as = '6201.0'
+    task.peer_type = 'disable'
+    #task.peer_type = 'foo' # negative test
+    task.state = 'present'
+    task.vrf = 'default'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def ipv6_neighbor(pb):
+    task = NxosBgpNeighbor(log)
+    task.asn = '12000.0'
+    task.neighbor = '2001:aaaa::1'
+    task.remote_as = '4700000001'
+    task.state = 'present'
+    task.vrf = 'default'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def ipv6_neighbor_prefix_peer(pb):
+    task = NxosBgpNeighbor(log)
+    task.asn = '12000.0'
+    task.neighbor = '2001:aaaa::/120'
+    #task.neighbor = '2001:aaaa::1' # negative test
+    task.remote_as = '4700000001'
+    task.maximum_peers = 1000
+    task.state = 'present'
+    task.vrf = 'default'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
 pb = playbook()
-add_task(pb)
+ipv4_neighbor(pb)
+ipv4_neighbor_prefix_peer(pb)
+ipv4_neighbor_and_local_as(pb)
+ipv4_neighbor_peer_type(pb)
+ipv6_neighbor(pb)
+ipv6_neighbor_prefix_peer(pb)
+
 pb.append_playbook()
 pb.write_playbook()
 print('wrote {}'.format(pb.file))

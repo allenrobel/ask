@@ -1,5 +1,5 @@
 # NxosBgpNeighbor() - cisco/nxos/nxos_bgp_neighbor.py
-our_version = 111
+our_version = 112
 # Deprecation: Ansible module nxos_bgp_neighbor is DEPRECATED
 # Deprecated on: 2021.01.27
 # Removed after: 2023-01-27
@@ -9,41 +9,330 @@ import re
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_bgp_neighbor.py
+**************************************
+NxosBgpNeighbor()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosBgpNeighbor() generates Ansible Playbook tasks conformant with nxos_bgp_neighbor
-which can be fed to Playbook().add_task()
+Deprecation
+-----------
 
-Usage example:
-    unit_test/cisco/nxos/unit_test_bgp_neighbor.py
+- Status: ``DEPRECATED``
+- Alternative: `nxos_bgp_global <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_global_module.rst>`_
+- 2021-01-27, deprecation date
+- 2023-01-27, removal date (module may be removed after this date)
 
-Properties:
+ScriptKit Synopsis
+------------------
+- NxosBgpNeighbor() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_bgp_neighbor
+- These can then be passed to Playbook().add_task()
 
-    asn                     - digits, digits.digits
-    bfd                     - enable, disable
-    capability_negotiation  - no, yes
-    connected_check         - no, yes
-    description             - quoted?  
-    dynamic_capability      - no, yes  
-    ebgp_multihop           - int() 2-255, or "default"
-    local_as
-    log_neighbor_changes    - enable, disable, inherit
-    low_memory_exempt       - no, yes
-    maximum_peers           - int() 1-1000, or "default". Accepted only on prefix peers
-    neighbor                - str() IPv4 or IPv6 notation, with or without prefix length
-    pwd                     - str() password for neighbor
-    pwd_type                - 3des, cisco_type_7, default
-    remote_as               - str() asn in ASPLAIN or ASDOT notation
-    remove_private_as       - enable, disable, all, replace-as
-    shutdown
-    suppress_4_byte_as      - no, yes
-    task_name               - int() the Ansible task name
-    timers_holdtime         - int() 0-3600 seconds, or 'default', which is 180
-    timers_keepalive        - int() 0-3600 seconds, or 'default', which is 60
-    transport_passive_only  - no, yes
-    update_source           - str() source interface of BGP session and updates
+Ansible Module Documentation
+----------------------------
+- `nxos_bgp_neighbor <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_module.rst>`_
+
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor.py>`_
+
+TODO
+----
+20210223: if local_as is set, verify that asn and remote_as are different (i.e. eBGP with neighbor)
+
+|
+
+=============================   ==============================================
+Property                        Description
+=============================   ==============================================
+asn                             BGP autonomous system number, in ``ASPLAIN`` or ``ASDOT`` notation::
+
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - int() range 1-4294967295
+                                        - <1-65535>.<0-65535>
+                                    - Examples:
+                                        task.asn = 64512
+                                        task.asn = 4200000000
+                                        task.asn = '2301.0'
+                                    - NOTES:
+                                        - private asn ranges
+                                            - 64512 to 65534
+                                            - 4200000000 to 4294967294
+                                    - Required
+
+bfd                             Enables/Disables BFD for the neighbor::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - enable
+                                        - disable
+                                    - Example:
+                                        task.bfd = 'enable'
+                                    - NOTES:
+                                        - 'feature bfd' must be enabled on the remote device
+
+capability_negotiation          Negotiate capability with this neighbor::
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.capability_negotiation = True
+
+connected_check                 Check ``True`` or don't check ``False`` if this neighbor is
+                                directy-connected when deciding to peer with it.  By default,
+                                eBGP peers will not peer with a neighbor whose address is not
+                                within the range of the peering interface unless ebgp-multihop
+                                is configured.  Use ``connected_check`` to override this behavior
+                                (e.g. when directly-connected routers are eBGP peering via
+                                their Loopback interfaces)::
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.connected_check = False
+
+description                     Description of the neighbor::
+
+                                    - Type: str()
+                                    - Example:
+                                        task.description = 'TOR peer'
+
+dynamic_capability              Enable ``True`` or disable ``False`` dynamic capability::
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.dynamic_capability = False
+
+ebgp_multihop                   Specify multihop TTL for this eBGP neighbor. The value
+                                represents the TTL to include in control-plane packets
+                                sent to this eBGP neighbor.  Use this property when two
+                                eBGP neighbors are separated by one or more transit routers
+                                (since each transit router decrements the TTL).  Set the
+                                value high enough that the TTL is not decremented to zero
+                                before reaching the eBGP peer::
+
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - int() range: 2-255
+                                        - str() Keyword: 'default' (disables ebgp multihop)
+                                    - Examples:
+                                        task.ebgp_multihop = 5
+                                        task.ebgp_multihop = 'default'
+
+local_as                        Specify the local-as number for the eBGP peer in
+                                ``ASPLAIN`` or ``ASDOT`` notation.  Allows the router
+                                to peer with the eBGP neighbor using an AS that differs
+                                from that configured using the ``asn`` property::
+
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - int() range 1-4294967295
+                                        - <1-65535>.<0-65535>
+                                        - str() Keyword: default (remove local_as config)
+                                    - Examples:
+                                        task.local_as = 64512
+                                        task.local_as = 4200000000
+                                        task.local_as = '2301.0'
+                                        task.local_as = 'default'
+                                    - NOTES:
+                                        - Use only with eBGP peers
+                                        - Cannot be used in quasi-eBGP scenarios, e.g.
+                                            - Members of different confed sub-ASs
+
+log_neighbor_changes            Specify whether or not to enable log messages
+                                for neighbor up/down events::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - enable
+                                        - disable
+                                        - inherit
+                                            Remove log_neighbor_changes config
+                                            from this neighbor config, and use
+                                            the value, if one exists, from an
+                                            applied peer-template.
+                                    - Example:
+                                        task.log_neighbor_changes = 'disable'
+
+low_memory_exempt               Specify whether or not to shut down this neighbor
+                                under memory pressure::
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.low_memory_exempt = True
+
+maximum_peers                   Maximum number of peers for this neighbor prefix::
+
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - int() range: 1-1000
+                                        - str() Keyword: default (no peer limit)
+                                    - Examples:
+                                        - task.maximum_peers = 20
+                                        - task.maximum_peers = 'default'
+                                    NOTES:
+                                        -   maximum_peers is accepted only 
+                                            on neighbors with address/prefix
+
+neighbor                        IPv4 or IPv6 address of the neighbor.  May 
+                                include a prefixlen for prefix-peering
+                                scenarios::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - IPv4 address
+                                        - IPv4 address with prefixlen
+                                        - IPv6 address
+                                        - IPv6 address with prefixlen
+                                    - Examples:
+                                        task.neighbor = '10.1.1.1'
+                                        task.neighbor = '10.1.1.0/24'
+                                        task.neighbor = '2011:aaaa::1'
+                                        task.neighbor = '2011:aaaa::/126'
+                                    - Required
+
+peer_type                       Specify the peer type for BGP session::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - fabric_border_leaf
+                                        - fabric_external
+                                        - disable
+                                    - Example:
+                                        task.peer_type = 'fabric_external'
+
+pwd                             Password for this BGP peer::
+
+                                    - Type: str()
+                                    - Example:
+                                        task.pwd = 'hackersnotwelcome'
+
+pwd_type                        Specify the encryption type the password will use::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - 3des
+                                        - cisco_type_7
+                                        - default
+
+remote_as                       The remote AS number for the BGP peer in
+                                ``ASPLAIN`` or ``ASDOT`` notation::
+
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - int() range 1-4294967295
+                                        - <1-65535>.<0-65535>
+                                        - str() Keyword: default (remove remote_as config)
+                                    - Examples:
+                                        task.remote_as = 64512
+                                        task.remote_as = 4200000000
+                                        task.remote_as = '2301.0'
+                                        task.remote_as = 'default'
+                                    - NOTES:
+                                        - private asn ranges
+                                            - 64512 to 65534
+                                            - 4200000000 to 4294967294
+
+remove_private_as               Remove private AS number from outbound updates::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - all         Remove all private AS numbers
+                                        - disable     Do not remove private AS numbers
+                                        - enable      Remove private AS numbers that appear
+                                                      after the confederation portion of the
+                                                      AS path
+                                        - replace-as  Replace private AS numbers with our AS
+                                    - Example:
+                                        task.remove_private_as = 'all'
+
+shutdown                        Administratively shutdown this neighbor::
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.shutdown = False
+
+state                           Determines whether the config should be present or
+                                not on the device::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - absent
+                                        - present
+                                    - Example:
+                                        task.state = 'present'
+
+suppress_4_byte_as              If ``neighbor`` is not capable of 4-byte AS,
+                                capability negotiation with ``neighbor`` will
+                                fail and the session will not come up.  Use
+                                the ``suppress_4_byte_as`` property to suppress
+                                sending 4-byte AS capability during initial capability
+                                negotiation with ``neighbor``::
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.suppress_4_byte_as = False
+
+task_name                       Name of the task. Ansible will display this
+                                when the playbook is run::
+
+                                    - Type: str()
+                                    - Examples:
+                                        - task.task_name = 'my task'
+
+timers_holdtime                 Specify holdtime timer value::
+
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - int() range: 0-3600 seconds
+                                        - str() Keyword: default
+                                                - configure holdtime to 180 seconds
+
+timers_keepalive                Specify keepalive timer value::
+
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - int() range: 0-3600 seconds
+                                        - str() Keyword: default
+                                                - configure keepalive to 60 seconds
+
+transport_passive_only          Allow passive connection establishment::
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.transport_passive_only = False
+                                    - NOTES:
+                                        - Do not use for prefix-peering i.e.
+                                          when the peer IP address includes
+                                          a prefixlen e.g. 10.1.1.0/24
+
+update_source                   Source interface of BGP session and updates::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - Full interface name
+                                    - Examples:
+                                        task.update_source = 'Ethernet1/1'
+                                        task.update_source = 'Loopback0'
+                                        task.update_source = 'port-channel20'
+                                        task.update_source = 'Vlan10'
+
+=============================   ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 
@@ -63,7 +352,12 @@ class NxosBgpNeighbor(Task):
         self.nxos_bgp_neighbor_valid_log_neighbor_changes = set()
         self.nxos_bgp_neighbor_valid_log_neighbor_changes.add('enable')
         self.nxos_bgp_neighbor_valid_log_neighbor_changes.add('disable')
-        self.nxos_bgp_neighbor_valid_log_neighbor_changes.add('inherit')
+        self.nxos_bgp_neighbor_valid_log_neighbor_changes.add('disable')
+
+        self.nxos_bgp_neighbor_valid_peer_type = set()
+        self.nxos_bgp_neighbor_valid_peer_type.add('fabric_border_leaf')
+        self.nxos_bgp_neighbor_valid_peer_type.add('fabric_external')
+        self.nxos_bgp_neighbor_valid_peer_type.add('disable')
 
         self.nxos_bgp_neighbor_valid_pwd_type = set()
         self.nxos_bgp_neighbor_valid_pwd_type.add('3des')
@@ -80,6 +374,9 @@ class NxosBgpNeighbor(Task):
         self.nxos_bgp_neighbor_valid_state.add('absent')
         self.nxos_bgp_neighbor_valid_state.add('present')
 
+        self.nxos_bgp_neighbor_maximum_peers_min = 1
+        self.nxos_bgp_neighbor_maximum_peers_max = 1000
+
         self.properties_set = set()
         self.properties_set.add('asn')
         self.properties_set.add('bfd')
@@ -93,6 +390,7 @@ class NxosBgpNeighbor(Task):
         self.properties_set.add('low_memory_exempt')
         self.properties_set.add('maximum_peers')
         self.properties_set.add('neighbor')
+        self.properties_set.add('peer_type')
         self.properties_set.add('pwd')
         self.properties_set.add('pwd_type')
         self.properties_set.add('remote_as')
@@ -113,11 +411,23 @@ class NxosBgpNeighbor(Task):
             self.properties[p] = None
         self.properties['task_name'] = None
 
+    def final_verification_nxos_bgp_neighbor_maximum_peers(self):
+        '''
+        maximum_peers is valid only with prefix-peering
+        '''
+        if self.maximum_peers == None:
+            return
+        if self.is_ipv4_address_with_prefix(self.neighbor):
+            return
+        if self.is_ipv6_address_with_prefix(self.neighbor):
+            return
+        self.task_log.error('exiting. maximum_peers is used only when neighbor is a prefix-peer')
+        self.task_log.error('maximum_peers: {}'.format(self.maximum_peers))
+        self.task_log.error('neighbor: {}'.format(self.neighbor))
+        self.task_log.error('Either specify neighbor as a prefix-peer e.g. 10.1.1.0/24, 2001:aaaa::/120, or unset maximum_peers')
+        exit(1)
+
     def final_verification(self):
-        '''
-        final_verification is called by subclass.update() method
-        It performs a final verification across the properties that the user has or hasn't set
-        '''
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
@@ -127,6 +437,7 @@ class NxosBgpNeighbor(Task):
         if self.neighbor == None:
             self.task_log.error('exiting. call instance.neighbor before calling instance.update()')
             exit(1)
+        self.final_verification_nxos_bgp_neighbor_maximum_peers()
 
     def update(self):
         '''
@@ -143,69 +454,88 @@ class NxosBgpNeighbor(Task):
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
 
-    def verify_nxos_bgp_neighbor_state(self, x, parameter='state'):
-        if x in self.nxos_bgp_neighbor_valid_state:
-            return
-        source_class = self.class_name
-        source_method = 'verify_nxos_bgp_neighbor_state'
-        expectation = ','.join(self.nxos_bgp_neighbor_valid_state)
-        self.fail(source_class, source_method, x, parameter, expectation)
-
     def verify_nxos_bgp_neighbor_asn(self, x, parameter=''):
-        if self.is_digits(x):
-            return
-        if re.search('^\d+\.\d+$', str(x)):
+        if self.is_bgp_asn(x):
             return
         source_class = self.class_name
         source_method = 'verify_nxos_bgp_neighbor_asn'
-        expectation = '["digits", "digits.digits", "digits:digits"]'
+        expectation = 'digits, digits.digits'
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_bgp_neighbor_ebgp_multihop(self, x, parameter='ebgp_multihop'):
-        '''
-        verify ebgp_multihop is between 2-255 or == 'default'
-        '''
         if self.is_default(x):
             return
         if x in list(range(2,256)):
             return
         source_class = self.class_name
         source_method = 'verify_nxos_bgp_neighbor_ebgp_multihop'
-        expectation = '[2-255, "default"]'
+        expectation = 'int() range 2-255, str() keyword: default'
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def verify_nxos_bgp_neighbor_neighbor_bgp(self, x, parameter='neighbor_bgp'):
-        expectation = ''
-        if self.maximum_peers == None:
-            expectation = "[IPv4 Address, IPv6 Address]"
-            if self.is_ipv4_address(x):
-                return
-            if self.is_ipv6_address(x):
-                return
-        else:
-            expectation = "[IPv4 Network, IPv6 Network]"
-            if self.is_ipv4_network(x):
-                return
-            if self.is_ipv6_network(x):
-                return
+    def verify_nxos_bgp_neighbor_neighbor(self, x, parameter='neighbor'):
+        if self.is_ipv4_address(x):
+            return
+        if self.is_ipv6_address(x):
+            return
+        if self.is_ipv4_network(x):
+            return
+        if self.is_ipv6_network(x):
+            return
         source_class = self.class_name
-        source_method = 'verify_nxos_bgp_neighbor_neighbor_bgp'
+        source_method = 'verify_nxos_bgp_neighbor_neighbor'
+        expectation = 'ipv4 address, ipv6 address, ipv4 address with prefixlen, ipv6 address with prefixlen'
+        self.fail(source_class, source_method, x, parameter, expectation)
+
+    def verify_nxos_bgp_neighbor_local_as(self, x, parameter='local_as'):
+        if self.is_default(x):
+            return
+        if self.is_bgp_asn(x):
+            return
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_local_as'
+        expectation = 'digits, digits.digits, keyword: default'
+        self.fail(source_class, source_method, x, parameter, expectation)
+
+    def verify_nxos_bgp_neighbor_maximum_peers(self, x, parameter='maximum_peers'):
+        source_class = self.class_name
+        range_min = self.nxos_bgp_neighbor_maximum_peers_min
+        range_max = self.nxos_bgp_neighbor_maximum_peers_max
+        self.verify_integer_range(x, range_min, range_max, source_class, parameter)
+
+    def verify_nxos_bgp_neighbor_peer_type(self, x, parameter='peer_type'):
+        verify_set = self.nxos_bgp_neighbor_valid_peer_type
+        if x in verify_set:
+            return
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_state'
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_bgp_neighbor_pwd_type(self, x, parameter='unspecified'):
-        if x in self.nxos_bgp_neighbor_valid_pwd_type:
+        verify_set = self.nxos_bgp_neighbor_valid_pwd_type
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_bgp_neighbor_pwd_type'
-        expectation = self.nxos_bgp_neighbor_valid_pwd_type 
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_bgp_neighbor_remove_private_as(self, x, parameter=''):
-        if x in self.nxos_bgp_neighbor_valid_remove_private_as:
+        verify_set = self.nxos_bgp_neighbor_valid_remove_private_as
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_bgp_neighbor_remove_private_as'
-        expectation = self.nxos_bgp_neighbor_valid_remove_private_as
+        expectation = ','.join(verify_set)
+        self.fail(source_class, source_method, x, parameter, expectation)
+
+    def verify_nxos_bgp_neighbor_state(self, x, parameter='state'):
+        verify_set = self.nxos_bgp_neighbor_valid_state
+        if x in verify_set:
+            return
+        source_class = self.class_name
+        source_method = 'verify_nxos_bgp_neighbor_state'
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_bgp_neighbor_timers(self, x, parameter='timers'):
@@ -226,9 +556,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['asn']
     @asn.setter
     def asn(self, x):
-        '''
-        nxos_bgp nxos_bgp_af
-        '''
         parameter = 'asn'
         if self.set_none(x, parameter):
             return
@@ -240,8 +567,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['bfd']
     @bfd.setter
     def bfd(self, x):
-        '''
-        '''
         parameter = 'bfd'
         if self.set_none(x, parameter):
             return
@@ -253,8 +578,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['capability_negotiation']
     @capability_negotiation.setter
     def capability_negotiation(self, x):
-        '''
-        '''
         parameter = 'capability_negotiation'
         if self.set_none(x, parameter):
             return
@@ -266,8 +589,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['connected_check']
     @connected_check.setter
     def connected_check(self, x):
-        '''
-        '''
         parameter = 'connected_check'
         if self.set_none(x, parameter):
             return
@@ -279,8 +600,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['description']
     @description.setter
     def description(self, x):
-        '''
-        '''
         parameter = 'description'
         if self.set_none(x, parameter):
             return
@@ -291,8 +610,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['dynamic_capability']
     @dynamic_capability.setter
     def dynamic_capability(self, x):
-        '''
-        '''
         parameter = 'dynamic_capability'
         if self.set_none(x, parameter):
             return
@@ -304,8 +621,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['ebgp_multihop']
     @ebgp_multihop.setter
     def ebgp_multihop(self, x):
-        '''
-        '''
         parameter = 'ebgp_multihop'
         if self.set_none(x, parameter):
             return
@@ -317,12 +632,10 @@ class NxosBgpNeighbor(Task):
         return self.properties['local_as']
     @local_as.setter
     def local_as(self, x):
-        '''
-        '''
         parameter = 'local_as'
         if self.set_none(x, parameter):
             return
-        self.verify_nxos_bgp_neighbor_asn(x, parameter)
+        self.verify_nxos_bgp_neighbor_local_as(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -330,8 +643,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['log_neighbor_changes']
     @log_neighbor_changes.setter
     def log_neighbor_changes(self, x):
-        '''
-        '''
         parameter = 'log_neighbor_changes'
         if self.set_none(x, parameter):
             return
@@ -345,8 +656,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['low_memory_exempt']
     @low_memory_exempt.setter
     def low_memory_exempt(self, x):
-        '''
-        '''
         parameter = 'low_memory_exempt'
         if self.set_none(x, parameter):
             return
@@ -358,25 +667,10 @@ class NxosBgpNeighbor(Task):
         return self.properties['maximum_peers']
     @maximum_peers.setter
     def maximum_peers(self, x):
-        '''
-        '''
         parameter = 'maximum_peers'
         if self.set_none(x, parameter):
             return
-        result = 'fail'
-        # maximum_peers is valid only with prefix-peering if neighbor
-        # is defined, make sure it's a prefix
-        # There is another test for maximum peers in self.verify_nxos_bgp_neighbor_neighbor_bgp()
-        # which is called in @property neighbor
-        if self.neighbor != None:
-            if self.is_ipv4_address_with_prefix(self.neighbor):
-                result = 'success'
-            if self.is_ipv6_network(self.neighbor):
-                result = 'success'
-        if result == 'fail':
-            expectation = "[IPv4 Network, IPv6 Network]"
-            self.fail(self.class_name, parameter, x, parameter, expectation)
-        self.verify_maximum_peers(x, parameter)
+        self.verify_nxos_bgp_neighbor_maximum_peers(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -384,12 +678,21 @@ class NxosBgpNeighbor(Task):
         return self.properties['neighbor']
     @neighbor.setter
     def neighbor(self, x):
-        '''
-        '''
         parameter = 'neighbor'
         if self.set_none(x, parameter):
             return
-        self.verify_nxos_bgp_neighbor_neighbor_bgp(x)
+        self.verify_nxos_bgp_neighbor_neighbor(x)
+        self.properties[parameter] = x
+
+    @property
+    def peer_type(self):
+        return self.properties['peer_type']
+    @peer_type.setter
+    def peer_type(self, x):
+        parameter = 'peer_type'
+        if self.set_none(x, parameter):
+            return
+        self.verify_nxos_bgp_neighbor_peer_type(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -397,8 +700,6 @@ class NxosBgpNeighbor(Task):
         return self.properties['pwd']
     @pwd.setter
     def pwd(self, x):
-        '''
-        '''
         parameter = 'pwd'
         if self.set_none(x, parameter):
             return
