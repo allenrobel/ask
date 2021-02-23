@@ -1,5 +1,5 @@
 # Common() - common/common.py
-our_version = 107
+our_version = 108
 '''
 ====================
 Common() - common.py
@@ -362,7 +362,20 @@ class Common(object):
 
     def is_ipv4_address_with_prefix(self,x):
         '''
-        verify x is an ipv4 address with prefix of the form X.X.X.X/Y
+        verify x is an ipv4 address with prefix of the form address/Y
+        '''
+        if '/' not in x:
+            return False
+        try:
+            _tmp = ipaddress.ip_interface(x)
+            del _tmp
+        except:
+            return False
+        return True
+
+    def is_ipv6_address_with_prefix(self,x):
+        '''
+        verify x is an ipv6 address with prefix of the form address/Y
         '''
         if '/' not in x:
             return False
