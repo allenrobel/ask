@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_ans_task_nxos_command.py
-our_version = 102
+our_version = 103
 
 from ask.ansible.register_save import RegisterSave
 from ask.common.playbook import Playbook
@@ -20,6 +20,11 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
+
 def save_result(pb, filename):
     task = RegisterSave(log)
     task.var = 'output.stdout[0]'
@@ -32,23 +37,35 @@ def show(pb, command):
     commands = list()
     commands.append(command)
     task = NxosCommand(log)
-    task.task_name = '{}: {}'.format(ansible_module, ','.join(commands))
     task.commands = commands
     task.register = 'output'
+    task.task_name = add_task_name(task)
     task.update()
     pb.add_task(task)
 
 def show_json(pb, command):
     task = NxosCommand(log)
-    task.task_name = '{}: output json, {}'.format(ansible_module, command)
     task.command = command
     task.output = 'json'
     task.register = 'output'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def guestshell_destroy(pb):
+    task = NxosCommand(log)
+    task.command = 'guestshell destroy'
+    task.prompt = '[n]'
+    task.answer = 'y'
+    task.register = 'output'
+    task.task_name = add_task_name(task)
     task.update()
     pb.add_task(task)
 
 pb = playbook()
 
+# guestshell_destroy(pb)
+# save_result(pb, '/tmp/guestshell_destroy.txt')
 show(pb, 'show clock')
 save_result(pb, '/tmp/show_clock.txt')
 show(pb, 'show ip bgp summary')
