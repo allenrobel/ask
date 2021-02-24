@@ -1,5 +1,5 @@
 # NxosBgp() - cisco/nxos/nxos_bgp.py
-our_version = 115
+our_version = 116
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -449,32 +449,33 @@ timer_bgp_hold                  Set BGP holddown timer.  How long before
                                 resetting bgp sessions after keepalives
                                 are not received from neighbors::
 
-                                    - Type: int()
+                                    - Type: int() or str()
                                     - Valid values:
-                                        - int() range 0-3600
+                                        - int() range 3-3600
+                                        - str() keyword: default
                                     - Units: seconds
                                     - Default: 180
                                     - Example:
                                         task.timer_bgp_hold = 60
                                     - NOTES:
-                                        - If set to 0, no keepalives are
-                                          expected from, or sent to, bgp
-                                          neighbors.
+                                        - While the NXOS CLI claims the valid range
+                                          is 0-3600, the lowest accepted value is 3.
 
 timer_bgp_keepalive             Set BGP keepalive timer. How often to send
                                 keepalive messages to neighbors::
 
-                                    - Type: int()
+                                    - Type: int() or str()
                                     - Valid values:
-                                        - int() range 0-3600
+                                        - int() range 1-3599
+                                        - str() keyword: default
                                     - Units: seconds
                                     - Default: 60
                                     - Example:
                                         task.timer_bgp_keepalive = 60
                                     - NOTES:
-                                        - If set to 0, no keepalives are
-                                          expected from, or sent to, bgp
-                                          neighbors.
+                                        - While the NXOS CLI claims the valid range
+                                          is 0-3600, the lowest accepted value is 1
+                                          and the highest accepted value is 3599.
 
 vrf                             Name of VRF to create under the bgp router::
 
@@ -519,6 +520,11 @@ class NxosBgp(Task):
         self.nxos_bgp_valid_state = set()
         self.nxos_bgp_valid_state.add('absent')
         self.nxos_bgp_valid_state.add('present')
+
+        self.nxos_bgp_timer_bgp_hold_min = 3
+        self.nxos_bgp_timer_bgp_hold_max = 3600
+        self.nxos_bgp_timer_bgp_keepalive_min = 1
+        self.nxos_bgp_timer_bgp_keepalive_max = 3599
 
         self.properties_set = set()
         self.properties_set.add('asn')
@@ -639,6 +645,22 @@ class NxosBgp(Task):
         source_method = 'verify_nxos_bgp_state'
         expectation = ','.join(self.nxos_bgp_neighbor_valid_state)
         self.fail(source_class, source_method, x, parameter, expectation)
+
+    def verify_nxos_bgp_timer_bgp_hold(self, x, parameter='timer_bgp_hold'):
+        if self.is_default(x):
+            return
+        source_class = self.class_name
+        range_min = self.nxos_bgp_timer_bgp_hold_min
+        range_max = self.nxos_bgp_timer_bgp_hold_max
+        self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
+
+    def verify_nxos_bgp_timer_bgp_keepalive(self, x, parameter='timer_bgp_keepalive'):
+        if self.is_default(x):
+            return
+        source_class = self.class_name
+        range_min = self.nxos_bgp_timer_bgp_keepalive_min
+        range_max = self.nxos_bgp_timer_bgp_keepalive_max
+        self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
 
     @property
     def asn(self):
@@ -1055,7 +1077,7 @@ class NxosBgp(Task):
         parameter = 'timer_bgp_hold'
         if self.set_none(x, parameter):
             return
-        self.verify_integer_range(x, 1, 3600, self.class_name, parameter)
+        self.verify_nxos_bgp_timer_bgp_hold(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -1066,5 +1088,5 @@ class NxosBgp(Task):
         parameter = 'timer_bgp_keepalive'
         if self.set_none(x, parameter):
             return
-        self.verify_integer_range(x, 1, 3600, self.class_name, parameter)
+        self.verify_nxos_bgp_timer_bgp_keepalive(x, parameter)
         self.properties[parameter] = x
