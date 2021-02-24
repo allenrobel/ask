@@ -50,6 +50,23 @@ def add_task_bgp_general(pb):
     task.update()
     pb.add_task(task)
 
+def add_task_bgp_timer(pb):
+    task = NxosBgp(log)
+    task.asn = '65000.0'
+    # max values
+    # task.timer_bgp_keepalive = 3599
+    # task.timer_bgp_hold = 3600
+    # min values
+    # task.timer_bgp_keepalive = 1
+    # task.timer_bgp_hold = 3
+    # default keyword
+    task.timer_bgp_keepalive = 'default'
+    task.timer_bgp_hold = 'default'
+    task.state = 'present'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
 def add_task_bgp_event_history(pb):
     task = NxosBgp(log)
     task.asn = '65000.0'
@@ -64,6 +81,7 @@ def add_task_bgp_event_history(pb):
     pb.add_task(task)
 
 pb = playbook()
+add_task_bgp_timer(pb)
 add_task_bgp_general(pb)
 add_task_bgp_event_history(pb)
 pb.append_playbook()
