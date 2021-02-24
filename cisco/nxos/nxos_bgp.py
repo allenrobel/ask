@@ -172,7 +172,6 @@ disable_policy_batching             Enable/Disable the batching evaluation of
 ========================================    =========================================
 Property                                    Description
 ========================================    =========================================
-
 disable_policy_batching_ipv4_prefix_list    Enable ``True`` or Disable ``False``
                                             batching evaluation of outbound
                                             policy for ipv4 peers in the provided
@@ -197,6 +196,8 @@ disable_policy_batching_ipv6_prefix_list    Enable ``True`` or Disable ``False``
                                                     task.disable_policy_batching_ipv6_prefix_list = 'DPB'
 
 ========================================    =========================================
+
+|
 
 ================================    ==============================================
 Property                            Description
