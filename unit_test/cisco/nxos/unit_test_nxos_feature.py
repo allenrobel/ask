@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_feature.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,18 +19,24 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
+
 def enable_feature(pb, feature):
     task = NxosFeature(log)
-    task.feature = feature         # string: feature name (type feature ? in config-mode on nxos switch for a list)
-    task.state = 'enabled'         # string: enabled, disabled
-    task.task_name = '{}: feature {} state {}'.format(ansible_module, task.feature, task.state)
+    task.feature = feature
+    task.state = 'enabled'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def disable_feature(pb, feature):
     task = NxosFeature(log)
-    task.feature = feature         # string: feature name (type feature ? in config-mode on nxos switch for a list)
-    task.state = 'disabled'        # string: enabled, disabled
-    task.task_name = '{}: feature {} state {}'.format(ansible_module, task.feature, task.state)
+    task.feature = feature
+    task.state = 'disabled'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

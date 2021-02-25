@@ -1,24 +1,68 @@
 # NxosFeature() - cisco/nxos/nxos_feature.py
-our_version = 106
-# standard library
+our_version = 107
 from copy import deepcopy
-# scriptkit library
 from ask.common.task import Task
 '''
-Name: nxos_feature.py
+**************************************
+NxosFeature()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosFeature() generates Ansible Playbook tasks conformant with nxos_feature
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosFeature() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_feature
+- These can then be passed to Playbook().add_task()
 
-Usage example:
-    unit_test/cisco/nxos/unit_test_nxos_feature.py
+Ansible Module Documentation
+----------------------------
+- `nxos_feature <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_feature_module.rst>`_
 
-Properties:
-    feature     An NX-OS feature e.g. bfd, interface-vlan, etc
-    state       Desired state of feature
-                Valid values: enabled, disabled
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_feature.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_feature.py>`_
+
+
+|
+
+================================    ==============================================
+Property                            Description
+================================    ==============================================
+feature                             Name of the feature to enable/disable::
+
+                                        - Type: str()
+                                        - Example:
+                                            task.feature = 'lacp'
+                                        - Required
+
+state                               Desired state of ``feature``::
+
+                                        - Type: str()
+                                        - Valid values:
+                                            - disabled
+                                            - enabled
+                                        - Example:
+                                            task.state = 'enabled'
+                                        - Required
+
+task_name                           Name of the task. Ansible will display this
+                                    when the playbook is run::
+
+                                        - Type: str()
+                                        - Example:
+                                            - task.task_name = 'enable lacp'
+                                        
+================================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 class NxosFeature(Task):
     def __init__(self, task_log):
@@ -67,11 +111,12 @@ class NxosFeature(Task):
             self.ansible_task['name'] = self.task_name
 
     def nxos_feature_verify_state(self, x, parameter='state'):
-        if x in self.nxos_feature_valid_state:
+        verify_set = self.nxos_feature_valid_state
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'nxos_feature_verify_state'
-        expectation = ','.join(self.nxos_feature_valid_state)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     @property
