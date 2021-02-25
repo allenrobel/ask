@@ -1,5 +1,5 @@
 # NxosHsrpInterfaces() - cisco/nxos/nxos_hsrp_interfaces.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -47,7 +47,7 @@ bfd                                 Enable/Disable HSRP Bidirectional Forwarding
                                         - Example:
                                             task.bfd = 'enable'
 
-state                               Desired state of ``feature``::
+state                               Desired state of ``bfd`` on ``name`` interface::
 
                                         - Type: str()
                                         - Valid values:

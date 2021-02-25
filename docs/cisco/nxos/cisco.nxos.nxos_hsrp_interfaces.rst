@@ -42,7 +42,7 @@ bfd                                 Enable/Disable HSRP Bidirectional Forwarding
                                         - Example:
                                             task.bfd = 'enable'
 
-state                               Desired state of ``feature``::
+state                               Desired state of ``bfd`` on ``name`` interface::
 
                                         - Type: str()
                                         - Valid values:
