@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_evpn_global.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -21,7 +21,7 @@ def playbook():
 
 def test_positive():
     task = NxosEvpnGlobal(log)
-    task.nv_overlay_evpn = 'yes'
+    task.nv_overlay_evpn = True
     task.task_name = '{}: {} : test_positive'.format(ansible_module, task.nv_overlay_evpn)
     task.update()
     pb.add_task(task)
