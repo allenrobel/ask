@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_hsrp_interfaces.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,16 +19,19 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    task.append_to_task_name('state {}'.format(task.state))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
+
 def hsrp_interface_bfd_enable_task(pb):
     task = NxosHsrpInterfaces(log)
     task.name = 'Ethernet1/10'
     task.bfd = 'enable'
     task.state = 'merged'
-    task.task_name = '{}: name {} bfd {} state {}'.format(
-        ansible_module,
-        task.name,
-        task.bfd,
-        task.state)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -37,11 +40,7 @@ def hsrp_interface_bfd_disable_task(pb):
     task.name = 'Ethernet1/11'
     task.bfd = 'disable'
     task.state = 'merged'
-    task.task_name = '{}: name {} bfd {} state {}'.format(
-        ansible_module,
-        task.name,
-        task.bfd,
-        task.state)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

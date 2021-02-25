@@ -1,25 +1,82 @@
 # NxosHsrpInterfaces() - cisco/nxos/nxos_hsrp_interfaces.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_hsrp_interfaces.py
+**************************************
+NxosHsrpInterfaces()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosHsrpInterfaces() generates Ansible Playbook tasks conformant with nxos_hsrp_interfaces
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosHsrpInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_hsrp_interfaces
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/nxos_hsrp_interfaces.py
+Ansible Module Documentation
+----------------------------
+- `nxos_hsrp_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_hsrp_interfaces_module.rst>`_
 
-Properties:
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_hsrp_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_hsrp_interfaces.py>`_
 
-    name        Full name of interface, e.g. Ethernet1/1
-                Required
-    bfd         Enable/Disable HSRP Bidirectional Forwarding Detection (BFD) on the interface
-                Valid values: disable, enable
-    state       Valid values: see __init__().nxos_hsrp_interfaces_valid_state
+
+|
+
+================================    ==============================================
+Property                            Description
+================================    ==============================================
+name                                Full name of the interface::
+
+                                        - Type: str()
+                                        - Example:
+                                            task.name = 'Ethernet1/1'
+                                        - Required
+
+bfd                                 Enable/Disable HSRP Bidirectional Forwarding
+                                    Detection (BFD) on the interface::
+
+                                        - Type: str()
+                                        - Valid values:
+                                            - disable
+                                            - enable
+                                        - Example:
+                                            task.bfd = 'enable'
+
+state                               Desired state of ``feature``::
+
+                                        - Type: str()
+                                        - Valid values:
+                                            - deleted
+                                            - gathered
+                                            - merged
+                                            - overridden
+                                            - parsed
+                                            - rendered
+                                            - replaced
+                                        - Example:
+                                            task.state = 'enabled'
+                                        - Required
+
+task_name                           Name of the task. Ansible will display this
+                                    when the playbook is run::
+
+                                        - Type: str()
+                                        - Example:
+                                            - task.task_name = 'Vlan10 HSRP BFD'
+                                        
+================================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 
@@ -39,13 +96,13 @@ class NxosHsrpInterfaces(Task):
         self.nxos_hsrp_interfaces_valid_bfd.add('enable')
 
         self.nxos_hsrp_interfaces_valid_state = set()
-        self.nxos_hsrp_interfaces_valid_state.add('merged')
-        self.nxos_hsrp_interfaces_valid_state.add('replaced')
-        self.nxos_hsrp_interfaces_valid_state.add('overridden')
         self.nxos_hsrp_interfaces_valid_state.add('deleted')
         self.nxos_hsrp_interfaces_valid_state.add('gathered')
-        self.nxos_hsrp_interfaces_valid_state.add('rendered')
+        self.nxos_hsrp_interfaces_valid_state.add('merged')
+        self.nxos_hsrp_interfaces_valid_state.add('overridden')
         self.nxos_hsrp_interfaces_valid_state.add('parsed')
+        self.nxos_hsrp_interfaces_valid_state.add('rendered')
+        self.nxos_hsrp_interfaces_valid_state.add('replaced')
 
         self.nxos_hsrp_interfaces_valid_interface_examples = set()
         self.nxos_hsrp_interfaces_valid_interface_examples.add('EthernetX/Y')
@@ -93,11 +150,12 @@ class NxosHsrpInterfaces(Task):
             self.ansible_task['name'] = self.task_name
 
     def verify_nxos_hsrp_interfaces_bfd(self, x, parameter='bfd'):
-        if x in self.nxos_hsrp_interfaces_valid_bfd:
+        verify_set = self.nxos_hsrp_interfaces_valid_bfd
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_hsrp_interfaces_bfd'
-        expectation = ','.join(self.nxos_hsrp_interfaces_valid_bfd)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_hsrp_interfaces_interface(self, x, parameter='interface'):
@@ -115,11 +173,12 @@ class NxosHsrpInterfaces(Task):
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_hsrp_interfaces_state(self, x, parameter='state'):
-        if x in self.nxos_hsrp_interfaces_valid_state:
+        verify_set = self.nxos_hsrp_interfaces_valid_state
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_hsrp_interfaces_state'
-        expectation = ','.join(self.nxos_hsrp_interfaces_valid_state)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     @property
