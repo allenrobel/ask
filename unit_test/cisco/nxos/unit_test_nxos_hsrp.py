@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_hsrp.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,18 +19,51 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def hsrp(pb):
+def add_task_name(task):
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
+
+def hsrp_priority_default(pb):
     task = NxosHsrp(log)
     task.group = 2
+    task.priority = 'default'
     task.interface = 'Vlan101'
     task.state = 'present'
-    task.task_name = '{}: group {} interface {} state {}'.format(ansible_module, task.group, task.interface, task.state)
+    add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def hsrp_version_1_group(pb):
+    task = NxosHsrp(log)
+    task.group = 255
+    #task.group = 256 # negative test
+    task.version = 1
+    task.priority = 255
+    task.interface = 'Vlan102'
+    task.state = 'present'
+    add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def hsrp_version_2_group(pb):
+    task = NxosHsrp(log)
+    task.group = 4095
+    #task.group = 4096 # negative test
+    task.version = 2
+    task.priority = 255
+    task.interface = 'Vlan103'
+    task.state = 'present'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
 pb = playbook()
 
-hsrp(pb)
+hsrp_priority_default(pb)
+hsrp_version_1_group(pb)
+hsrp_version_2_group(pb)
 
 pb.append_playbook()
 pb.write_playbook()
