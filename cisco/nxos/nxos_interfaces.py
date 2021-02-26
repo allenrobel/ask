@@ -1,5 +1,5 @@
 # NxosInterfaces() - cisco/nxos/nxos_interfaces.py
-our_version = 115
+our_version = 116
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -211,7 +211,7 @@ class NxosInterfaces(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_interfaces_mtu(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def name(self):
