@@ -1,5 +1,5 @@
 # NxosVpc() - cisco/nxos/nxos_vpc.py
-our_version = 107
+our_version = 108
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -269,7 +269,7 @@ class NxosVpc(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_vpc_auto_recovery_reload_delay(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def delay_restore(self):
@@ -280,7 +280,7 @@ class NxosVpc(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_vpc_delay_restore(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def delay_restore_interface_vlan(self):
@@ -291,7 +291,7 @@ class NxosVpc(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_vpc_delay_restore_interface_vlan(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def delay_restore_orphan_port(self):
@@ -302,7 +302,7 @@ class NxosVpc(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_vpc_delay_restore_orphan_port(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def domain(self):
@@ -313,7 +313,7 @@ class NxosVpc(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_vpc_domain(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def peer_gw(self):
@@ -367,7 +367,7 @@ class NxosVpc(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_vpc_role_priority(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def state(self):
@@ -389,4 +389,4 @@ class NxosVpc(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_vpc_system_priority(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
