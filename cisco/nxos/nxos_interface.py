@@ -1,45 +1,226 @@
 # NxosInterface() - cisco/nxos/nxos_interface.py
-our_version = 114
+our_version = 115
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_interface.py
+**************************************
+NxosInterface()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-deprecated, removed after 2022-06-01
-Use NxosInterfaces() (nxos_interfaces.py) instead.
+Deprecation
+-----------
 
-NxosInterface() generates Ansible Playbook tasks conformant with nxos_interface
-which can be fed to AnsPlaybook().add_task()
+- Status: ``DEPRECATED``
+- Alternative: `nxos_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_interfaces_module.rst>`_
+- 2020-06-01, deprecation date
+- 2022-06-01, removal date (module may be removed after this date)
 
-Example usage:
-    unit_test/cisco/nxos/nxos_interface.py
+ScriptKit Synopsis
+------------------
+- NxosInterface() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_interface
+- These can then be passed to Playbook().add_task()
 
-Properties:
+Ansible Module Documentation
+----------------------------
+- `nxos_interface <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_interface_module.rst>`_
 
-    admin_state         Valid values: up, down
-    aggregate
-    delay               Valid values: int()
-    description         str()
-    duplex              Valid values: full, half, auto
-    fabric_forwarding_anycast_gateway   Valid values: no, yes
-    interface_type      interface to be unconfigured
-                            Valid values: loopback, portchannel, svi, nve
-    ip_forward          Valid values: enable, disable
-    mode                Valid values: layer2, layer3
-    mtu                 Valid values: int() range: 512-9216
-    name                Full name of interface e.g. Ethernet1/1, port-channel10
-    neighbors           list_of_dict see add_neighbor_host() and add_neighbor_port() methods
-    rx_rate             state_check only. Ansible will ensure ingress rate is rx_rate bps before claiming interface up
-                        Valid values: int()
-    speed               speed config on the interface e.g 10000000, 40000000, 25000000, etc.
-                        Valid for ethernet only
-                        Valid values: int()
-    state               Valid values: present, absent, default
-    task_name           Name of the task
-    tx_rate             state_check only (Ansible will ensure egress rate is tx_rate bps before claiming interface up)
-                        Valid values: int()
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_interface.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_interface.py>`_
+
+
+|
+
+====================================    ==============================================
+Property                                Description
+====================================    ==============================================
+admin_state                             Administrative state of the interface::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - down
+                                                - up
+                                            - Example:
+                                                task.admin_state = 'down'
+
+delay                                   Time in seconds to wait before checking for the
+                                        operational state on remote device. This wait
+                                        is applicable for operational state arguments::
+
+                                            - Type: int()
+                                            - Units: seconds
+                                            - Default: 10
+                                            - Example:
+                                                task.delay = 20
+
+description                             Interface description::
+
+                                            - Type: str()
+                                            - Example:
+                                                task.description = 'Eth1/1 : peer 101.Eth2.1'
+
+duplex                                  Interface duplex. Applicable for ethernet
+                                        interface only::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - auto
+                                                - full
+                                                - half
+                                            - Example:
+                                                task.duplex = 'full'
+
+fabric_forwarding_anycast_gateway       Associate SVI with anycast gateway under
+                                        VLAN configuration mode. Applicable for 
+                                        SVI interface only::
+
+                                            - Type: bool()
+                                            - Valid values: False, True
+                                            - Example:
+                                                task.fabric_forwarding_anycast_gateway = True
+
+interface_type                          Interface type to be unconfigured from the device::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - loopback
+                                                - nve
+                                                - portchannel
+                                                - svi
+                                            - Example:
+                                                task.interface_type = 'loopback'
+
+ip_forward                              Enable/Disable ip forward feature on SVIs::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - disable
+                                                - enable
+                                            - Example:
+                                                task.ip_forward = 'disable'
+
+mode                                    Manage Layer 2 or Layer 3 state of the interface. 
+                                        Applicable for ethernet and portchannel interface
+                                        only::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - layer2
+                                                - layer3
+                                            - Example:
+                                                task.mode = 'layer3'
+
+mtu                                     Maximum transfer unit (MTU) for the interface.
+                                        Applicable for ethernet interface only::
+
+                                            - Type: int()
+                                            - Valid values:
+                                                - even int() range: 576-9216
+                                            - Example:
+                                                task.mtu = 9118
+
+name                                    Full name of interface::
+
+                                            - Type: str()
+                                            - Examples:
+                                                task.name = 'Ethernet1/1'
+                                                task.name = 'port-channel22'
+
+neighbor_host                           An LLDP neighbor that should be present if the
+                                        interface is fully operational.  If this neighbor
+                                        is not present, Ansible will declare the port down.
+                                        Can be combined with neighbor_port::
+
+                                            - Type: str()
+                                            - Example:
+                                                task.neighbor_host = 'foo_neighbor'
+                                                task.add_neighbors()
+                                            - See also: neighbor_port
+
+neighbor_port                           An LLDP neighbor port name that should be present
+                                        if the interface is fully operational.  If this
+                                        port name is not present, Ansible will declare the
+                                        port down.  Can be combined with neighbor_host::
+
+                                            - Type: str()
+                                            - Example:
+                                                task.neighbor_port = 'Ethernet1/1'
+                                                task.add_neighbors()
+                                            - See also: neighbor_host
+
+rx_rate                                 state_check only. Ansible will ensure ingress rate is
+                                        at least ``rx_rate`` bps before declaring the interface
+                                        up::
+
+                                            - Type: int()
+                                            - Units: bits per second (bps)
+                                            - Example:
+                                                task.rx_rate = 500000
+
+speed                                   Interface link speed. Applicable for ethernet
+                                        interface only.  Specifying speed will enable
+                                        ``no negotiate auto`` (unless ``auto`` is used)::
+
+                                            - Type: int() or str()
+                                            - Valid values:
+                                                  - 100     100Mb/s
+                                                  - 1000    1Gb/s
+                                                  - 10000   10Gb/s
+                                                  - 100000  100Gb/s
+                                                  - 200000  200Gb/s
+                                                  - 25000   25Gb/s
+                                                  - 40000   40Gb/s
+                                                  - 400000  400Gb/s
+                                                  - auto    Auto negotiate speed
+                                            - Examples:
+                                                task.speed = 40000
+                                                task.speed = 'auto'
+                                            - NOTES:
+                                                - Different platforms will support different
+                                                  values.  And certainly transceivers will
+                                                  not support all values.  ScriptKit allows
+                                                  any int() value, or 'auto' keyword.
+
+state                                   Desired state after task has run::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - absent
+                                                - default
+                                                - present
+                                            - Example:
+                                                task.state = 'present'
+                                            - Required
+
+task_name                               Name of the task. Ansible will display this
+                                        when the playbook is run::
+
+                                            - Type: str()
+                                            - Example:
+                                                - task.task_name = 'enable lacp'
+
+tx_rate                                 state_check only. Ansible will ensure egress rate is
+                                        at least ``tx_rate`` bps before declaring the interface
+                                        up::
+
+                                            - Type: int()
+                                            - Units: bits per second (bps)
+                                            - Example:
+                                                task.tx_rate = 500000
+
+====================================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 
 class NxosInterface(Task):
@@ -101,6 +282,7 @@ class NxosInterface(Task):
         self.properties_set.add('mode')
         self.properties_set.add('mtu')
         self.properties_set.add('name')
+        self.properties_set.add('speed')
         self.properties_set.add('rx_rate')
         self.properties_set.add('tx_rate')
         self.init_properties()
@@ -163,53 +345,63 @@ class NxosInterface(Task):
         self.neighbor_host = None
         self.neighbor_port = None
 
-    def nxos_interface_verify_admin_state(self, x, parameter='admin_state'):
+    def verify_nxos_interface_admin_state(self, x, parameter='admin_state'):
         verify_set = self.nxos_interface_valid_admin_state
         if x in verify_set:
             return
         source_class = self.class_name
-        source_method = 'nxos_interface_verify_admin_state'
+        source_method = 'verify_nxos_interface_admin_state'
         expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_interface_verify_duplex(self, x, parameter='duplex'):
+    def verify_nxos_interface_duplex(self, x, parameter='duplex'):
         verify_set = self.nxos_interface_valid_duplex
         if x in verify_set:
             return
         source_class = self.class_name
-        source_method = 'nxos_interface_verify_duplex'
+        source_method = 'verify_nxos_interface_duplex'
         expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_interface_verify_interface_type(self, x, parameter='interface_type'):
+    def verify_nxos_interface_interface_type(self, x, parameter='interface_type'):
         for interface_type in self.nxos_interface_valid_interface_type:
             if interface_type in x.lower():
                 return
         source_class = self.class_name
-        source_method = 'nxos_interface_verify_interface_type'
+        source_method = 'verify_nxos_interface_interface_type'
         expectation = ','.join(self.nxos_interface_valid_interface_type)
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_interface_verify_ip_forward(self, x, parameter='ip_forward'):
+    def verify_nxos_interface_ip_forward(self, x, parameter='ip_forward'):
         verify_set = self.nxos_interface_valid_ip_forward
         if x in verify_set:
             return
         source_class = self.class_name
-        source_method = 'nxos_interface_verify_ip_forward'
+        source_method = 'verify_nxos_interface_ip_forward'
         expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def nxos_interface_verify_mode(self, x, parameter='mode'):
+    def verify_nxos_interface_mode(self, x, parameter='mode'):
         verify_set = self.nxos_interface_valid_mode
         if x in verify_set:
             return
         source_class = self.class_name
-        source_method = 'nxos_interface_verify_mode'
+        source_method = 'verify_nxos_interface_mode'
         expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def nxos_interface_verify_mtu(self, x, parameter='mtu'):
         self.verify_integer_range(x, self.nxos_interface_min_mtu, self.nxos_interface_max_mtu, self.class_name, parameter)
+
+    def verify_nxos_interface_speed(self, x, parameter='speed'):
+        if x == 'auto':
+            return
+        if self.is_digits(x):
+            return
+        source_class = self.class_name
+        source_method = 'verify_nxos_interface_speed'
+        expectation = 'digits, or keyword: auto'
+        self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_interface_state(self, x, parameter='state'):
         verify_set = self.nxos_interface_valid_state
@@ -228,7 +420,7 @@ class NxosInterface(Task):
         parameter = 'admin_state'
         if self.set_none(x, parameter):
             return
-        self.nxos_interface_verify_admin_state(x, parameter)
+        self.verify_nxos_interface_admin_state(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -260,7 +452,7 @@ class NxosInterface(Task):
         parameter = 'duplex'
         if self.set_none(x, parameter):
             return
-        self.nxos_interface_verify_duplex(x, parameter)
+        self.verify_nxos_interface_duplex(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -271,7 +463,7 @@ class NxosInterface(Task):
         parameter = 'fabric_forwarding_anycast_gateway'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -282,7 +474,7 @@ class NxosInterface(Task):
         parameter = 'interface_type'
         if self.set_none(x, parameter):
             return
-        self.nxos_interface_verify_interface_type(x, parameter)
+        self.verify_nxos_interface_interface_type(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -293,7 +485,7 @@ class NxosInterface(Task):
         parameter = 'ip_forward'
         if self.set_none(x, parameter):
             return
-        self.nxos_interface_verify_ip_forward(x, parameter)
+        self.verify_nxos_interface_ip_forward(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -304,7 +496,7 @@ class NxosInterface(Task):
         parameter = 'mode'
         if self.set_none(x, parameter):
             return
-        self.nxos_interface_verify_mode(x, parameter)
+        self.verify_nxos_interface_mode(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -316,7 +508,7 @@ class NxosInterface(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_interface_verify_mtu(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def name(self):
@@ -371,9 +563,7 @@ class NxosInterface(Task):
         parameter = 'speed'
         if self.set_none(x, parameter):
             return
-        if not self.is_digits(x):
-            self.task_log.error('exiting. Expected digits. Got {}'.format(x))
-            exit(1)
+        self.verify_nxos_interface_speed(x, parameter)
         self.properties[parameter] = x
 
     @property

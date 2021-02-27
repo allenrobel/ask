@@ -19,6 +19,22 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
+
+def fabric_forwarding_anycast_gateway(pb):
+    task = NxosInterface(log)
+    task.name = 'Ethernet1/3'
+    task.admin_state = 'up'
+    task.mtu = 9216
+    task.fabric_forwarding_anycast_gateway = True
+    add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
 def layer2(pb):
     task = NxosInterface(log)
     task.name = 'Ethernet1/1'
@@ -26,17 +42,11 @@ def layer2(pb):
     task.mtu = 9216
     task.mode = 'layer2'
     task.ip_forward = 'disable'
+    task.speed = 40000
     task.state = 'present'
     task.neighbor_host = 'test_hostname1'
     task.neighbor_port = 'Ethernet1/2'
-    task.task_name = '{}: name {}, mode {}, admin_state {}, mtu {}, ip_forward {}, state {}'.format(
-        ansible_module,
-        task.name,
-        task.mode,
-        task.admin_state,
-        task.mtu,
-        task.ip_forward,
-        task.state)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -45,22 +55,17 @@ def layer3(pb):
     task.name = 'Ethernet1/2'
     task.admin_state = 'up'
     task.mtu = 9216
+    task.speed = 'auto'
     task.mode = 'layer3'
     task.ip_forward = 'enable'
     task.state = 'present'
     task.neighbor_host = 'test_hostname2'
-    task.task_name = '{}: name {}, mode {}, admin_state {}, mtu {}, ip_forward {}, state {}'.format(
-        ansible_module,
-        task.name,
-        task.mode,
-        task.admin_state,
-        task.mtu,
-        task.ip_forward,
-        task.state)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
 pb = playbook()
+fabric_forwarding_anycast_gateway(pb)
 layer2(pb)
 layer3(pb)
 pb.append_playbook()
