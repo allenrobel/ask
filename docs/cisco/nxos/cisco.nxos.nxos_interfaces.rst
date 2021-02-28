@@ -32,7 +32,8 @@ description                             Interface description::
                                                 task.description = 'Here be dragons'
 
 duplex                                  Interface duplex. Applicable for Ethernet
-                                        interfaces only::
+                                        interfaces only.  If set, ``speed`` must
+                                        also be set::
 
                                             - Type: str()
                                             - Valid values:
@@ -40,6 +41,7 @@ duplex                                  Interface duplex. Applicable for Etherne
                                                 - full
                                                 - half
                                             - Example:
+                                                task.speed = 40000
                                                 task.duplex = 'auto'
 
 enabled                                 Administrative state of the interface. Set
