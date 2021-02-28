@@ -1,38 +1,131 @@
 # NxosInterfaces() - cisco/nxos/nxos_interfaces.py
-our_version = 116
+our_version = 117
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: ask_task_nxos_interfaces.py
+**************************************
+NxosInterfaces()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-AskNxosInterfaces() generates Ansible Playbook tasks conformant with nxos_interfaces
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_interfaces
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/nxos_interfaces.py
+Ansible Module Documentation
+----------------------------
+- `nxos_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_interfaces_module.rst>`_
 
-Properties:
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_interfaces.py>`_
 
-    description                         -   interface description
-    duplex                              -   Interface duplex. Applicable for Ethernet interfaces only.
-    enabled                                 Administrative state of the interface. Set the value to
-                                            yes to administratively enable the interface or no to disable it
-                                            Valid values: no, yes
-    fabric_forwarding_anycast_gateway   -   Associate SVI with anycast gateway under VLAN configuration mode. 
-                                            Applicable for SVI interfaces only
-                                            Valid values: no, yes
-    ip_forward                          -   Disable (no) or enable (yes) IP forward feature on SVIs
-                                            Valid values: no, yes
-    mode                                -   Layer2 or Layer3 state of the interface.
-                                            Applicable for Ethernet and port channel interfaces only
-                                            Valid values: layer2, layer3.
-    mtu                                 -   MTU for a specific interface. Applicable for Ethernet interfaces only.
-                                            Valid values: int() Even number in range: 576-9216
-    name                                -   Full name of interface, e.g. Ethernet1/1, port-channel10
-    state                               -   see self.__init__().nxos_interfaces_valid_state
-    speed                               -   Interface link speed. Applicable for Ethernet interfaces only
+
+|
+
+====================================    ==============================================
+Property                                Description
+====================================    ==============================================
+description                             Interface description::
+
+                                            - Type: str()
+                                            - Example:
+                                                task.description = 'Here be dragons'
+
+duplex                                  Interface duplex. Applicable for Ethernet
+                                        interfaces only::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - auto
+                                                - full
+                                                - half
+                                            - Example:
+                                                task.duplex = 'auto'
+
+enabled                                 Administrative state of the interface. Set
+                                        the value to ``True`` to administratively
+                                        enable the interface or  ``False`` to disable
+                                        it::
+
+                                            - Type: bool()
+                                            - Valid values: False, True
+                                            - Example:
+                                                task.enabled = True
+
+fabric_forwarding_anycast_gateway       Associate SVI with anycast gateway under VLAN
+                                        configuration mode. Applicable for SVI interfaces
+                                        only::
+
+                                            - Type: bool()
+                                            - Valid values: False, True
+                                            - Example:
+                                                task.fabric_forwarding_anycast_gateway = True
+
+ip_forward                              Disable ``False`` or enable ``True`` IP forward
+                                        feature on SVIs::
+
+                                            - Type: bool()
+                                            - Valid values: False, True
+                                            - Example:
+                                                task.ip_forward = False
+
+mode                                    Layer2 or Layer3 state of the interface.
+                                        Applicable for Ethernet and port channel
+                                        interfaces only::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - layer2
+                                                - layer3
+                                            - Example:
+                                                task.mode = 'layer2'
+
+mtu                                     Maximum transfer unit (MTU) for a specific
+                                        interface::
+
+                                            - Type: int()
+                                            - Valid values:
+                                                - range:  68-9216  SVI
+                                                - range: 576-9216  port-channel
+                                                - range: 576-9216  Ethernet
+                                            - Example:
+                                                task.mtu = 9216
+
+name                                -   Full name of interface, e.g. Ethernet1/1, port-channel10
+state                               -   see self.__init__().nxos_interfaces_valid_state
+speed                               -   Interface link speed. Applicable for Ethernet interfaces only
+
+state                               Desired state of ``feature``::
+
+                                        - Type: str()
+                                        - Valid values:
+                                            - disabled
+                                            - enabled
+                                        - Example:
+                                            task.state = 'enabled'
+                                        - Required
+
+task_name                           Name of the task. Ansible will display this
+                                    when the playbook is run::
+
+                                        - Type: str()
+                                        - Example:
+                                            - task.task_name = 'enable lacp'
+                                        
+================================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 
 class NxosInterfaces(Task):
@@ -50,6 +143,7 @@ class NxosInterfaces(Task):
         self.properties_set.add('ip_forward')
         self.properties_set.add('mode')
         self.properties_set.add('mtu')
+        self.properties_set.add('name')
         self.properties_set.add('speed')
 
         self.nxos_interfaces_valid_duplex = set()
@@ -67,8 +161,11 @@ class NxosInterfaces(Task):
         self.nxos_interfaces_valid_state.add('overridden')
         self.nxos_interfaces_valid_state.add('deleted')
 
-        self.min_mtu = 576
-        self.max_mtu = 9216
+        self.nxos_interfaces_mtu_min = 576
+        self.nxos_interfaces_mtu_max = 9216
+
+        self.nxos_interfaces_svi_mtu_min = 68
+        self.nxos_interfaces_svi_mtu_max = 9216
 
         self.init_properties()
 
@@ -76,6 +173,22 @@ class NxosInterfaces(Task):
         self.properties = dict()
         for p in self.properties_set:
             self.properties[p] = None
+
+    def final_verification_mtu(self):
+        if self.mtu == None:
+            return
+        if 'Loopback' in self.name:
+            self.task_log.warning('mtu not valid for {}. Changing mtu to None.'.format(self.name))
+            self.mtu = None
+            return
+        if 'nve' in self.name:
+            self.task_log.warning('mtu not valid for {}. Changing mtu to None.'.format(self.name))
+            self.mtu = None
+            return
+        if self.is_vlan_interface(self.name):
+            self.verify_nxos_interfaces_svi_mtu(self.mtu, 'mtu')
+        else:
+            self.verify_nxos_interfaces_mtu(self.mtu, 'mtu')
 
     def final_verification(self):
         if self.name == None:
@@ -87,9 +200,10 @@ class NxosInterfaces(Task):
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
-        if 'Loopback' in self.name and self.mtu != None:
-            self.task_log.warning('mtu not valid for {}. Changing mtu to None.'.format(self.name))
-            self.mtu = None
+        if self.duplex != None and self.speed == None:
+            self.task_log.error('exiting. If duplex is set, speed must also be set.')
+            exit(1)
+        self.final_verification_mtu()
 
     def update(self):
         '''
@@ -135,7 +249,14 @@ class NxosInterfaces(Task):
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_interfaces_mtu(self, x, parameter='verify_nxos_interfaces_mtu'):
-        self.verify_integer_range(x, self.min_mtu, self.max_mtu, self.class_name, parameter)
+        range_min = self.nxos_interfaces_mtu_min
+        range_max = self.nxos_interfaces_mtu_max
+        self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
+
+    def verify_nxos_interfaces_svi_mtu(self, x, parameter='verify_nxos_interfaces_svi_mtu'):
+        range_min = self.nxos_interfaces_svi_mtu_min
+        range_max = self.nxos_interfaces_svi_mtu_max
+        self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
 
     @property
     def description(self):
@@ -166,7 +287,7 @@ class NxosInterfaces(Task):
         parameter = 'enabled'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter) # inherited from AnsCommon()
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -177,7 +298,7 @@ class NxosInterfaces(Task):
         parameter = 'fabric_forwarding_anycast_gateway'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter) # inherited from AnsCommon()
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -188,7 +309,7 @@ class NxosInterfaces(Task):
         parameter = 'ip_forward'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter) # inherited from AnsCommon()
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -210,7 +331,9 @@ class NxosInterfaces(Task):
         parameter = 'mtu'
         if self.set_none(x, parameter):
             return
-        self.verify_nxos_interfaces_mtu(x, parameter)
+        # Additional mtu verification in final_verification()
+        # once we know the type of interface
+        self.verify_digits(x, parameter)
         self.properties[parameter] = str(x)
 
     @property
@@ -221,7 +344,7 @@ class NxosInterfaces(Task):
         parameter = 'name'
         if self.set_none(x, parameter):
             return
-        self.verify_interface(x, parameter) # inherited from AnsCommon()
+        self.verify_interface(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -243,5 +366,5 @@ class NxosInterfaces(Task):
         parameter = 'speed'
         if self.set_none(x, parameter):
             return
-        self.verify_digits(x, parameter) # inherited from AnsCommon()
-        self.properties[parameter] = x
+        self.verify_digits(x, parameter)
+        self.properties[parameter] = str(x)
