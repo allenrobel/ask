@@ -1,5 +1,5 @@
 # Common() - common/common.py
-our_version = 108
+our_version = 109
 '''
 ====================
 Common() - common.py
@@ -61,7 +61,7 @@ class Common(object):
         self.valid_ip_interface.add('port-channel')
         self.valid_ip_interface.add('Vlan')
         self.valid_ip_interface.add('Loopback')
-        self.valid_ip_interface.add('mgmt0')
+        self.valid_ip_interface.add('mgmt')
         self.valid_ip_interface.add('Stc')
 
         self.valid_ip_interface_or_default = set.union(self.valid_ip_interface)
@@ -651,17 +651,42 @@ class Common(object):
         self.task_log.error('exiting. {} does not exist: {}'.format(parameter, x))
         exit(1)
 
+   def verify_interface_or_default(self, x, parameter=''):
+        if self.is_default(x):
+            return
+        self.verify_interface(x, parameter)
+
     def verify_interface(self, x, parameter=''):
-        for value in self.valid_interface:
-            if value.lower() in x.lower():
-                return
+        if self.is_ethernet_interface(x):
+            return
+        if self.is_ethernet_subinterface(x):
+            return
+        if self.is_port_channel_interface(x):
+            return
+        if self.is_management_interface(x):
+            return
+        if self.is_loopback_interface(x):
+            return
+        if self.is_nve_interface(x):
+            return
+        if self.is_vlan_interface(x):
+            return
         expectation = self.valid_interface
         self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ip_interface(self, x, parameter=''):
-        for value in self.valid_ip_interface:
-            if value.lower() in x.lower():
-                return
+        if self.is_ethernet_interface(x):
+            return
+        if self.is_ethernet_subinterface(x):
+            return
+        if self.is_port_channel_interface(x):
+            return
+        if self.is_loopback_interface(x):
+            return
+        if self.is_management_interface(x):
+            return
+        if self.is_vlan_interface(x):
+            return
         expectation = self.valid_ip_interface
         self.fail(self.class_name, parameter, x, parameter, expectation)
 
@@ -676,13 +701,6 @@ class Common(object):
             if value.lower() in x.lower():
                 return
         expectation = self.valid_lldp_interface
-        self.fail(self.class_name, parameter, x, parameter, expectation)
-
-    def verify_interface_or_default(self, x, parameter=''):
-        for value in self.valid_interface_or_default:
-            if value.lower() in x.lower():
-                return
-        expectation = self.valid_interface_or_default
         self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_list(self, x, parameter='unspecified'):
