@@ -1,5 +1,5 @@
 # NxosConfig() - cisco/nxos/nxos_config.py
-our_version = 112
+our_version = 113
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -273,7 +273,7 @@ task_name               Name of the task. Ansible will display this
                             - Example:
                                 - task.task_name = 'enable lacp'
                                         
-================================    ==============================================
+====================    ==============================================
 
 |
 
