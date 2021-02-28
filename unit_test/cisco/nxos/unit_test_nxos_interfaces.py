@@ -31,7 +31,7 @@ def add_ethernet(pb):
     task.mtu = 9216
     task.mode = 'layer2'
     task.speed = 100000
-    task.duplex = 'full'
+    task.duplex = 'auto'
     task.state = 'merged'
     add_task_name(task)
     task.update()
@@ -40,7 +40,8 @@ def add_ethernet(pb):
 def add_svi(pb):
     task = NxosInterfaces(log)
     task.name = 'Vlan222'
-    task.mtu = 68
+    task.mtu = 1500
+    task.fabric_forwarding_anycast_gateway = True
     task.mode = 'layer3'
     task.state = 'merged'
     add_task_name(task)
