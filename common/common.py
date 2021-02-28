@@ -1,5 +1,5 @@
 # Common() - common/common.py
-our_version = 109
+our_version = 110
 '''
 ====================
 Common() - common.py
@@ -651,7 +651,7 @@ class Common(object):
         self.task_log.error('exiting. {} does not exist: {}'.format(parameter, x))
         exit(1)
 
-   def verify_interface_or_default(self, x, parameter=''):
+    def verify_interface_or_default(self, x, parameter=''):
         if self.is_default(x):
             return
         self.verify_interface(x, parameter)
