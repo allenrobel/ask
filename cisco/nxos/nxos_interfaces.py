@@ -1,5 +1,5 @@
 # NxosInterfaces() - cisco/nxos/nxos_interfaces.py
-our_version = 117
+our_version = 118
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -96,28 +96,48 @@ mtu                                     Maximum transfer unit (MTU) for a specif
                                             - Example:
                                                 task.mtu = 9216
 
-name                                -   Full name of interface, e.g. Ethernet1/1, port-channel10
-state                               -   see self.__init__().nxos_interfaces_valid_state
-speed                               -   Interface link speed. Applicable for Ethernet interfaces only
+name                                    Full name of interface::
 
-state                               Desired state of ``feature``::
+                                            - Type: str()
+                                            - Examples:
+                                                task.name = 'Ethernet1/1'
+                                                task.name = 'Ethernet1/1.23'
+                                                task.name = 'Loopback4'
+                                                task.name = 'mgmt0'
+                                                task.name = 'port-channel22'
+                                                task.name = 'Vlan3'
 
-                                        - Type: str()
-                                        - Valid values:
-                                            - disabled
-                                            - enabled
-                                        - Example:
-                                            task.state = 'enabled'
-                                        - Required
+speed                                   Interface link speed. Applicable for Ethernet
+                                        interfaces only::
 
-task_name                           Name of the task. Ansible will display this
-                                    when the playbook is run::
+                                            - Type: int()
+                                            - Valid values: digits
+                                            - Example:
+                                                task.speed = 100000
 
-                                        - Type: str()
-                                        - Example:
-                                            - task.task_name = 'enable lacp'
+state                                   Desired state after task has run::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - deleted
+                                                - gathered
+                                                - merged
+                                                - overridden
+                                                - parsed
+                                                - rendered
+                                                - replaced
+                                            - Example:
+                                                task.state = 'merged'
+                                            - Required
+
+task_name                               Name of the task. Ansible will display this
+                                        when the playbook is run::
+
+                                            - Type: str()
+                                            - Example:
+                                                - task.task_name = 'Create Vlan10'
                                         
-================================    ==============================================
+====================================    ==============================================
 
 |
 
@@ -156,10 +176,13 @@ class NxosInterfaces(Task):
         self.nxos_interfaces_valid_mode.add('layer3')
 
         self.nxos_interfaces_valid_state = set()
-        self.nxos_interfaces_valid_state.add('merged')
-        self.nxos_interfaces_valid_state.add('replaced')
-        self.nxos_interfaces_valid_state.add('overridden')
         self.nxos_interfaces_valid_state.add('deleted')
+        self.nxos_interfaces_valid_state.add('gathered')
+        self.nxos_interfaces_valid_state.add('merged')
+        self.nxos_interfaces_valid_state.add('overridden')
+        self.nxos_interfaces_valid_state.add('parsed')
+        self.nxos_interfaces_valid_state.add('rendered')
+        self.nxos_interfaces_valid_state.add('replaced')
 
         self.nxos_interfaces_mtu_min = 576
         self.nxos_interfaces_mtu_max = 9216
