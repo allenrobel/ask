@@ -1,54 +1,210 @@
 # NxosL3Interfaces() - cisco/nxos/nxos_l3_interfaces.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_l3_interfaces.py
+**************************************
+NxosL3Interfaces()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosL3Interfaces() generates Ansible Playbook tasks conformant with nxos_l3_interfaces
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosL3Interfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_l3_interfaces
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_l3_interfaces.py
+Ansible Module Documentation
+----------------------------
+- `nxos_l3_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_l3_interfaces_module.rst>`_
 
-User properties:
-    dot1q                   -   str() 802.1q vlan ID used in 'encapsulation dot1q <vlan ID'
-    evpn_multisite_tracking -   str() VxLAN evpn multisite Interface tracking. Supported only on selected model
-                                Valid values: fabric-tracking, dci-tracking
-    ipv4_address            -   str() ipv4 interface address e.g. 10.1.1.0/31
-    ipv4_secondary          -   bool() Is ipv4_address a secondary address
-                                Valid values: no, yes
-    ipv4_tag                -   int() URIB route tag value for local/direct ipv4 routes
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_l3_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_l3_interfaces.py>`_
 
-    ipv6_address            -   str() ipv4 interface address e.g. 2001::0/127
-    ipv6_tag                -   int() URIB route tag value for local/direct ipv6 routes
 
-    redirects               -   bool() Enables/disables ipv4 redirects
-                                Valid values: no, yes
-    unreachables            -   bool() Enables/disables ip ICMP unreachables
-    task_name               -   str() freeform name for the task
+|
 
-User methods:
-    add_ipv4()              -   append ivp4 address and attributes to ipv4 attributes list
-    add_ipv6()              -   append ivp6 address and attributes to ipv6 attributes list
-Ansible module properties:
-    dot1q                   -   str() 802.1q vlan ID used in 'encapsulation dot1q <vlan ID'
-    evpn_multisite_tracking -   str() VxLAN evpn multisite Interface tracking. Supported only on selected model
-                                Valid values: fabric-tracking, dci-tracking
-    ipv4                    -   list_of_dict IPv4 address and attributes of the L3 interface
-                                Keys: address, secondary, tag
-    ipv6                    -   list_of_dict IPv6 address and attributes of the L3 interface
-                                Keys: address, tag
-    name                    -   str() Full name of L3 interface, i.e. Ethernet1/1
-    redirects               -   bool() Enables/disables ipv4 redirects
-                                Valid values: no, yes
-    state                   -   str() see self.nxos_l3_interfaces_valid_state
-    secondary               -   bool() yes, no. A boolean attribute to manage addition of secondary IP address
-    tag                     -   int() URIB route tag value for local/direct routes
-    unreachables            -   bool() Enables/disables ip ICMP unreachables
-    running_config          
+================================    ==============================================
+User Methods                        Description
+================================    ==============================================
+add_ipv4()                          Append ivp4 properties to the ipv4
+                                    attributes list and reset the properties
+                                    to None::
+
+                                        - Example:
+
+                                            pb = Playbook(log_instance)
+                                            task = NxosL3Interfaces(log_instance)
+                                            task.name = 'Ethernet1/49'
+                                            task.ipv4_address = '10.1.1.1/24'
+                                            task.ipv4_tag = 10
+                                            task.add_ipv4()
+                                            task.ipv4_address = '10.2.1.1/24'
+                                            task.ipv4_tag = 20
+                                            task.ipv4_secondary = 'yes'
+                                            task.add_ipv4()
+                                            task.state = 'merged'
+                                            task.update()
+                                            pb.add_task(task)
+
+                                        - Resulting playbook task:
+
+                                            tasks:
+                                            -   cisco.nxos.nxos_l3_interfaces:
+                                                    config:
+                                                    -   ipv4:
+                                                        -   address: 10.1.1.1/24
+                                                            tag: 10
+                                                        -   address: 10.2.1.1/24
+                                                            secondary: 'yes'
+                                                            tag: 20
+                                                        name: Ethernet1/49
+                                                    state: merged
+
+add_ipv6()                          Append ivp6 properties to ipv6
+                                    attributes list and reset the properties
+                                    to None::
+
+                                        - Example:
+
+                                            pb = Playbook(log_instance)
+                                            task = NxosL3Interfaces(log_instance)
+                                            task.name = 'Ethernet1/49'
+                                            task.ipv6_address = '2001:aaaa::1/64'
+                                            task.ipv6_tag = 10
+                                            task.add_ipv6()
+                                            task.ipv6_address = '2001:bbbb::1/64'
+                                            task.ipv6_tag = 20
+                                            task.add_ipv6()
+                                            task.state = 'merged'
+                                            task.update()
+                                            pb.add_task(task)
+
+                                        - Resulting playbook task:
+                                            config:
+                                            -   ipv6:
+                                                -   address: 2001:aaaa::1/64
+                                                    tag: 10
+                                                -   address: 2001:bbbb::1/64
+                                                    tag: 20
+                                                name: Ethernet1/49
+                                            state: merged
+
+================================    ==============================================
+
+
+================================    ==============================================
+Property                            Description
+================================    ==============================================
+dot1q                               802.1q vlan ID used in the following CLI
+                                    ``encapsulation dot1q <vlan ID>``::
+
+                                        - Type: int()
+                                        - Example:
+                                            task.dot1q = 10
+
+evpn_multisite_tracking             VxLAN evpn multisite Interface tracking.
+                                    Supported only on selected models::
+
+                                        - Type: str()
+                                        - Valid values:
+                                            - fabric-tracking
+                                            - dci-tracking
+                                        - Example:
+                                            task.evpn_multisite_tracking = 'fabric-tracking'
+
+ipv4_address                        ipv4 interface address::
+
+                                        - Type: str()
+                                        - Example:
+                                            task.ipv4_address = '10.1.1.0/31'
+
+ipv4_secondary                      ipv4_address is a secondary address::
+
+                                        - Type: bool()
+                                        - Valid values: False, True
+                                        - Example:
+                                            task.ipv4_secondary = True
+
+ipv4_tag                            URIB route tag value for local/direct ipv4 routes::
+
+                                        - Type: int()
+                                        - Example:
+                                            task.ipv4_tag = 200
+
+ipv6_address                        ipv6 interface address::
+
+                                        - Type: str()
+                                        - Example:
+                                            task.ipv4_address = '2001::0/127'
+
+ipv6_tag                            URIB route tag value for local/direct ipv6 routes::
+
+                                        - Type: int()
+                                        - Example:
+                                            task.ipv6_tag = 200
+
+redirects                           Enables/disables ipv4 redirects::
+
+                                        - Type: bool()
+                                        - Valid values: False, True
+                                        - Example:
+                                            task.redirects = False
+
+register                            Ansible variable to save output to::
+
+                                        - Type: str()
+                                        - Examples:
+                                            task.register = 'result'
+
+running_config                      Full path to a file containing the output of
+                                    ``show running-config | section ^interface``::
+
+                                        - Type: str()
+                                        - Examples:
+                                            task.running_config = '/tmp/running.cfg'
+
+state                               Desired state after task has run::
+
+                                        - Type: str()
+                                        - Valid values:
+                                            - deleted
+                                            - gathered
+                                            - merged
+                                            - overridden
+                                            - parsed
+                                            - rendered
+                                            - replaced
+                                        - Example:
+                                            task.state = 'merged'
+                                        - Required
+
+task_name                           Name of the task. Ansible will display this
+                                    when the playbook is run::
+
+                                        - Type: str()
+                                        - Example:
+                                            - task.task_name = 'enable lacp'
+
+unreachables                        Enables/disables ip ICMP unreachables::
+
+                                        - Type: bool()
+                                        - Valid values: False, True
+                                        - Example:
+                                            task.unreachables = True
+                                        
+================================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 
 class NxosL3Interfaces(Task):
@@ -60,16 +216,14 @@ class NxosL3Interfaces(Task):
         self.ipv4 = list() # list of dict
         self.ipv6 = list() # list of dict
 
-        self.ansible_task = dict()
-        self.ansible_task[self.ansible_module] = dict()
-        self.ansible_task[self.ansible_module]['state'] = None
-        self.ansible_task[self.ansible_module]['config'] = list()
-
         self.nxos_l3_interfaces_valid_state = set()
-        self.nxos_l3_interfaces_valid_state.add('merged')
-        self.nxos_l3_interfaces_valid_state.add('replaced')
-        self.nxos_l3_interfaces_valid_state.add('overridden')
         self.nxos_l3_interfaces_valid_state.add('deleted')
+        self.nxos_l3_interfaces_valid_state.add('gathered')
+        self.nxos_l3_interfaces_valid_state.add('merged')
+        self.nxos_l3_interfaces_valid_state.add('overridden')
+        self.nxos_l3_interfaces_valid_state.add('parsed')
+        self.nxos_l3_interfaces_valid_state.add('rendered')
+        self.nxos_l3_interfaces_valid_state.add('replaced')
 
         self.nxos_l3_interfaces_valid_evpn_multisite_tracking = set()
         self.nxos_l3_interfaces_valid_evpn_multisite_tracking.add('fabric-tracking')
@@ -93,6 +247,8 @@ class NxosL3Interfaces(Task):
         self.properties_set.add('ipv6_tag')
         self.properties_set.add('name')
         self.properties_set.add('redirects')
+        self.properties_set.add('register')
+        self.properties_set.add('running_config')
         self.properties_set.add('state')
         self.properties_set.add('unreachables')
 
@@ -113,29 +269,36 @@ class NxosL3Interfaces(Task):
             self.properties[p] = None
         self.properties['task_name'] = None
 
+    def final_verification_running_config(self):
+        if self.state != 'parsed':
+            self.task_log.error('exiting. if running_config is set, state must be set to parsed')
+            exit(1)
     def final_verification(self):
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
-        if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
-            exit(1)
-        if len(self.ipv4) == 0 and len(self.ipv6) == 0 and self.state != 'deleted':
-            self.task_log.error('exiting. at least one of [ipv4 attributes, ipv6 attributes] must be set.')
-            self.task_log.error('ipv4_attribute properties: ipv4_address, ipv4_secondary, ipv4_tag')
-            self.task_log.error('ipv6_attribute properties: ipv6_address, ipv6_tag')
-            exit(1)
-        ipv4_without_secondary = 0
-        for d in self.ipv4:
-            if 'secondary' in d:
-                if d['secondary'] == 'no':
+        if self.running_config != None:
+            self.final_verification_running_config()
+        else:
+            if self.name == None:
+                self.task_log.error('exiting. call instance.name before calling instance.update()')
+                exit(1)
+            if len(self.ipv4) == 0 and len(self.ipv6) == 0 and self.state != 'deleted':
+                self.task_log.error('exiting. at least one of [ipv4 attributes, ipv6 attributes] must be set.')
+                self.task_log.error('ipv4_attribute properties: ipv4_address, ipv4_secondary, ipv4_tag')
+                self.task_log.error('ipv6_attribute properties: ipv6_address, ipv6_tag')
+                exit(1)
+            ipv4_without_secondary = 0
+            for d in self.ipv4:
+                if 'secondary' in d:
+                    if d['secondary'] == False:
+                        ipv4_without_secondary += 1
+                else:
                     ipv4_without_secondary += 1
-            else:
-                ipv4_without_secondary += 1
-        if ipv4_without_secondary > 1:
-            self.task_log.error('exiting. multiple ipv4_address without ipv4_secondary detected.')
-            self.task_log.error('We counted {} ipv4_address without secondary.'.format(ipv4_without_secondary))
-            exit(1)
+            if ipv4_without_secondary > 1:
+                self.task_log.error('exiting. multiple ipv4_address without ipv4_secondary detected.')
+                self.task_log.error('We counted {} ipv4_address without secondary.'.format(ipv4_without_secondary))
+                exit(1)
     def update(self):
         '''
         call final_verification()
@@ -143,22 +306,31 @@ class NxosL3Interfaces(Task):
         '''
         self.final_verification()
 
-        d = dict()
-        d['name'] = self.name
-        if self.dot1q != None:
-            d['dot1q'] = self.dot1q
-        if len(self.ipv4) != 0:
-            d['ipv4'] = deepcopy(self.ipv4)
-        if len(self.ipv6) != 0:
-            d['ipv6'] = deepcopy(self.ipv6)
-        if self.redirects != None:
-            d['redirects'] = self.redirects
-        if self.unreachables != None:
-            d['unreachables'] = self.unreachables
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = dict()
+
+        if self.running_config == None:
+            d = dict()
+            d['name'] = self.name
+            if self.dot1q != None:
+                d['dot1q'] = self.dot1q
+            if len(self.ipv4) != 0:
+                d['ipv4'] = deepcopy(self.ipv4)
+            if len(self.ipv6) != 0:
+                d['ipv6'] = deepcopy(self.ipv6)
+            if self.redirects != None:
+                d['redirects'] = self.redirects
+            if self.unreachables != None:
+                d['unreachables'] = self.unreachables
+            self.ansible_task[self.ansible_module]['config'] = list()
+            self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
+        else:
+            self.ansible_task[self.ansible_module]['running_config'] = self.running_config
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
-        self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
         self.ansible_task[self.ansible_module]['state'] = self.state
+        if self.register != None:
+            self.ansible_task['register'] = self.register
 
     def verify_nxos_l3_interfaces_evpn_multisite_tracking(self, x, parameter='evpn_multisite_tracking'):
         verify_set = self.nxos_l3_interfaces_valid_evpn_multisite_tracking
@@ -258,7 +430,7 @@ class NxosL3Interfaces(Task):
         parameter = 'ipv4_secondary'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -313,7 +485,27 @@ class NxosL3Interfaces(Task):
         parameter = 'redirects'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def register(self):
+        return self.properties['register']
+    @register.setter
+    def register(self, x):
+        parameter = 'register'
+        if self.set_none(x, parameter):
+            return
+        self.properties[parameter] = x
+
+    @property
+    def running_config(self):
+        return self.properties['running_config']
+    @running_config.setter
+    def running_config(self, x):
+        parameter = 'running_config'
+        if self.set_none(x, parameter):
+            return
         self.properties[parameter] = x
 
     @property
@@ -335,5 +527,5 @@ class NxosL3Interfaces(Task):
         parameter = 'unreachables'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x

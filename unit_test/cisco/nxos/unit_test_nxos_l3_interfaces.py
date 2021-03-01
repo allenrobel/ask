@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_l3_interfaces.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
 from ask.cisco.nxos.nxos_l3_interfaces import NxosL3Interfaces
+from ask.ansible.register_save import RegisterSave
 
 ansible_module = 'nxos_l3_interfaces'
 ansible_host = 'dc-101' # must be in ansible inventory
@@ -19,74 +20,85 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item == 'ipv4':
-        value = '{}, {}x {}'.format(name, len(item_value), item)
-        return value
-    if item == 'ipv6':
-        value = '{}, {}x {}'.format(name, len(item_value), item)
-        return value
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-        return value
-    return name
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('dot1q', task.dot1q, task_name)
-    task_name = add_item_to_name('evpn_multisite_tracking', task.evpn_multisite_tracking, task_name)
-    task_name = add_item_to_name('name', task.name, task_name)
-    task_name = add_item_to_name('ipv4', task.ipv4, task_name)
-    task_name = add_item_to_name('ipv6', task.ipv6, task_name)
-    task_name = add_item_to_name('redirects', task.redirects, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('unreachables', task.unreachables, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def dual_stack_interface(pb):
     task = NxosL3Interfaces(log)
-    task.name = 'Ethernet1/49'
+    task.name = 'Ethernet1/32'
     task.ipv4_address = '10.1.1.1/24'
-    #task.ipv4_secondary = 'no'
+    #task.ipv4_secondary = False
     task.ipv4_tag = 10
+    # call add_task_name() before
+    # calling task.add_ipv4() and task.add_ipv6()
+    # if you want address info to be displayed
+    # as the playbook runs.
+    add_task_name(task)
     task.add_ipv4()
     task.ipv4_address = '10.2.1.1/24'
     task.ipv4_tag = 20
-    #task.ipv4_secondary = 'no'
-    task.ipv4_secondary = 'yes'
+    #task.ipv4_secondary = False
+    task.ipv4_secondary = True
+    # You can call add_task_name() multiple times.
+    # Each call is additive.
+    add_task_name(task)
     task.add_ipv4()
     task.ipv6_address = '2001:aaaa::1/64'
     task.ipv6_tag = 10
+    add_task_name(task)
     task.add_ipv6()
     task.ipv6_address = '2001:bbbb::1/64'
     task.ipv6_tag = 20
+    add_task_name(task)
     task.add_ipv6()
     task.state = 'merged'
-    add_task_name(task)
     task.update()
     pb.add_task(task)
 
 def ipv4_interface(pb):
     task = NxosL3Interfaces(log)
-    task.name = 'Ethernet1/50'
+    task.name = 'Ethernet1/33'
     task.ipv4_address = '10.1.2.1/24'
-    task.add_ipv4()
-    task.redirects = 'no'
-    task.unreachables = 'no'
+    task.redirects = False
+    task.unreachables = False
     task.state = 'replaced'
     add_task_name(task)
+    task.add_ipv4()
     task.update()
     pb.add_task(task)
 
 def ipv6_interface(pb):
     task = NxosL3Interfaces(log)
-    task.name = 'Ethernet1/51'
+    task.name = 'Ethernet1/34'
     task.ipv6_address = '2001:cccc::1/64'
     task.ipv6_tag = 30
-    task.add_ipv6()
     task.state = 'replaced'
     add_task_name(task)
+    task.add_ipv6()
+    task.update()
+    pb.add_task(task)
+
+def add_task_parsed(pb):
+    task = NxosL3Interfaces(log)
+    task.running_config = 'parsed.cfg'
+    task.state = 'parsed'
+    # supposedly structured output is saved
+    # in parsed, but that doesn't appear to be
+    # the case.  Maybe I'm doing something 
+    # wrong though.  If anyone sees this and
+    # knows how parsed is supposed to work,
+    # would appreciate a ping back!
+    task.register = 'parsed'
+    add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+    task = RegisterSave(log)
+    task.filename = '/tmp/parsed_output.txt'
+    task.var = 'parsed'
     task.update()
     pb.add_task(task)
 
@@ -95,6 +107,7 @@ pb = playbook()
 dual_stack_interface(pb)
 ipv4_interface(pb)
 ipv6_interface(pb)
+#add_task_parsed(pb)
 
 pb.append_playbook()
 pb.write_playbook()
