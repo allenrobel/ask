@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_l2_interfaces.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
 from ask.cisco.nxos.nxos_l2_interfaces import NxosL2Interfaces
+from ask.ansible.register_save import RegisterSave
 
 ansible_module = 'nxos_l2_interfaces'
 ansible_host = 'dc-101' # must be in ansible inventory
@@ -19,23 +20,23 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('allowed_vlans', task.allowed_vlans, task_name)
-    task_name = add_item_to_name('mode', task.mode, task_name)
-    task_name = add_item_to_name('name', task.name, task_name)
-    task_name = add_item_to_name('native_vlan', task.native_vlan, task_name)
-    task_name = add_item_to_name('vlan', task.vlan, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    if task.running_config != None:
+        task.append_to_task_name('running_config {}'.format(task.running_config))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
+
+def add_task_access_interface(pb):
+    task = NxosL2Interfaces(log)
+    task.name = 'Ethernet1/11'
+    task.mode = 'access'
+    task.vlan = 11
+    task.state = 'merged'
+    add_task_name(task)
+    task.update()
+    pb.add_task(task)
 
 def add_task_trunk_interface(pb):
     task = NxosL2Interfaces(log)
@@ -48,19 +49,41 @@ def add_task_trunk_interface(pb):
     task.update()
     pb.add_task(task)
 
-def add_task_access_interface(pb):
+def add_task_deleted(pb):
     task = NxosL2Interfaces(log)
-    task.name = 'Ethernet1/11'
-    task.mode = 'access'
-    task.vlan = 11
-    task.state = 'merged'
+    task.name = 'Vlan10'
+    task.state = 'deleted'
     add_task_name(task)
     task.update()
     pb.add_task(task)
 
+def add_task_parsed(pb):
+    task = NxosL2Interfaces(log)
+    task.running_config = 'parsed.cfg'
+    task.state = 'parsed'
+    # supposedly structured output is saved
+    # in parsed, but that doesn't appear to be
+    # the case.  Maybe I'm doing something 
+    # wrong though.  If anyone sees this and
+    # knows how parsed is supposed to work,
+    # would appreciate a ping back!
+    task.register = 'parsed'
+    add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+    task = RegisterSave(log)
+    task.filename = '/tmp/parsed_output.txt'
+    task.var = 'parsed'
+    task.update()
+    pb.add_task(task)
+
+
 pb = playbook()
 add_task_access_interface(pb)
 add_task_trunk_interface(pb)
+#add_task_deleted(pb)
+#add_task_parsed(pb)
 pb.append_playbook()
 pb.write_playbook()
 log.info('wrote playbook {}'.format(pb.file))

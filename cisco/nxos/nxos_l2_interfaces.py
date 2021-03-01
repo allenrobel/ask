@@ -1,34 +1,118 @@
 # NxosL2Interfaces() - cisco/nxos/nxos_l2_interfaces.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_l2_interfaces.py
+**************************************
+NxosL2Interfaces()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosL2Interfaces() generates Ansible Playbook tasks conformant with nxos_l2_interfaces
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosL2Interfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_l2_interfaces
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_l2_interfaces.py
+Ansible Module Documentation
+----------------------------
+- `nxos_l2_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_l2_interfaces_module.rst>`_
 
-Properties:
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_l2_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_l2_interfaces.py>`_
 
-    allowed_vlans   -   Comma-separated list of allowed VLANs on trunk port
-                        Example: 2-5,10,20
-    mode            -   Mode in which interface needs to be configured.
-                        Valid values: access, trunk, fex-fabric
-    name            -   Full name of interface
-                        Examples: Ethernet1/1, port-channel10
-    native_vlan     -   Native VLAN configured on trunk port
-                        Valid values: int() range: 1-3967
-                        Example: 10
-    state           -   see self._valid_state
-    task_name       -   Name of the task
-    vlan            -   Vlan configured on access port
-                        Valid values: int() range: 1-3967
-                        Example: 10
+
+|
+
+================    ======================================================
+Property            Description
+================    ======================================================
+allowed_vlans       Comma-separated list of allowed VLANs on trunk port::
+
+                        - Type: str()
+                        - Example:
+                            task.allowed_vlans = '2-5,10,20'
+
+mode                Desired L2 mode of the interface::
+
+                        - Type: str()
+                        - Valid values:
+                            - access
+                            - trunk
+                            - fex-fabric
+                            - fabricpath
+                        - Example:
+                            task.mode = 'access'
+
+name                Full name of interface::
+
+                        - Type: str()
+                        - Examples:
+                            task.name = 'Ethernet1/1'
+                            taks.name = 'port-channel20'
+                        - Required except when ``running_config`` is set.
+
+native_vlan         Native VLAN configured on trunk interface::
+
+                        - Type: int()
+                        - Valid values: range: 1-3967
+                        - Examples:
+                            task.native_vlan = 10
+
+register            Ansible variable to save output to::
+
+                        - Type: str()
+                        - Examples:
+                            task.register = 'result'
+
+running_config      Full path to a file containing the output of
+                    ``show running-config | section ^interface``::
+
+                        - Type: str()
+                        - Examples:
+                            task.running_config = '/tmp/running.cfg'
+
+state               Desired state after task has run::
+
+                        - Type: str()
+                        - Valid values:
+                            - deleted
+                            - gathered
+                            - merged
+                            - overridden
+                            - parsed
+                            - rendered
+                            - replaced
+                        - Example:
+                            task.state = 'merged'
+                        - Required
+
+vlan                Vlan configured on access port::
+
+                        - Type: int()
+                        - Valid values: range: 1-3967
+                        - Examples:
+                            task.vlan = 330
+
+task_name           Name of the task. Ansible will display this
+                    when the playbook is run::
+
+                        - Type: str()
+                        - Example:
+                            - task.task_name = 'configure interfaces'
+                                        
+================    ======================================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 
 '''
 
@@ -43,6 +127,7 @@ class NxosL2Interfaces(Task):
         self.properties_set.add('allowed_vlans')
         self.properties_set.add('mode')
         self.properties_set.add('native_vlan')
+        self.properties_set.add('running_config')
         self.properties_set.add('vlan')
         self.properties_set.add('name')
 
@@ -50,12 +135,16 @@ class NxosL2Interfaces(Task):
         self.nxos_l2_interfaces_valid_mode.add('access')
         self.nxos_l2_interfaces_valid_mode.add('trunk')
         self.nxos_l2_interfaces_valid_mode.add('fex-fabric')
+        self.nxos_l2_interfaces_valid_mode.add('fabricpath')
 
         self.nxos_l2_interfaces_valid_state = set()
-        self.nxos_l2_interfaces_valid_state.add('merged')
-        self.nxos_l2_interfaces_valid_state.add('replaced')
-        self.nxos_l2_interfaces_valid_state.add('overridden')
         self.nxos_l2_interfaces_valid_state.add('deleted')
+        self.nxos_l2_interfaces_valid_state.add('gathered')
+        self.nxos_l2_interfaces_valid_state.add('merged')
+        self.nxos_l2_interfaces_valid_state.add('overridden')
+        self.nxos_l2_interfaces_valid_state.add('parsed')
+        self.nxos_l2_interfaces_valid_state.add('rendered')
+        self.nxos_l2_interfaces_valid_state.add('replaced')
 
         self.nxos_l2_interfaces_native_vlan_min = 1
         self.nxos_l2_interfaces_native_vlan_max = 3967
@@ -76,12 +165,13 @@ class NxosL2Interfaces(Task):
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
-        if self.name == None:
+        if self.name == None and self.running_config == None:
             self.task_log.error('exiting. call instance.name before calling instance.update()')
             exit(1)
-        if self.mode == None:
-            self.task_log.error('exiting. call instance.mode before calling instance.update()')
+        if self.running_config != None and self.state != 'parsed':
+            self.task_log.error('exiting. if running_config is set, state must be set to parsed')
             exit(1)
+
 
     def update(self):
         '''
@@ -91,7 +181,8 @@ class NxosL2Interfaces(Task):
         self.final_verification()
 
         d = dict()
-        d['mode'] = self.mode
+        if self.mode != None:
+            d['mode'] = self.mode
         d['name'] = self.name
         access = self.add_access()
         trunk = self.add_trunk()
@@ -102,11 +193,16 @@ class NxosL2Interfaces(Task):
 
         self.ansible_task = dict()
         self.ansible_task[self.ansible_module] = dict()
-        self.ansible_task[self.ansible_module]['config'] = list()
-        self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
+        if self.running_config == None:
+            self.ansible_task[self.ansible_module]['config'] = list()
+            self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
         self.ansible_task[self.ansible_module]['state'] = self.state
+        if self.running_config != None:
+            self.ansible_task[self.ansible_module]['running_config'] = self.running_config
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
+        if self.register != None:
+            self.ansible_task['register'] = self.register
 
     def verify_nxos_l2_interfaces_native_vlan(self, x, parameter='native_vlan'):
         source_class = self.class_name
@@ -145,7 +241,7 @@ class NxosL2Interfaces(Task):
             return False
         d = dict()
         d['vlan'] = self.vlan
-        return d.copy()
+        return deepcopy(d)
 
     def add_trunk(self):
         if self.allowed_vlans == None and self.native_vlan == None:
@@ -155,7 +251,7 @@ class NxosL2Interfaces(Task):
             d['allowed_vlans'] = self.allowed_vlans
         if self.native_vlan != None:
             d['native_vlan'] = self.native_vlan
-        return d.copy()
+        return deepcopy(d)
 
     @property
     def allowed_vlans(self):
@@ -188,6 +284,26 @@ class NxosL2Interfaces(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_l2_interfaces_native_vlan(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def register(self):
+        return self.properties['register']
+    @register.setter
+    def register(self, x):
+        parameter = 'register'
+        if self.set_none(x, parameter):
+            return
+        self.properties[parameter] = x
+
+    @property
+    def running_config(self):
+        return self.properties['running_config']
+    @running_config.setter
+    def running_config(self, x):
+        parameter = 'running_config'
+        if self.set_none(x, parameter):
+            return
         self.properties[parameter] = x
 
     @property
