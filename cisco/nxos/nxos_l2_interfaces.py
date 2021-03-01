@@ -1,5 +1,5 @@
 # NxosL2Interfaces() - cisco/nxos/nxos_l2_interfaces.py
-our_version = 107
+our_version = 108
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -198,11 +198,14 @@ class NxosL2Interfaces(Task):
             self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
         self.ansible_task[self.ansible_module]['state'] = self.state
         if self.running_config != None:
-            self.ansible_task[self.ansible_module]['running_config'] = self.running_config
+            self.ansible_task[self.ansible_module]['running_config'] = self.make_running_config()
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
         if self.register != None:
             self.ansible_task['register'] = self.register
+
+    def make_running_config(self):
+        return r'{{' +  " lookup(" + r'"file"' + ',' + r'"' + self.running_config + r'"' + ')' + r' }}'
 
     def verify_nxos_l2_interfaces_native_vlan(self, x, parameter='native_vlan'):
         source_class = self.class_name

@@ -59,14 +59,8 @@ def add_task_deleted(pb):
 
 def add_task_parsed(pb):
     task = NxosL2Interfaces(log)
-    task.running_config = 'parsed.cfg'
+    task.running_config = '/tmp/parsed.cfg'
     task.state = 'parsed'
-    # supposedly structured output is saved
-    # in parsed, but that doesn't appear to be
-    # the case.  Maybe I'm doing something 
-    # wrong though.  If anyone sees this and
-    # knows how parsed is supposed to work,
-    # would appreciate a ping back!
     task.register = 'parsed'
     add_task_name(task)
     task.update()
