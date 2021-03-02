@@ -140,7 +140,7 @@ rate                    Rate at which PDUs are sent by LACP.
                         second. At normal rate LACP is transmitted
                         every 30 seconds after the link is bundled.
                         If ``rate`` is set, ``name`` must refer to
-                        a member ethernet interface.
+                        a member ethernet interface::
 
                             - Type: str()
                             - Valid values:
