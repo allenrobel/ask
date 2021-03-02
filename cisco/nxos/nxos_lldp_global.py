@@ -1,45 +1,194 @@
 # NxosLldpGlobal() - cisco/nxos/nxos_lldp_global.py
-our_version = 102
+our_version = 103
 import re
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_lldp_global.py
+**************************************
+NxosLldpGlobal()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosLldpGlobal() generates Ansible Playbook tasks conformant with Ansible module nxos_lldp_global
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosLldpGlobal() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_lldp_global
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_lldp_global.py
+Ansible Module Documentation
+----------------------------
+- `nxos_lldp_global <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_global_module.rst>`_
 
-Dependencies:
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_lldp_global.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_lldp_global.py>`_
 
-    1. 'feature lldp' needs to be enabled on the target before using this module
+Dependencies
+------------
 
-Properties:
+1. ``feature lldp`` must enabled on the target before using this module
 
-    Valid values for all bool() types are: no, yes
-    Valid range for all type int() is: 0-65535
+|
 
-    holdtime                            int()   Amount of time the receiving device should hold the information (in seconds)
-    port_id                             int()   Advertise interface names in the long(0) or short(1) form.
-                                                Valid values: 0, 1
-    reinit                              int()   Amount of time to delay the initialization of LLDP on any interface (in seconds)
-    timer                               int()   LLDP update transmission frequency (in seconds)
-    tlv_select.dcbxp                    bool()  Enable/disable Data Center Bridging Exchange Protocol TLV
-    tlv_select.management_address.v4    bool()  Enable/disable Management address with TLV v4
-    tlv_select.management_address.v6    bool()  Enable/disable Management address with TLV v6
-    tlv_select.port.description         bool()  Enable/disable port description TLV
-    tlv_select.port.vlan                bool()  Enable/disable port VLAN ID TLV
-    tlv_select.power_management         bool()  Enable/disable IEEE 802.3 DTE Power via MDI TLV
-    tlv_select.system.capabilities      bool()  Enable/disable system capabilities TLV
-    tlv_select.system.description       bool()  Enable/disable system description TLV
-    tlv_select.system.name              bool()  Enable/disable system name TLV
-    state                               str()   Desired state of the configuration after module completion
-                                                Valid values: deleted, gathered, merged, overridden, parsed, rendered, replaced
-                                                Default: merged
+========================    ==============================================
+Property                    Description
+========================    ==============================================
+dcbxp                       Enable ``True`` or disable ``False``
+                            Data Center Bridging Exchange Protocol TLV::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.dcbxp = False
+
+holdtime                    Amount of time the receiving device should
+                            hold the information::
+
+                                - Type: int()
+                                - Valid values: range: 0-65535
+                                - Units: seconds
+                                - Example:
+                                    task.holdtime = 300
+
+management_address_v4       Enable ``True`` or disable ``False``
+                            Management address with TLV ipv4::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.management_address_v4 = True
+
+management_address_v6       Enable ``True`` or disable ``False``
+                            Management address with TLV ipv6::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.management_address_v6 = False
+
+port_description            Enable ``True`` or disable ``False``
+                            port description TLV::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.port_description = False
+
+port_id                     Advertise interface names in the long(0)
+                            or short(1) form::
+
+                                - Type: int()
+                                - Valid values: 0, 1
+                                - Example:
+                                    task.port_id = 0
+
+port_vlan                   Enable ``True`` or disable ``False``
+                            port VLAN ID TLV::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.port_vlan = False
+
+power_management            Enable ``True`` or disable ``False``
+                            IEEE 802.3 DTE Power via MDI TLV::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.power_management = False
+
+register                    Ansible variable to save output to::
+
+                                - Type: str()
+                                - Examples:
+                                    task.register = 'result'
+
+reinit                      Amount of time to delay the initialization
+                            of LLDP on any interface::
+
+                                - Type: int()
+                                - Valid values: range: 0-65535
+                                - Units: seconds
+                                - Example:
+                                    task.reinit = 30
+
+running_config              Full path to a file containing the output of
+                            ``show running-config | include lldp``.
+                            ``running_config`` is mutually-exclusive with
+                            every other property except ``state`` and
+                            ``register``.  ``state`` must be set to ``parsed``
+                            if ``running_config`` is set.::
+
+                                - Type: str()
+                                - Examples:
+                                    task.state = 'parsed'
+                                    task.running_config = '/tmp/running.cfg'
+
+state                       Desired state after task has run::
+
+                                - Type: str()
+                                - Valid values:
+                                    - deleted
+                                    - gathered
+                                    - merged
+                                    - overridden
+                                    - parsed
+                                    - rendered
+                                    - replaced
+                                - Example:
+                                    task.state = 'merged'
+                                - Required
+
+system_capabilities         Enable ``True`` or disable ``False``
+                            system capabilities TLV::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.system_capabilities = False
+
+system_description          Enable ``True`` or disable ``False``
+                            system description TLV::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.system_description = False
+
+system_name                 Enable ``True`` or disable ``False``
+                            system name TLV::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.system_name = False
+
+task_name                   Name of the task. Ansible will display this
+                            when the playbook is run::
+
+                                - Type: str()
+                                - Example:
+                                    - task.task_name = 'configure lldp global'
+
+timer                       LLDP update transmission frequency::
+
+                                - Type: int()
+                                - Valid values: range: 0-65535
+                                - Units: seconds
+                                - Example:
+                                    task.timer = 30
+
+========================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 
 '''
@@ -49,10 +198,6 @@ class NxosLldpGlobal(Task):
         super().__init__(ansible_module, task_log)
         self.lib_version = our_version
         self.class_name = __class__.__name__
-        self.ansible_task = dict()
-        self.ansible_task[self.ansible_module] = dict()
-        self.ansible_task[self.ansible_module]['state'] = None
-        self.ansible_task[self.ansible_module]['config'] = list()
 
         self.properties_global = set()
         self.properties_global.add('holdtime')
@@ -77,6 +222,12 @@ class NxosLldpGlobal(Task):
         self.properties_tlv_select_system.add('system_description')
         self.properties_tlv_select_system.add('system_name')
 
+        self.properties_set = set()
+        self.properties_set = self.properties_set.union(self.properties_global)
+        self.properties_set = self.properties_set.union(self.properties_tlv_select)
+        self.properties_set = self.properties_set.union(self.properties_tlv_select_management_address)
+        self.properties_set = self.properties_set.union(self.properties_tlv_select_port)
+        self.properties_set = self.properties_set.union(self.properties_tlv_select_system)
 
         # property_map is used to:
         #    1. Map between disambiguated property names and the ambiguous Ansible
@@ -160,12 +311,26 @@ class NxosLldpGlobal(Task):
         for p in self.properties_global:
             self.properties[p] = None
         self.init_properties_tlv_select()
-        self.properties['task_name']    = None
+        self.properties['register'] = None
+        self.properties['running_config'] = None
+        self.properties['task_name'] = None
+
+    def running_config_verification(self):
+        if self.state != 'parsed':
+            self.task_log.error('exiting. if running_config is set, state must be set to parsed')
+            exit(1)
+        for p in self.properties_set:
+            if self.properties[p] != None:
+                self.task_log.error('exiting. Cannot mix running_config with lldp global configuration.')
+                self.task_log.error('Instantiate a separate NxosLldpGlobal() instance and configure it solely for running_config.')
+                exit(1)
 
     def final_verification(self):
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
+        if self.running_config != None:
+            self.running_config_verification()
 
     def update(self):
         '''
@@ -173,6 +338,17 @@ class NxosLldpGlobal(Task):
         populate ansible_task dict()
         '''
         self.final_verification()
+
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = dict()
+        self.ansible_task[self.ansible_module]['state'] = self.state
+        if self.task_name != None:
+            self.ansible_task['name'] = self.task_name
+        if self.register != None:
+            self.ansible_task['register'] = self.register
+        if self.running_config != None:
+            self.ansible_task[self.ansible_module]['running_config'] = self.make_running_config()
+            return
 
         d = dict()
         for p in self.properties_global:
@@ -213,9 +389,9 @@ class NxosLldpGlobal(Task):
             d['tlv_select'] = deepcopy(tlv_select_dict)
 
         self.ansible_task[self.ansible_module]['config'] = deepcopy(d)
-        if self.task_name != None:
-            self.ansible_task['name'] = self.task_name
-        self.ansible_task[self.ansible_module]['state'] = self.state
+
+    def make_running_config(self):
+        return r'{{' +  " lookup(" + r'"file"' + ',' + r'"' + self.running_config + r'"' + ')' + r' }}'
 
     def verify_nxos_lldp_global_state(self, x, parameter='state'):
         verify_set = self.nxos_lldp_global_valid_state
@@ -243,7 +419,7 @@ class NxosLldpGlobal(Task):
         parameter = 'dcbxp'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -265,7 +441,7 @@ class NxosLldpGlobal(Task):
         parameter = 'management_address_v4'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -276,7 +452,7 @@ class NxosLldpGlobal(Task):
         parameter = 'management_address_v6'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -287,7 +463,7 @@ class NxosLldpGlobal(Task):
         parameter = 'port_description'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -309,7 +485,7 @@ class NxosLldpGlobal(Task):
         parameter = 'port_vlan'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -320,7 +496,17 @@ class NxosLldpGlobal(Task):
         parameter = 'power_management'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def register(self):
+        return self.properties['register']
+    @register.setter
+    def register(self, x):
+        parameter = 'register'
+        if self.set_none(x, parameter):
+            return
         self.properties[parameter] = x
 
     @property
@@ -335,6 +521,16 @@ class NxosLldpGlobal(Task):
         self.properties[parameter] = x
 
     @property
+    def running_config(self):
+        return self.properties['running_config']
+    @running_config.setter
+    def running_config(self, x):
+        parameter = 'running_config'
+        if self.set_none(x, parameter):
+            return
+        self.properties[parameter] = x
+
+    @property
     def system_capabilities(self):
         return self.properties['system_capabilities']
     @system_capabilities.setter
@@ -342,7 +538,40 @@ class NxosLldpGlobal(Task):
         parameter = 'system_capabilities'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def system_description(self):
+        return self.properties['system_description']
+    @system_description.setter
+    def system_description(self, x):
+        parameter = 'system_description'
+        if self.set_none(x, parameter):
+            return
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def system_name(self):
+        return self.properties['system_name']
+    @system_name.setter
+    def system_name(self, x):
+        parameter = 'system_name'
+        if self.set_none(x, parameter):
+            return
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def state(self):
+        return self.properties['state']
+    @state.setter
+    def state(self, x):
+        parameter = 'state'
+        if self.set_none(x, parameter):
+            return
+        self.verify_nxos_lldp_global_state(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -356,35 +585,3 @@ class NxosLldpGlobal(Task):
         self.verify_nxos_lldp_global_timer(x, parameter)
         self.properties[parameter] = x
 
-    @property
-    def system_description(self):
-        return self.properties['system_description']
-    @system_description.setter
-    def system_description(self, x):
-        parameter = 'system_description'
-        if self.set_none(x, parameter):
-            return
-        self.verify_toggle(x, parameter)
-        self.properties[parameter] = x
-
-    @property
-    def system_name(self):
-        return self.properties['system_name']
-    @system_name.setter
-    def system_name(self, x):
-        parameter = 'system_name'
-        if self.set_none(x, parameter):
-            return
-        self.verify_toggle(x, parameter)
-        self.properties[parameter] = x
-
-    @property
-    def state(self):
-        return self.properties['state']
-    @state.setter
-    def state(self, x):
-        parameter = 'state'
-        if self.set_none(x, parameter):
-            return
-        self.verify_nxos_lldp_global_state(x, parameter)
-        self.properties[parameter] = x

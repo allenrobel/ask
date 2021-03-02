@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_ans_task_nxos_lldp_global.py
-our_version = 101
+our_version = 102
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
 from ask.cisco.nxos.nxos_lldp_global import NxosLldpGlobal
+from ask.ansible.register_save import RegisterSave
 
 ansible_module = 'nxos_lldp_global'
 ansible_host = 'dc-101' # must be in ansible inventory
@@ -19,35 +20,17 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-        return value
-    return name
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('dcbxp', task.dcbxp, task_name)
-    task_name = add_item_to_name('holdtime', task.holdtime, task_name)
-    task_name = add_item_to_name('management_address_v4', task.management_address_v4, task_name)
-    task_name = add_item_to_name('management_address_v6', task.management_address_v6, task_name)
-    task_name = add_item_to_name('port_description', task.port_description, task_name)
-    task_name = add_item_to_name('port_id', task.port_id, task_name)
-    task_name = add_item_to_name('port_vlan', task.port_vlan, task_name)
-    task_name = add_item_to_name('power_management', task.power_management, task_name)
-    task_name = add_item_to_name('reinit', task.reinit, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('system_capabilities', task.system_capabilities, task_name)
-    task_name = add_item_to_name('system_description', task.system_description, task_name)
-    task_name = add_item_to_name('system_name', task.system_name, task_name)
-    task_name = add_item_to_name('timer', task.timer, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v.{}'.format(our_version))
+    task.append_to_task_name(ansible_host)
+    task.append_to_task_name('state: {}'.format(task.state))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def add_task_global(pb):
     task = NxosLldpGlobal(log)
     task.holdtime = 2
-    task.port_id = 1    # 0 - Advertise interfaces with long-form names
-                        # 1 - Advertise interfaces with short-form names
+    task.port_id = 1
     task.reinit = 3
     task.timer = 4
     task.state = 'merged'
@@ -57,8 +40,8 @@ def add_task_global(pb):
 
 def add_task_tlv_select(pb):
     task = NxosLldpGlobal(log)
-    task.dcbxp = 'no'
-    task.power_management = 'no'
+    task.dcbxp = False
+    task.power_management = False
     task.state = 'merged'
     add_task_name(task)
     task.update()
@@ -66,8 +49,8 @@ def add_task_tlv_select(pb):
 
 def add_task_tlv_select_management_address(pb):
     task = NxosLldpGlobal(log)
-    task.management_address_v4 = 'no'
-    task.management_address_v6 = 'no'
+    task.management_address_v4 = False
+    task.management_address_v6 = False
     task.state = 'merged'
     add_task_name(task)
     task.update()
@@ -75,8 +58,8 @@ def add_task_tlv_select_management_address(pb):
 
 def add_task_tlv_select_port(pb):
     task = NxosLldpGlobal(log)
-    task.port_description = 'no'
-    task.port_vlan = 'no'
+    task.port_description = False
+    task.port_vlan = False
     task.state = 'merged'
     add_task_name(task)
     task.update()
@@ -84,11 +67,27 @@ def add_task_tlv_select_port(pb):
 
 def add_task_tlv_select_system(pb):
     task = NxosLldpGlobal(log)
-    task.system_capabilities = 'no'
-    task.system_description = 'no'
-    task.system_name = 'no'
+    task.system_capabilities = False
+    task.system_description = False
+    task.system_name = False
     task.state = 'merged'
     add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
+def add_task_state_parsed(pb):
+    task = NxosLldpGlobal(log)
+    task.running_config = '/tmp/parsed.cfg'
+    task.state = 'parsed'
+    task.register = 'parsed'
+    task.task_name = 'test state parsed'
+    task.update()
+    pb.add_task(task)
+
+    task = RegisterSave(log)
+    task.filename = '/tmp/parsed_output.txt'
+    task.var = 'parsed'
+    task.task_name = 'save register'
     task.update()
     pb.add_task(task)
 
@@ -99,6 +98,7 @@ add_task_tlv_select(pb)
 add_task_tlv_select_management_address(pb)
 add_task_tlv_select_port(pb)
 add_task_tlv_select_system(pb)
+add_task_state_parsed(pb)
 
 pb.append_playbook()
 pb.write_playbook()
