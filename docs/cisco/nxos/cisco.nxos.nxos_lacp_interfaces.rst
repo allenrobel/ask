@@ -41,29 +41,38 @@ Property                Description
 graceful                port-channel lacp graceful convergence.
                         Disable this only with lacp ports connected to
                         Non-Nexus peer. Disabling this with Nexus peer
-                        can lead to port suspension::
+                        can lead to port suspension.  If ``graceful``
+                        is set, ``name`` must refer to a port-channel
+                        interface::
 
                             - Type: bool()
                             - Valid values: False, True
                             - Example:
+                                task.name = 'port-channel3'
                                 task.graceful = True
 
 min                     Minimum number of member interfaces in the
                         port-channel that must be up before the
-                        port-channel interface is brought up::
+                        port-channel interface is brought up.
+                        If ``min`` is set, ``name`` must refer to
+                        a port-channel interface::
 
                             - Type: int()
                             - Valid values: range: 1-32
                             - Example:
+                                task.name = 'port-channel3'
                                 task.min = 8
 
 max                     Maximum number of interfaces in the
                         port-channel.  Member interfaces above this
-                        limit will be placed in hot-standby mode::
+                        limit will be placed in hot-standby mode.
+                        If ``max`` is set, ``name`` must refer to
+                        a port-channel interface::
 
                             - Type: int()
                             - Valid values: range: 1-32
                             - Example:
+                                task.name = 'port-channel3'
                                 task.max = 16
 
 mode                    Configure delayed lacp on the port-channel.
@@ -83,6 +92,7 @@ mode                    Configure delayed lacp on the port-channel.
                             - Type: str()
                             - Valid values: delay
                             - Example:
+                                task.name = 'port-channel3'
                                 task.mode = 'delay'
 
 name                    Name of the interface::
