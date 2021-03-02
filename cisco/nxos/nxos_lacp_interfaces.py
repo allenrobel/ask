@@ -1,45 +1,216 @@
 # NxosLacpInterfaces() - cisco/nxos/nxos_lacp_interfaces.py
-our_version = 103
+our_version = 104
 import re
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_lacp_interfaces.py
+**************************************
+NxosLacpInterfaces()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosLacpInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_lacp_interfaces
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosLacpInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_lacp_interfaces
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_lacp_interfaces.py
+Ansible Module Documentation
+----------------------------
+- `nxos_lacp_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lacp_interfaces_module.rst>`_
 
-Properties:
-    graceful            -   port-channel lacp graceful convergence.
-                            Disable this only with lacp ports connected to Non-Nexus peer.
-                            Disabling this with Nexus peer can lead to port suspension.
-                            Valid values: no, yes
-    min                 -   Port-channel min members
-    max                 -   Port-channel max members
-    mode                -   LACP mode. Applicable only for Port-channel
-                            Valid values: delay
-    name                -   Name of the interface
-    port_priority       -   LACP port priority for the interface. Applicable only for Ethernet
-                            Valid values: int() range: 1-65535.
-    rate                -   Rate at which PDUs are sent by LACP. Applicable only for Ethernet.
-                            At fast rate LACP is transmitted once every 1 second. At normal rate
-                            LACP is transmitted every 30 seconds after the link is bundled.
-                            Valid values: fast, normal
-    suspend_individual  -   port-channel lacp state. Disabling this will cause lacp
-                            to put the port to individual state and not suspend the
-                            port in case it does not get LACP BPDU from the peer ports
-                            in the port-channel.
-                            Valid values: no, yes
-    state               -   The state of the configuration after module completion
-                            Valid values: deleted, gathered, merged, overridden, parsed, rendered, replaced
-    task_name           -   Freeform name for the task
-    vpc                 -   Enable lacp convergence for vPC port channels
-                            Valid values: no, yes
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_lacp_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_lacp_interfaces.py>`_
+
+
+|
+
+================    ==============================================
+User Methods        Description
+================    ==============================================
+add_interface()     Append lacp interface properties to the task
+                    config list and reset the properties to None to
+                    allow configuration of another interface.
+                    See ``ScriptKit Example`` above for usage.
+================    ==============================================
+
+
+|
+|
+
+====================    ==============================================
+Property                Description
+====================    ==============================================
+graceful                port-channel lacp graceful convergence.
+                        Disable this only with lacp ports connected to
+                        Non-Nexus peer. Disabling this with Nexus peer
+                        can lead to port suspension::
+
+                            - Type: bool()
+                            - Valid values: False, True
+                            - Example:
+                                task.graceful = True
+
+min                     Minimum number of member interfaces in the
+                        port-channel that must be up before the
+                        port-channel interface is brought up::
+
+                            - Type: int()
+                            - Valid values: range: 1-32
+                            - Example:
+                                task.min = 8
+
+max                     Maximum number of interfaces in the
+                        port-channel.  Member interfaces above this
+                        limit will be placed in hot-standby mode::
+
+                            - Type: int()
+                            - Valid values: range: 1-32
+                            - Example:
+                                task.max = 16
+
+mode                    Configure delayed lacp on the port-channel.
+                        LACP port-channels exchange LACP PDUs for quick
+                        bundling of links when connecting a server and
+                        a switch. However, the links go into suspended
+                        state when the PDUs are not received.  The delayed
+                        LACP feature enables one port-channel member, the
+                        delayed-LACP port, to come up first as a member of
+                        a regular port-channel before LACP PDUs are received.
+                        After it is connected in LACP mode, other members,
+                        the auxiliary LACP ports, are brought up. This avoids
+                        the links becoming suspended when PDUs are not
+                        received.  If ``mode`` is set, ``name`` must refer to
+                        a port-channel interface::
+
+                            - Type: str()
+                            - Valid values: delay
+                            - Example:
+                                task.mode = 'delay'
+
+name                    Name of the interface::
+
+                            - Type: str()
+                            - Valid values:
+                                - port-channelX
+                                - EthernetX/Y
+                            - Examples:
+                                task.name = 'port-channel3'
+                                task.name = 'Ethernet1/1'
+                            - Required
+                            - NOTES:
+                                - Depending on which properties
+                                  are set, only one of port-channel
+                                  or ethernet will be valid.  Refer
+                                  to individual properties for
+                                  details.
+
+port_priority           LACP port priority assigned to the
+                        member ethernet interface. A higher port
+                        priority value increases the likelihood
+                        that a member port will be chosen to be
+                        active in a bundle in the event that the
+                        ``max`` (max-bundle) value is exceeded. 
+                        Applicable only for Ethernet.
+                        If ``port_priority`` is set, ``name``
+                        must refer to a member ethernet interface::
+
+                            - Type: int()
+                            - Valid values: range: 1-65535
+                            - Example:
+                                task.name = 'Ethernet1/1'
+                                task.port_priority = 8216
+
+rate                    Rate at which PDUs are sent by LACP.
+                        Applicable only for Ethernet.  At fast
+                        rate LACP is transmitted once every 1
+                        second. At normal rate LACP is transmitted
+                        every 30 seconds after the link is bundled.
+                        If ``rate`` is set, ``name`` must refer to
+                        a member ethernet interface.
+
+                            - Type: str()
+                            - Valid values:
+                                - fast
+                                - normal
+                            - Example:
+                                task.name 'Ethernet1/1'
+                                task.rate = 'fast'
+
+register                Ansible variable to save output to::
+
+                            - Type: str()
+                            - Examples:
+                                task.register = 'result'
+
+running_config          Full path to a file containing the output of
+                        ``show running-config | section ^interface``.
+                        ``running_config`` is mutually-exclusive with
+                        every other property except ``state`` and
+                        ``register``.  ``state`` must be set to ``parsed``
+                        if ``running_config`` is set.::
+
+                            - Type: str()
+                            - Examples:
+                                task.state = 'parsed'
+                                task.running_config = '/tmp/running.cfg'
+
+state                   Desired state after task has run::
+
+                            - Type: str()
+                            - Valid values:
+                                - deleted
+                                - gathered
+                                - merged
+                                - overridden
+                                - parsed
+                                - rendered
+                                - replaced
+                            - Example:
+                                task.state = 'merged'
+                            - Required
+
+suspend_individual      Disabling this will cause lacp to place a
+                        member port into individual state (rather than
+                        suspend it) in the event the individual port 
+                        does not receive LACP BPDUs from its peer port.
+                        If ``suspend_individual`` is set, ``name`` must
+                        refer to a port-channel interface::
+
+                            - Type: bool()
+                            - Valid values: False, True
+                            - Example:
+                                task.name = 'port-channel3'
+                                task.suspend_individual = True
+
+task_name               Name of the task. Ansible will display this
+                        when the playbook is run::
+
+                            - Type: str()
+                            - Example:
+                                - task.task_name = 'enable lacp'
+
+vpc                     Enable lacp convergence for vPC port
+                        channels. If ``vpc`` is set, ``name``
+                        must refer to a port-channel interface::
+
+                            - Type: bool()
+                            - Valid values: False, True
+                            - Example:
+                                task.name = 'port-channel3'
+                                task.vpc = True
+
+====================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 '''
 
 class NxosLacpInterfaces(Task):
@@ -51,11 +222,7 @@ class NxosLacpInterfaces(Task):
 
         self.re_lacp_interface = re.compile('^port-channel\d+$')
 
-        self.ansible_task = dict()
-        self.ansible_task[self.ansible_module] = dict()
-        self.ansible_task[self.ansible_module]['state'] = None
-        self.ansible_task[self.ansible_module]['config'] = list()
-
+        self.config = list()
         self.nxos_lacp_interfaces_valid_state = set()
         self.nxos_lacp_interfaces_valid_state.add('deleted')
         self.nxos_lacp_interfaces_valid_state.add('gathered')
@@ -72,6 +239,15 @@ class NxosLacpInterfaces(Task):
         self.nxos_lacp_interfaces_valid_rate.add('fast')
         self.nxos_lacp_interfaces_valid_rate.add('normal')
 
+        self.lacp_interfaces_max_bundle_min = 1
+        self.lacp_interfaces_max_bundle_max = 32
+
+        self.lacp_interfaces_min_links_min = 1
+        self.lacp_interfaces_min_links_max = 32
+
+        self.lacp_interfaces_port_priority_min = 1
+        self.lacp_interfaces_port_priority_max = 65535
+
         self.properties_set = set()
         self.properties_set.add('convergence')
         self.properties_set.add('graceful')
@@ -82,8 +258,10 @@ class NxosLacpInterfaces(Task):
         self.properties_set.add('name')
         self.properties_set.add('port_priority')
         self.properties_set.add('rate')
-        self.properties_set.add('suspend_individual')
+        self.properties_set.add('register')
+        self.properties_set.add('running_config')
         self.properties_set.add('state')
+        self.properties_set.add('suspend_individual')
         self.properties_set.add('vpc')
 
         self.init_properties()
@@ -94,12 +272,33 @@ class NxosLacpInterfaces(Task):
             self.properties[p] = None
         self.properties['task_name'] = None
 
+    def running_config_verification(self):
+        if self.state != 'parsed':
+            self.task_log.error('exiting. if running_config is set, state must be set to parsed')
+            exit(1)
+        if len(self.config) != 0:
+            self.task_log.error('exiting. Cannot mix running_config with interface configuration.')
+            self.task_log.error('Instantiate a separate NxosLacpInterfaces() instance and configure it solely for running_config.')
+            exit(1)
+
     def final_verification(self):
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
+        if self.running_config != None:
+            self.running_config_verification()
+        if self.running_config == None:
+            if len(self.config) == 0:
+                self.task_log.error('exiting. call instance.add_interface() at least once before calling self.update()')
+                exit(1)
+
+    def interface_verification(self):
+        if self.running_config != None:
+            self.task_log.error('exiting. Cannot mix running_config with interface configuration.')
+            self.task_log.error('Instantiate a separate NxosLacpInterfaces() instance and configure it solely for running_config.')
+            exit(1)
         if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
+            self.task_log.error('exiting. call instance.name before calling instance.add_interface()')
             exit(1)
         if self.graceful != None and self.is_ethernet_interface(self.name):
             self.task_log.error('exiting. instance.graceful is not applicable when instance.name is ethernet. Got instance.name: {}'.format(self.name))
@@ -120,6 +319,37 @@ class NxosLacpInterfaces(Task):
             self.task_log.error('exiting. instance.suspend_individual is not applicable when instance.name is ethernet. Got instance.name: {}'.format(self.name))
             exit(1)
 
+    def add_interface(self):
+        self.interface_verification()
+        d = dict()
+        convergence = dict()
+        links = dict()
+
+        d['name'] = self.name
+        if self.graceful != None:
+            convergence['graceful'] = self.graceful
+        if self.vpc != None:
+            convergence['vpc'] = self.vpc
+        if len(convergence) != 0:
+            d['convergence'] = deepcopy(convergence)
+
+        if self.min != None:
+            links['min'] = self.min
+        if self.max != None:
+            links['max'] = self.max
+        if len(links) != 0:
+            d['links'] = deepcopy(links)
+        if self.mode != None:
+            d['mode'] = self.mode
+        if self.port_priority != None:
+            d['port_priority'] = self.port_priority
+        if self.rate != None:
+            d['rate'] = self.rate
+        if self.suspend_individual != None:
+            d['suspend_individual'] = self.suspend_individual
+        self.config.append(deepcopy(d))
+        self.init_properties()
+
     def update(self):
         '''
         call final_verification()
@@ -127,143 +357,74 @@ class NxosLacpInterfaces(Task):
         '''
         self.final_verification()
 
-        convergence = None
-        links = None
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = dict()
 
-        d = dict()
-        d['name'] = self.name
-        if self.graceful != None:
-            if convergence == None:
-                convergence = dict()
-            convergence['graceful'] = self.graceful
-        if self.vpc != None:
-            if convergence == None:
-                convergence = dict()
-            convergence['vpc'] = self.vpc
-        if convergence != None:
-            d['convergence'] = deepcopy(convergence)
-            convergence = None
-
-        if self.min != None:
-            if links == None:
-                links = dict()
-            links['min'] = self.min
-        if self.max != None:
-            if links == None:
-                links = dict()
-            links['max'] = self.max
-        if links != None:
-            d['links'] = deepcopy(links)
-            links = None
-
-        if self.mode != None:
-            d['mode'] = self.mode
-
-        if self.rate != None:
-            d['rate'] = self.rate
-
-        if self.port_priority != None:
-            d['port_priority'] = self.port_priority
-
-        if self.suspend_individual != None:
-            d['suspend_individual'] = self.suspend_individual
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
-        self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
+        if self.register != None:
+            self.ansible_task['register'] = self.register
         self.ansible_task[self.ansible_module]['state'] = self.state
+        if self.running_config != None:
+            self.ansible_task[self.ansible_module]['running_config'] = self.make_running_config()
+        else:
+            self.ansible_task[self.ansible_module]['config'] = deepcopy(self.config)
 
-        self.init_properties()
+    def make_running_config(self):
+        return r'{{' +  " lookup(" + r'"file"' + ',' + r'"' + self.running_config + r'"' + ')' + r' }}'
 
-
-    def verify_lacp_mode(self, x, parameter='mode'):
+    def verify_nxos_lacp_interfaces_mode(self, x, parameter='mode'):
         verify_set = self.nxos_lacp_interfaces_valid_mode
         if x in verify_set:
             return
         source_class = self.class_name
-        source_method = 'verify_lacp_mode'
+        source_method = 'verify_nxos_lacp_interfaces_mode'
         expectation = ','.join(sorted(verify_set))
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def verify_lacp_interface(self, x, parameter='name'):
-        if self.re_lacp_interface.search(x):
-            return
-        source_class = self.class_name
-        source_method = 'verify_lacp_interface'
-        expectation = 'valid LACP interface name e.g.: port-channel1000'
-        self.fail(source_class, source_method, x, parameter, expectation)
-
-    def verify_lacp_max(self, x, parameter='max'):
-        expectation = 'integer in range 1-32'
-        source_class = self.class_name
-        source_method = 'verify_lacp_max'
-        try:
-            foo = int(x)
-        except:
-            self.fail(source_class, source_method, x, parameter, expectation)
-        if foo < 1:
-            self.fail(source_class, source_method, x, parameter, expectation)
-        if foo > 32:
-            self.fail(source_class, source_method, x, parameter, expectation)
-
-    def verify_lacp_min(self, x, parameter='max'):
-        expectation = 'integer in range 1-32'
-        source_class = self.class_name
-        source_method = 'verify_lacp_min'
-        try:
-            foo = int(x)
-        except:
-            self.fail(source_class, source_method, x, parameter, expectation)
-        if foo < 1:
-            self.fail(source_class, source_method, x, parameter, expectation)
-        if foo > 32:
-            self.fail(source_class, source_method, x, parameter, expectation)
-
-    def verify_lacp_member(self, x, parameter='member'):
+    def verify_nxos_lacp_interfaces_name(self, x, parameter='name'):
         if self.is_ethernet_interface(x):
             return
-        source_class = self.class_name
-        source_method = 'verify_lacp_member'
-        expectation = 'valid LACP member interface name e.g.: Ethernet1/1, Ethernet1/2/1'
-        self.fail(source_class, source_method, x, parameter, expectation)
-
-    def verify_lacp_member_or_lacp_interface(self, x, parameter='member'):
-        if self.is_ethernet_interface(x):
-            return
-        if self.re_lacp_interface.search(x):
+        if self.is_port_channel_interface(x):
             return
         source_class = self.class_name
-        source_method = 'verify_lacp_member_or_lacp_interface'
-        expectation = 'valid LACP member interface name or LACP interface name e.g.: Ethernet1/1, port-channel42'
+        source_method = 'verify_nxos_lacp_interfaces_name'
+        expectation = 'valid LACP interface name e.g.: Ethernet1/1, port-channel3'
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def verify_lacp_rate(self, x, parameter='rate'):
+    def verify_nxos_lacp_interfaces_max_bundle(self, x, parameter='max'):
+        source_class = self.class_name
+        range_min = self.lacp_interfaces_max_bundle_min
+        range_max = self.lacp_interfaces_max_bundle_max
+        self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
+
+    def verify_nxos_lacp_interfaces_min_links(self, x, parameter='min'):
+        source_class = self.class_name
+        range_min = self.lacp_interfaces_min_links_min
+        range_max = self.lacp_interfaces_min_links_max
+        self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
+
+    def verify_nxos_lacp_interfaces_rate(self, x, parameter='rate'):
         verify_set = self.nxos_lacp_interfaces_valid_rate
         if x in verify_set:
             return
         source_class = self.class_name
-        source_method = 'verify_lacp_rate'
+        source_method = 'verify_nxos_lacp_interfaces_rate'
         expectation = ','.join(sorted(verify_set))
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def verify_lacp_port_priority(self, x, parameter='port_priority'):
-        expectation = 'integer in range 1-65535'
+    def verify_nxos_lacp_interfaces_port_priority(self, x, parameter='port_priority'):
         source_class = self.class_name
-        source_method = 'verify_lacp_port_priority'
-        try:
-            foo = int(x)
-        except:
-            self.fail(source_class, source_method, x, parameter, expectation)
-        if foo < 1:
-            self.fail(source_class, source_method, x, parameter, expectation)
-        if foo > 65535:
-            self.fail(source_class, source_method, x, parameter, expectation)
+        range_min = self.lacp_interfaces_port_priority_min
+        range_max = self.lacp_interfaces_port_priority_max
+        self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
 
-    def verify_lacp_state(self, x, parameter='state'):
+    def verify_nxos_lacp_interfaces_state(self, x, parameter='state'):
         verify_set = self.nxos_lacp_interfaces_valid_state
         if x in verify_set:
             return
         source_class = self.class_name
-        source_method = 'verify_lacp_state'
+        source_method = 'verify_nxos_lacp_interfaces_state'
         expectation = ','.join(sorted(verify_set))
         self.fail(source_class, source_method, x, parameter, expectation)
 
@@ -275,7 +436,7 @@ class NxosLacpInterfaces(Task):
         parameter = 'graceful'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -286,7 +447,7 @@ class NxosLacpInterfaces(Task):
         parameter = 'max'
         if self.set_none(x, parameter):
             return
-        self.verify_lacp_max(x, parameter)
+        self.verify_nxos_lacp_interfaces_max_bundle(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -297,7 +458,7 @@ class NxosLacpInterfaces(Task):
         parameter = 'min'
         if self.set_none(x, parameter):
             return
-        self.verify_lacp_min(x, parameter)
+        self.verify_nxos_lacp_interfaces_min_links(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -308,7 +469,7 @@ class NxosLacpInterfaces(Task):
         parameter = 'mode'
         if self.set_none(x, parameter):
             return
-        self.verify_lacp_mode(x, parameter)
+        self.verify_nxos_lacp_interfaces_mode(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -316,12 +477,10 @@ class NxosLacpInterfaces(Task):
         return self.properties['name']
     @name.setter
     def name(self, x):
-        '''
-        '''
         parameter = 'name'
         if self.set_none(x, parameter):
             return
-        self.verify_lacp_member_or_lacp_interface(x, parameter)
+        self.verify_nxos_lacp_interfaces_name(x, parameter)
         self.properties['name'] = x
 
     @property
@@ -332,7 +491,7 @@ class NxosLacpInterfaces(Task):
         parameter = 'port_priority'
         if self.set_none(x, parameter):
             return
-        self.verify_lacp_port_priority(x, parameter)
+        self.verify_nxos_lacp_interfaces_port_priority(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -343,7 +502,27 @@ class NxosLacpInterfaces(Task):
         parameter = 'rate'
         if self.set_none(x, parameter):
             return
-        self.verify_lacp_rate(x, parameter)
+        self.verify_nxos_lacp_interfaces_rate(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def register(self):
+        return self.properties['register']
+    @register.setter
+    def register(self, x):
+        parameter = 'register'
+        if self.set_none(x, parameter):
+            return
+        self.properties[parameter] = x
+
+    @property
+    def running_config(self):
+        return self.properties['running_config']
+    @running_config.setter
+    def running_config(self, x):
+        parameter = 'running_config'
+        if self.set_none(x, parameter):
+            return
         self.properties[parameter] = x
 
     @property
@@ -354,7 +533,7 @@ class NxosLacpInterfaces(Task):
         parameter = 'state'
         if self.set_none(x, parameter):
             return
-        self.verify_lacp_state(x, parameter)
+        self.verify_nxos_lacp_interfaces_state(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -365,7 +544,7 @@ class NxosLacpInterfaces(Task):
         parameter = 'suspend_individual'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -376,6 +555,6 @@ class NxosLacpInterfaces(Task):
         parameter = 'vpc'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
