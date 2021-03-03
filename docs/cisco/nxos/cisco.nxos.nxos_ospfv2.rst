@@ -35,6 +35,8 @@ For example, Property name ``not_advertise`` is disambiguated into ``ranges_not_
 and ``summary_address_not_advertise`` since this property name appears in both the ``ranges``
 and the ``summary_address`` dictionaries.
 
+|
+
 ======================================  ==================================================
 Property                                Description
 ======================================  ==================================================
@@ -49,7 +51,7 @@ area_id                                 Area ID as an integer or IP Address::
 bfd                                     Enable BFD on all OSPF interfaces::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 default_cost                            Default cost for default summary LSA::
 
@@ -69,12 +71,12 @@ distance                                OSPF administrative distance::
 flush_routes                            Flush routes on a non-graceful controlled restart::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 isolate                                 Isolate this router from OSPF perspective::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 maximum_paths                           Maximum paths per destination::
 
@@ -84,7 +86,7 @@ maximum_paths                           Maximum paths per destination::
 name_lookup                             Display OSPF router ids as DNS names::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 process_id                              The OSPF process tag::
 
@@ -95,7 +97,7 @@ process_id                              The OSPF process tag::
 rfc1583compatibility                    Configure RFC1583 compatibility for external path preferences::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 router_id                               OSPF process router-id::
 
@@ -106,7 +108,7 @@ router_id                               OSPF process router-id::
 shutdown                                Shutdown the OSPF protocol instance::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -119,12 +121,12 @@ Property                                Description
 authentication_message_digest           Use message-digest authentication::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 authentication_set                      Set authentication for the area::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -166,7 +168,7 @@ Property                                    Description
 default_information_originate_always        Always advertise a default route::
 
                                                 - Type: bool()
-                                                - Valid values: no, yes
+                                                - Valid values: False, True
 
 default_information_originate_route_map     Policy to control distribution of default routes::
 
@@ -175,7 +177,7 @@ default_information_originate_route_map     Policy to control distribution of de
 default_information_originate_set           Enable distribution of default route::
 
                                                 - Type: bool()
-                                                - Valid values: no, yes
+                                                - Valid values: False, True
 
 ======================================      ==================================================
 
@@ -242,12 +244,12 @@ graceful_restart_grace_period           maximum interval to restart gracefully::
 graceful_restart_helper_disable         Enable/Disable helper mode::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 graceful_restart_set                    Enable/Disable graceful-restart::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -260,12 +262,12 @@ Property                                Description
 log_adjacency_changes_detail            Notify all state changes::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 log_adjacency_changes_log               Enable/disable logging changes in adjacency state::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -304,7 +306,7 @@ max_lsa_threshold                       Threshold value (%) at which to generate
 max_lsa_warning_only                    Log a warning message when limit is exceeded::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -317,12 +319,12 @@ Property                                                Description
 max_metric_router_lsa_include_stub                      Advertise Max metric for Stub links as well::
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_set                               Set router-lsa attribute::
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_external_lsa_max_metric_value     max metric value for external LSAs::
 
@@ -332,12 +334,12 @@ max_metric_router_lsa_external_lsa_max_metric_value     max metric value for ext
 max_metric_router_lsa_external_lsa_set                  Set external-lsa attribute::
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_on_startup_set                    Set on-startup attribute:
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_on_startup_wait_for_bgp_asn       ASN of BGP to wait for::
 
@@ -352,7 +354,7 @@ max_metric_router_lsa_on_startup_wait_period            Wait period in seconds a
 max_metric_router_lsa_summary_lsa_set                   Set summary-lsa attribute::
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_summary_lsa_max_metric_value      Max metric value for summary LSAs::
 
@@ -377,7 +379,7 @@ mpls_traffic_eng_areas                  Python list of area IDs. These will be c
 mpls_traffic_eng_multicast_intact       MPLS TE multicast support::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 mpls_traffic_eng_router_id              Interface used for Router ID associated with TE::
 
@@ -391,22 +393,22 @@ Property                                Description
 nssa_default_information_originate      Originate Type-7 default LSA into NSSA area::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_no_redistribution                  Do not send redistributed LSAs into NSSA area::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_no_summary                         Do not send summary LSAs into NSSA area:: 
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_set                                Configure area as NSSA::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -419,17 +421,17 @@ Property                                Description
 nssa_translate_type7_always             Always translate LSAs::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_translate_type7_never              Never translate LSAs::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_translate_type7_supress_fa         Suppress forwarding address in translated LSAs::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -443,7 +445,7 @@ passive_interface_default               Interfaces passive by default (Suppress 
                                         updates on the interface)::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -461,7 +463,7 @@ ranges_cost                             Cost to use for the range::
 ranges_not_advertise                    Suppress advertising the specified range::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ranges_prefix                           Range prefix::
 
@@ -495,6 +497,25 @@ redistribute_route_map      The route map policy to constrain redistribution::
                                 - Type: str()
                                 - Required
 
+register                    Ansible variable to save output to::
+
+                                - Type: str()
+                                - Examples:
+                                    task.register = 'result'
+
+running_config              Full path to a file containing the output of
+                            ``show running-config | section "^router ospf .*"``.
+                            ``running_config`` is mutually-exclusive with
+                            every other property except ``state`` and
+                            ``register``.  ``state`` must be set to ``parsed``
+                            if ``running_config`` is set.::
+
+                                - Type: str()
+                                - Examples:
+                                    task.state = 'parsed'
+                                    task.running_config = '/tmp/running.cfg'
+                                    task.register = 'parsed'
+
 ========================    ===================================================
 
 |
@@ -506,12 +527,12 @@ Property                                Description
 stub_no_summary                         Do not send summary LSAs into NSSA area::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 stub_set                                Configure area as NSSA::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -524,7 +545,7 @@ Property                                Description
 summary_address_not_advertise           Supress advertising the specified summary::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 summary_address_prefix                  Prefix to summarize::
 
@@ -548,7 +569,7 @@ Property                                Description
 table_map_filter                        Block the OSPF routes from being sent to RIB::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 table_map_name                          Route Map name::
 
@@ -620,3 +641,11 @@ timers_throttle_spf_min_hold_time       Minimum hold time between SPF calculatio
                                             - Valid values: int()
 
 ======================================  ==================================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+

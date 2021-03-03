@@ -1,21 +1,31 @@
 # NxosOspfv2() - cisco/nxos/nxos_ospfv2.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
-===========================
+***********************************
 NxosOspfv2 - nxos_ospfv2.py
-===========================
+***********************************
 
-Description
------------
-NxosOspfv2() generates Ansible Playbook tasks using nxos_ospfv2
-which can be fed to Playbook().add_task()
+.. contents::
+   :local:
+   :depth: 1
 
-Example usage
--------------
+ScriptKit Synopsis
+------------------
+- NxosOspfv2() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_ospfv2
+- These can then be passed to Playbook().add_task()
 
-unit_test/cisco/nxos/unit_test_nxos_ospfv2.py
+
+Ansible Module Documentation
+----------------------------
+- `cisco.nxos.nxos_ospfv2 <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst>`_
+
+
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_ospfv2.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_ospfv2.py>`_
+
 
 Properties
 ----------
@@ -27,8 +37,10 @@ The heusistc used for disambiguation is to include the name(s) of the enclosing 
 in the property name.
 
 For example, Property name ``not_advertise`` is disambiguated into ``ranges_not_advertise``
-and ``summary_address_not_advertise`` since this property name appears in both the ranges
-and the summary_address dictionaries.
+and ``summary_address_not_advertise`` since this property name appears in both the ``ranges``
+and the ``summary_address`` dictionaries.
+
+|
 
 ======================================  ==================================================
 Property                                Description
@@ -44,7 +56,7 @@ area_id                                 Area ID as an integer or IP Address::
 bfd                                     Enable BFD on all OSPF interfaces::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 default_cost                            Default cost for default summary LSA::
 
@@ -64,12 +76,12 @@ distance                                OSPF administrative distance::
 flush_routes                            Flush routes on a non-graceful controlled restart::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 isolate                                 Isolate this router from OSPF perspective::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 maximum_paths                           Maximum paths per destination::
 
@@ -79,7 +91,7 @@ maximum_paths                           Maximum paths per destination::
 name_lookup                             Display OSPF router ids as DNS names::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 process_id                              The OSPF process tag::
 
@@ -90,7 +102,7 @@ process_id                              The OSPF process tag::
 rfc1583compatibility                    Configure RFC1583 compatibility for external path preferences::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 router_id                               OSPF process router-id::
 
@@ -101,7 +113,7 @@ router_id                               OSPF process router-id::
 shutdown                                Shutdown the OSPF protocol instance::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -114,12 +126,12 @@ Property                                Description
 authentication_message_digest           Use message-digest authentication::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 authentication_set                      Set authentication for the area::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -161,7 +173,7 @@ Property                                    Description
 default_information_originate_always        Always advertise a default route::
 
                                                 - Type: bool()
-                                                - Valid values: no, yes
+                                                - Valid values: False, True
 
 default_information_originate_route_map     Policy to control distribution of default routes::
 
@@ -170,7 +182,7 @@ default_information_originate_route_map     Policy to control distribution of de
 default_information_originate_set           Enable distribution of default route::
 
                                                 - Type: bool()
-                                                - Valid values: no, yes
+                                                - Valid values: False, True
 
 ======================================      ==================================================
 
@@ -237,12 +249,12 @@ graceful_restart_grace_period           maximum interval to restart gracefully::
 graceful_restart_helper_disable         Enable/Disable helper mode::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 graceful_restart_set                    Enable/Disable graceful-restart::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -255,12 +267,12 @@ Property                                Description
 log_adjacency_changes_detail            Notify all state changes::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 log_adjacency_changes_log               Enable/disable logging changes in adjacency state::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -299,7 +311,7 @@ max_lsa_threshold                       Threshold value (%) at which to generate
 max_lsa_warning_only                    Log a warning message when limit is exceeded::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -312,12 +324,12 @@ Property                                                Description
 max_metric_router_lsa_include_stub                      Advertise Max metric for Stub links as well::
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_set                               Set router-lsa attribute::
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_external_lsa_max_metric_value     max metric value for external LSAs::
 
@@ -327,12 +339,12 @@ max_metric_router_lsa_external_lsa_max_metric_value     max metric value for ext
 max_metric_router_lsa_external_lsa_set                  Set external-lsa attribute::
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_on_startup_set                    Set on-startup attribute:
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_on_startup_wait_for_bgp_asn       ASN of BGP to wait for::
 
@@ -347,7 +359,7 @@ max_metric_router_lsa_on_startup_wait_period            Wait period in seconds a
 max_metric_router_lsa_summary_lsa_set                   Set summary-lsa attribute::
 
                                                             - Type: bool()
-                                                            - Valid values: no, yes
+                                                            - Valid values: False, True
 
 max_metric_router_lsa_summary_lsa_max_metric_value      Max metric value for summary LSAs::
 
@@ -372,7 +384,7 @@ mpls_traffic_eng_areas                  Python list of area IDs. These will be c
 mpls_traffic_eng_multicast_intact       MPLS TE multicast support::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 mpls_traffic_eng_router_id              Interface used for Router ID associated with TE::
 
@@ -386,22 +398,22 @@ Property                                Description
 nssa_default_information_originate      Originate Type-7 default LSA into NSSA area::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_no_redistribution                  Do not send redistributed LSAs into NSSA area::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_no_summary                         Do not send summary LSAs into NSSA area:: 
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_set                                Configure area as NSSA::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -414,17 +426,17 @@ Property                                Description
 nssa_translate_type7_always             Always translate LSAs::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_translate_type7_never              Never translate LSAs::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 nssa_translate_type7_supress_fa         Suppress forwarding address in translated LSAs::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -438,7 +450,7 @@ passive_interface_default               Interfaces passive by default (Suppress 
                                         updates on the interface)::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -456,7 +468,7 @@ ranges_cost                             Cost to use for the range::
 ranges_not_advertise                    Suppress advertising the specified range::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ranges_prefix                           Range prefix::
 
@@ -490,6 +502,25 @@ redistribute_route_map      The route map policy to constrain redistribution::
                                 - Type: str()
                                 - Required
 
+register                    Ansible variable to save output to::
+
+                                - Type: str()
+                                - Examples:
+                                    task.register = 'result'
+
+running_config              Full path to a file containing the output of
+                            ``show running-config | section "^router ospf .*"``.
+                            ``running_config`` is mutually-exclusive with
+                            every other property except ``state`` and
+                            ``register``.  ``state`` must be set to ``parsed``
+                            if ``running_config`` is set.::
+
+                                - Type: str()
+                                - Examples:
+                                    task.state = 'parsed'
+                                    task.running_config = '/tmp/running.cfg'
+                                    task.register = 'parsed'
+
 ========================    ===================================================
 
 |
@@ -501,12 +532,12 @@ Property                                Description
 stub_no_summary                         Do not send summary LSAs into NSSA area::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 stub_set                                Configure area as NSSA::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 ======================================  ==================================================
 
@@ -519,7 +550,7 @@ Property                                Description
 summary_address_not_advertise           Supress advertising the specified summary::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 summary_address_prefix                  Prefix to summarize::
 
@@ -543,7 +574,7 @@ Property                                Description
 table_map_filter                        Block the OSPF routes from being sent to RIB::
 
                                             - Type: bool()
-                                            - Valid values: no, yes
+                                            - Valid values: False, True
 
 table_map_name                          Route Map name::
 
@@ -616,6 +647,12 @@ timers_throttle_spf_min_hold_time       Minimum hold time between SPF calculatio
 
 ======================================  ==================================================
 
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 
@@ -625,8 +662,6 @@ class NxosOspfV2(Task):
         super().__init__(ansible_module, task_log)
         self.lib_version = our_version
         self.class_name = __class__.__name__
-        self.ansible_task = dict()
-        self.ansible_task[ansible_module] = dict()
 
         self.config = dict()
         self.config['processes'] = list() # list of self.processes_dict
@@ -889,10 +924,6 @@ class NxosOspfV2(Task):
         self.nxos_ospfv2_valid_auto_cost_unit.add('Mbps')
         self.nxos_ospfv2_valid_auto_cost_unit.add('Gbps')
 
-        self.nxos_ospfv2_valid_boolean = set()
-        self.nxos_ospfv2_valid_boolean.add('no')
-        self.nxos_ospfv2_valid_boolean.add('yes')
-
         self.nxos_ospfv2_valid_filter_list_direction = set()
         self.nxos_ospfv2_valid_filter_list_direction.add('in')
         self.nxos_ospfv2_valid_filter_list_direction.add('out')
@@ -923,23 +954,45 @@ class NxosOspfV2(Task):
 
         self.init_properties()
 
+    def running_config_verification(self):
+        if self.state != 'parsed':
+            self.task_log.error('exiting. if running_config is set, state must be set to parsed')
+            exit(1)
+        for p in self.properties_set:
+            if self.properties[p] != None:
+                self.task_log.error('exiting. Cannot mix running_config with other configuration.')
+                self.task_log.error('Instantiate a separate NxosOspfv2() instance and configure it solely for running_config.')
+                exit(1)
+
     def final_verification(self):
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
+        if self.running_config != None:
+            self.running_config_verification()
 
     def update(self):
         '''
         update verifies that mandatory module-specific parameters are set
         '''
         self.final_verification()
+
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = dict()
         self.ansible_task[self.ansible_module]['state'] = self.state
         if self.task_name != None:
              self.ansible_task['name'] = self.task_name
+        if self.register != None:
+            self.ansible_task['register'] = self.register
+        if self.running_config != None:
+            self.ansible_task[self.ansible_module]['running_config'] = self.make_running_config()
+            return
 
         self.ansible_task[self.ansible_module]['config'] = self.config.copy()
-
         self.init_properties()
+
+    def make_running_config(self):
+        return r'{{' +  " lookup(" + r'"file"' + ',' + r'"' + self.running_config + r'"' + ')' + r' }}'
 
 
     def remove_null_from_dict(self, d):
@@ -996,7 +1049,7 @@ class NxosOspfV2(Task):
             self.task_log.error('nssa_translate_type7_always ({})'.format(self.nssa_translate_type7_always))
             self.task_log.error('nssa_translate_type7_never ({})'.format(self.nssa_translate_type7_never))
             exit(1)
-        if self.nssa_translate_type7_never == 'yes' and self.nssa_translate_type7_supress_fa == 'yes':
+        if self.nssa_translate_type7_never == True and self.nssa_translate_type7_supress_fa == True:
             self.task_log.error('exiting. The following are mutually-exclusive. Unset one or the other.')
             self.task_log.error('nssa_translate_type7_never ({})'.format(self.nssa_translate_type7_never))
             self.task_log.error('nssa_translate_type7_supress_fa ({})'.format(self.nssa_translate_type7_supress_fa))
@@ -1075,19 +1128,19 @@ class NxosOspfV2(Task):
             self.processes_dict['log_adjacency_changes'] = deepcopy(d)
 
     def verify_max_lsa(self):
-        if self.max_lsa_warning_only == 'yes':
+        if self.max_lsa_warning_only == True:
             if self.max_lsa_ignore_count != None:
-                self.task_log.error('exiting.  max_lsa_warning_only ({}) cannot be yes if max_lsa_ignore_count ({}) is set.'.format(
+                self.task_log.error('exiting.  max_lsa_warning_only ({}) cannot be True if max_lsa_ignore_count ({}) is set.'.format(
                     self.max_lsa_warning_only,
                     self.max_lsa_ignore_count))
                 exit(1)
             if self.max_lsa_ignore_time != None:
-                self.task_log.error('exiting.  max_lsa_warning_only ({}) cannot be yes if max_lsa_ignore_time ({}) is set.'.format(
+                self.task_log.error('exiting.  max_lsa_warning_only ({}) cannot be True if max_lsa_ignore_time ({}) is set.'.format(
                     self.max_lsa_warning_only,
                     self.max_lsa_ignore_time))
                 exit(1)
             if self.max_lsa_reset_time != None:
-                self.task_log.error('exiting.  max_lsa_warning_only ({}) cannot be yes if max_lsa_reset_time ({}) is set.'.format(
+                self.task_log.error('exiting.  max_lsa_warning_only ({}) cannot be True if max_lsa_reset_time ({}) is set.'.format(
                     self.max_lsa_warning_only,
                     self.max_lsa_reset_time))
                 exit(1)
@@ -1385,16 +1438,13 @@ class NxosOspfV2(Task):
         self.process_id = process_id
 
     def init_properties(self):
-        self.vrfs       = list() # cleared in add_process(), appended to in add_vrf()
+        self.vrfs = list() # cleared in add_process(), appended to in add_vrf()
         self.properties = dict()
-        self.properties['state']                                = None
-        self.properties['task_name']                            = None
-
-        # self.properties['ranges_cost']                          = None  # int()
-        # self.properties['ranges_not_advertise']                 = None  # Suppress advertising the specified range.
-        #                                                                 # Valid values: no, yes
-        # self.properties['ranges_prefix']                        = None  # IP in Prefix format (x.x.x.x/len)
-        self.properties['vrf']                                  = None  # vrf name
+        self.properties['state'] = None
+        self.properties['task_name'] = None
+        self.properties['register'] = None
+        self.properties['running_config'] = None
+        self.properties['vrf'] = None
         self.init_areas_authentication()
         self.init_areas_dict()
         self.init_areas_filter_list()
@@ -1416,8 +1466,8 @@ class NxosOspfV2(Task):
             self.init_properties()
         '''
         self.areas_dict = dict()
-        self.areas_dict['filter_list']      = list()                        # See init_areas_filter_list()
-        self.areas_dict['ranges']           = list()                        # See init_areas_ranges()
+        self.areas_dict['filter_list'] = list()
+        self.areas_dict['ranges'] = list()
 
     def init_areas_authentication(self):
         '''
@@ -1549,7 +1599,7 @@ class NxosOspfV2(Task):
         self.properties['max_lsa_max_non_self_generated_lsa']   = None  # int(), required, Set the maximum number of non self-generated LSAs
         self.properties['max_lsa_reset_time']                   = None  # int(), Set number of minutes after which ignore-count is reset to zero
         self.properties['max_lsa_threshold']                    = None  # int(), Threshold value (%) at which to generate a warning message
-        self.properties['max_lsa_warning_only']                 = None  # bool(), no, yes, Log a warning message when limit is exceeded
+        self.properties['max_lsa_warning_only']                 = None  # bool(), False, True, Log a warning message when limit is exceeded
 
     def init_processes_max_metric(self):
         '''
@@ -1667,11 +1717,12 @@ class NxosOspfV2(Task):
             self.properties[p] = None
 
     def nxos_ospfv2_verify_auto_cost_unit(self, x, parameter='auto_cost_unit'):
-        if x in self.nxos_ospfv2_valid_auto_cost_unit:
+        verify_set = self.nxos_ospfv2_valid_auto_cost_unit
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'nxos_ospfv2_verify_auto_cost_unit'
-        expectation = ','.join(self.nxos_ospfv2_valid_auto_cost_unit)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def nxos_ospfv2_verify_area_id(self, x, parameter='area_id'):
@@ -1701,11 +1752,12 @@ class NxosOspfV2(Task):
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def nxos_ospfv2_verify_filter_list_direction(self, x, parameter='filter_list_direction'):
-        if x in self.nxos_ospfv2_valid_filter_list_direction:
+        verify_set = self.nxos_ospfv2_valid_filter_list_direction
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'nxos_ospfv2_verify_filter_list_direction'
-        expectation = ','.join(self.nxos_ospfv2_valid_filter_list_direction)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def nxos_ospfv2_verify_maximum_paths(self, x, parameter='maximum_paths'):
@@ -1723,11 +1775,12 @@ class NxosOspfV2(Task):
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def nxos_ospfv2_verify_redistribute_protocol(self, x, parameter='redistribute_protocol'):
-        if x in self.nxos_ospfv2_valid_redistribute_protocol:
+        verify_set = self.nxos_ospfv2_valid_redistribute_protocol
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'nxos_ospfv2_verify_redistribute_protocol'
-        expectation = ','.join(self.nxos_ospfv2_valid_redistribute_protocol)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def nxos_ospfv2_verify_router_id(self, x, parameter='router_id'):
@@ -1820,11 +1873,12 @@ class NxosOspfV2(Task):
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def nxos_ospfv2_verify_state(self, x, parameter='state'):
-        if x in self.nxos_ospfv2_valid_state:
+        verify_set = self.nxos_ospfv2_valid_state
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'nxos_ospfv2_verify_state'
-        expectation = ','.join(self.nxos_ospfv2_valid_state)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     #---------------------------------
@@ -1897,17 +1951,6 @@ class NxosOspfV2(Task):
         self.nxos_ospfv2_verify_area_id(x, parameter)
         self.properties[parameter] = str(x)
 
-    # @property
-    # def area_id(self):
-    #     return self.areas_dict['area_id']
-    # @area_id.setter
-    # def area_id(self, x):
-    #     parameter = 'area_id'
-    #     if self.set_none(x, parameter):
-    #         return
-    #     self.nxos_ospfv2_verify_area_id(x, parameter)
-    #     self.areas_dict[parameter] = str(x)
-
     @property
     def authentication_message_digest(self):
         return self.properties['authentication_message_digest']
@@ -1916,7 +1959,7 @@ class NxosOspfV2(Task):
         parameter = 'authentication_message_digest'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -1927,7 +1970,7 @@ class NxosOspfV2(Task):
         parameter = 'authentication_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -1940,17 +1983,6 @@ class NxosOspfV2(Task):
             return
         self.nxos_ospfv2_verify_default_cost(x, parameter)
         self.properties[parameter] = x
-
-    # @property
-    # def default_cost(self):
-    #     return self.areas_dict['default_cost']
-    # @default_cost.setter
-    # def default_cost(self, x):
-    #     parameter = 'default_cost'
-    #     if self.set_none(x, parameter):
-    #         return
-    #     self.nxos_ospfv2_verify_default_cost(x, parameter)
-    #     self.areas_dict[parameter] = x
 
     @property
     def filter_list_direction(self):
@@ -1981,7 +2013,7 @@ class NxosOspfV2(Task):
         parameter = 'nssa_default_information_originate'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -1992,7 +2024,7 @@ class NxosOspfV2(Task):
         parameter = 'nssa_no_redistribution'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2003,7 +2035,7 @@ class NxosOspfV2(Task):
         parameter = 'nssa_no_summary'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2014,7 +2046,7 @@ class NxosOspfV2(Task):
         parameter = 'nssa_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2025,7 +2057,7 @@ class NxosOspfV2(Task):
         parameter = 'nssa_translate_type7_always'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2036,7 +2068,7 @@ class NxosOspfV2(Task):
         parameter = 'nssa_translate_type7_never'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2047,7 +2079,27 @@ class NxosOspfV2(Task):
         parameter = 'nssa_translate_type7_supress_fa'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def register(self):
+        return self.properties['register']
+    @register.setter
+    def register(self, x):
+        parameter = 'register'
+        if self.set_none(x, parameter):
+            return
+        self.properties[parameter] = x
+
+    @property
+    def running_config(self):
+        return self.properties['running_config']
+    @running_config.setter
+    def running_config(self, x):
+        parameter = 'running_config'
+        if self.set_none(x, parameter):
+            return
         self.properties[parameter] = x
 
     @property
@@ -2058,7 +2110,7 @@ class NxosOspfV2(Task):
         parameter = 'stub_no_summary'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2069,7 +2121,7 @@ class NxosOspfV2(Task):
         parameter = 'stub_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     #-----------------------------------------------------------------------
@@ -2107,7 +2159,7 @@ class NxosOspfV2(Task):
         parameter = 'bfd'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2118,7 +2170,7 @@ class NxosOspfV2(Task):
         parameter = 'default_information_originate_always'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2139,7 +2191,7 @@ class NxosOspfV2(Task):
         parameter = 'default_information_originate_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2172,7 +2224,7 @@ class NxosOspfV2(Task):
         parameter = 'flush_routes'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2194,7 +2246,7 @@ class NxosOspfV2(Task):
         parameter = 'graceful_restart_helper_disable'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2205,7 +2257,7 @@ class NxosOspfV2(Task):
         parameter = 'graceful_restart_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2216,7 +2268,7 @@ class NxosOspfV2(Task):
         parameter = 'isolate'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2227,7 +2279,7 @@ class NxosOspfV2(Task):
         parameter = 'log_adjacency_changes_detail'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2238,7 +2290,7 @@ class NxosOspfV2(Task):
         parameter = 'log_adjacency_changes_log'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2304,7 +2356,7 @@ class NxosOspfV2(Task):
         parameter = 'max_lsa_warning_only'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
 
@@ -2316,7 +2368,7 @@ class NxosOspfV2(Task):
         parameter = 'max_metric_router_lsa_include_stub'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2327,7 +2379,7 @@ class NxosOspfV2(Task):
         parameter = 'max_metric_router_lsa_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2349,7 +2401,7 @@ class NxosOspfV2(Task):
         parameter = 'max_metric_router_lsa_external_lsa_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2360,7 +2412,7 @@ class NxosOspfV2(Task):
         parameter = 'max_metric_router_lsa_on_startup_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2393,7 +2445,7 @@ class NxosOspfV2(Task):
         parameter = 'max_metric_router_lsa_summary_lsa_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2404,7 +2456,7 @@ class NxosOspfV2(Task):
         parameter = 'max_metric_router_lsa_summary_lsa_set'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2458,7 +2510,7 @@ class NxosOspfV2(Task):
         parameter = 'mpls_traffic_eng_multicast_intact'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2485,7 +2537,7 @@ class NxosOspfV2(Task):
         parameter = 'name_lookup'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2496,7 +2548,7 @@ class NxosOspfV2(Task):
         parameter = 'passive_interface_default'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2529,7 +2581,7 @@ class NxosOspfV2(Task):
         parameter = 'ranges_not_advertise'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2582,7 +2634,7 @@ class NxosOspfV2(Task):
         parameter = 'rfc1583compatibility'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2604,7 +2656,7 @@ class NxosOspfV2(Task):
         parameter = 'shutdown'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2626,7 +2678,7 @@ class NxosOspfV2(Task):
         parameter = 'summary_address_not_advertise'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -2659,7 +2711,7 @@ class NxosOspfV2(Task):
         parameter = 'table_map_filter'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
