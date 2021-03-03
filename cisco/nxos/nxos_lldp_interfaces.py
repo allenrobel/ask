@@ -1,37 +1,143 @@
 # NxosLldpInterfaces() - cisco/nxos/nxos_lldp_interfaces.py
-our_version = 103
+our_version = 104
 
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_lldp_interfaces.py
+**************************************
+NxosLldpInterfaces()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosLldpInterfaces() generates Ansible Playbook tasks conformant with Ansible module nxos_lldp_interfaces
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosLldpInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_lldp_interfaces
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_lldp_interfaces.py
+Ansible Module Documentation
+----------------------------
+- `nxos_lldp_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_interfaces_module.rst>`_
 
-Properties:
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_lldp_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_lldp_interfaces.py>`_
 
-    name                        -   Full name of interface
-                                    Required
-                                    Examples: Ethernet1/1
-    receive                     -   Enable/Disable reception of LLDP packets on the interface
-                                    By default, this is enabled after LLDP is enabled globally
-                                    Valid values: no, yes
-    state                       -   Desired state after module is processed
-                                    Valid values: deleted, gathered, merged, overridden, parsed, rendered, replaced
-    tlv_set_management_address  -   Advertise the IPv4 or IPv6 management address for the interface
-                                    Valid values: ipv4 or ipv6 unicast address without prefixlen/mask
-                                    Examples: 1.1.1.1, 2001::1
-    tlv_set_vlan                -   Advertise the VLAN for the interface
-                                    Valid values: int() range: 1-4094
-    transmit                    -   Enable/Disable transmission of LLDP packets on the interface
-                                    By default, this is enabled after LLDP is enabled globally
-                                    Valid values: no, yes
+
+|
+
+================    ==================================================
+User Methods        Description
+================    ==================================================
+add_interface()     Append an LLDP interface to the task and reset
+                    lldp interface properties to None to allow 
+                    configuration of another interface. See
+                    ``ScriptKit Example`` above for example usage.
+================    ==================================================
+
+
+|
+|
+
+============================    ==============================================
+Property                        Description
+============================    ==============================================
+name                            Full name of the interface on which to
+                                configure LLDP::
+
+                                    - Type: str()
+                                    - Valid values: An LLDP-capable interface name
+                                    - Required (if running_config is not set)
+                                    - Example:
+                                        task.name = 'Ethernet1/1'
+
+receive                         Enable ``True`` or disable ``False``
+                                reception of LLDP packets on ``name``.
+                                By default, this is enabled after LLDP is
+                                enabled globally:
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.receive = True
+
+tlv_set_management_address      Advertise the IPv4 or IPv6 management address 
+                                associated with ``name``.
+
+                                    - Type: str()
+                                    - Valid values: an IPv4 or IPv6 address
+                                    - Example:
+                                        task.tlv_set_management_address = '10.1.2.3'
+
+tlv_set_vlan                    Advertise the VLAN ID associated with ``name``.
+
+                                    - Type: str()
+                                    - Valid values: range 1-4094
+                                    - Example:
+                                        task.tlv_set_vlan = 30
+
+transmit                        Enable ``True`` or Disable ``False``
+                                transmission of LLDP packets on ``name``.
+                                By default, this is enabled after LLDP is
+                                enabled globally.
+
+                                    - Type: bool()
+                                    - Valid values: False, True
+                                    - Example:
+                                        task.transmit = True
+
+register                        Ansible variable to save output to::
+
+                                    - Type: str()
+                                    - Examples:
+                                        task.register = 'result'
+
+running_config                  Full path to a file containing the output of
+                                ``show running-config | section ^interface``.
+                                ``running_config`` is mutually-exclusive with
+                                every other property except ``state`` and
+                                ``register``.  ``state`` must be set to ``parsed``
+                                if ``running_config`` is set.::
+
+                                    - Type: str()
+                                    - Examples:
+                                        task.state = 'parsed'
+                                        task.running_config = '/tmp/running.cfg'
+
+state                           Desired state after the task has run::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - deleted
+                                        - gathered
+                                        - merged
+                                        - overridden
+                                        - parsed
+                                        - rendered
+                                        - replaced
+                                    - Example:
+                                        task.state = 'merged'
+                                    - Required
+
+task_name                       Name of the task. Ansible will display this
+                                when the playbook is run::
+
+                                    - Type: str()
+                                    - Example:
+                                        - task.task_name = 'configure lldp interfaces'
+
+============================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
+
 '''
 
 class NxosLldpInterfaces(Task):
@@ -40,10 +146,7 @@ class NxosLldpInterfaces(Task):
         super().__init__(ansible_module, task_log)
         self.lib_version = our_version
         self.class_name = __class__.__name__
-        self.ansible_task = dict()
-        self.ansible_task[self.ansible_module] = dict()
-        self.ansible_task[self.ansible_module]['state'] = None
-        self.ansible_task[self.ansible_module]['config'] = list()
+        self.config = list()
 
         self.nxos_lldp_interfaces_valid_state = set()
         self.nxos_lldp_interfaces_valid_state.add('deleted')
@@ -58,12 +161,21 @@ class NxosLldpInterfaces(Task):
         self.max_vlan = 4094
 
         self.properties_set = set()
-        self.properties_set.add('tlv_set_management_address')
         self.properties_set.add('name')
         self.properties_set.add('receive')
-        self.properties_set.add('transmit')
+        self.properties_set.add('register')
+        self.properties_set.add('running_config')
         self.properties_set.add('state')
+        self.properties_set.add('tlv_set_management_address')
         self.properties_set.add('tlv_set_vlan')
+        self.properties_set.add('transmit')
+
+        self.config_properties_set = set()
+        self.config_properties_set.add('name')
+        self.config_properties_set.add('receive')
+        self.config_properties_set.add('tlv_set_management_address')
+        self.config_properties_set.add('tlv_set_vlan')
+        self.config_properties_set.add('transmit')
 
         self.init_properties()
 
@@ -73,21 +185,17 @@ class NxosLldpInterfaces(Task):
             self.properties[p] = None
         self.properties['task_name'] = None
 
-    def final_verification(self):
-        if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
-            exit(1)
+    def init_config_properties(self):
+        for p in self.config_properties_set:
+            self.properties[p] = None
+
+    def interface_verification(self):
         if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
+            self.task_log.error('exiting. call instance.name before calling instance.add_iterface()')
             exit(1)
 
-    def update(self):
-        '''
-        call final_verification()
-        populate ansible_task dict()
-        '''
-        self.final_verification()
-
+    def add_interface(self):
+        self.interface_verification()
         d = dict()
         tlv_set = dict()
         d['name'] = self.name
@@ -101,12 +209,63 @@ class NxosLldpInterfaces(Task):
             tlv_set['vlan'] = self.tlv_set_vlan
         if len(tlv_set) != 0:
             d['tlv_set'] = deepcopy(tlv_set)
+        self.config.append(deepcopy(d))
+        self.init_config_properties()
+
+    def final_verification_running_config(self):
+        if self.state != 'parsed':
+            self.task_log.error('exiting. if running_config is set, state must be set to parsed')
+            exit(1)
+    def final_verification(self):
+        if self.state == None:
+            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            exit(1)
+        if self.running_config != None:
+            self.final_verification_running_config()
+        else:
+            if len(self.config) == 0 and self.state != 'deleted':
+                self.task_log.error('exiting. call intance.add_interface() at least once before calling instance.update().')
+                exit(1)
+
+    def update(self):
+        '''
+        call final_verification()
+        populate ansible_task dict()
+        '''
+        self.final_verification()
+
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = dict()
+
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
-        self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
+        if self.register != None:
+            self.ansible_task['register'] = self.register
         self.ansible_task[self.ansible_module]['state'] = self.state
+        if self.running_config != None:
+            self.ansible_task[self.ansible_module]['running_config'] = self.make_running_config()
+        else:
+            self.ansible_task[self.ansible_module]['config'] = deepcopy(self.config)
 
-        self.init_properties()
+    def make_running_config(self):
+        return r'{{' +  " lookup(" + r'"file"' + ',' + r'"' + self.running_config + r'"' + ')' + r' }}'
+
+    def add_interface(self):
+        d = dict()
+        tlv_set = dict()
+        d['name'] = self.name
+        if self.transmit != None:
+            d['transmit'] = self.transmit
+        if self.receive != None:
+            d['receive'] = self.receive
+        if self.tlv_set_management_address != None:
+            tlv_set['management_address'] = self.tlv_set_management_address
+        if self.tlv_set_vlan != None:
+            tlv_set['vlan'] = self.tlv_set_vlan
+        if len(tlv_set) != 0:
+            d['tlv_set'] = deepcopy(tlv_set)
+        self.config.append(deepcopy(d))
+        self.init_config_properties()
 
     def verify_nxos_lldp_interfaces_tlv_set_management_address(self, x, parameter='tlv_set_management_address'):
         if self.is_ipv6_address(x):
@@ -150,7 +309,27 @@ class NxosLldpInterfaces(Task):
         parameter = 'receive'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def register(self):
+        return self.properties['register']
+    @register.setter
+    def register(self, x):
+        parameter = 'register'
+        if self.set_none(x, parameter):
+            return
+        self.properties[parameter] = x
+
+    @property
+    def running_config(self):
+        return self.properties['running_config']
+    @running_config.setter
+    def running_config(self, x):
+        parameter = 'running_config'
+        if self.set_none(x, parameter):
+            return
         self.properties[parameter] = x
 
     @property
@@ -204,5 +383,5 @@ class NxosLldpInterfaces(Task):
         parameter = 'transmit'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
