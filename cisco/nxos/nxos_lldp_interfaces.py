@@ -1,5 +1,5 @@
 # NxosLldpInterfaces() - cisco/nxos/nxos_lldp_interfaces.py
-our_version = 104
+our_version = 105
 
 from copy import deepcopy
 from ask.common.task import Task
@@ -56,7 +56,7 @@ name                            Full name of the interface on which to
 receive                         Enable ``True`` or disable ``False``
                                 reception of LLDP packets on ``name``.
                                 By default, this is enabled after LLDP is
-                                enabled globally:
+                                enabled globally::
 
                                     - Type: bool()
                                     - Valid values: False, True
@@ -64,14 +64,14 @@ receive                         Enable ``True`` or disable ``False``
                                         task.receive = True
 
 tlv_set_management_address      Advertise the IPv4 or IPv6 management address 
-                                associated with ``name``.
+                                associated with ``name``::
 
                                     - Type: str()
                                     - Valid values: an IPv4 or IPv6 address
                                     - Example:
                                         task.tlv_set_management_address = '10.1.2.3'
 
-tlv_set_vlan                    Advertise the VLAN ID associated with ``name``.
+tlv_set_vlan                    Advertise the VLAN ID associated with ``name``::
 
                                     - Type: str()
                                     - Valid values: range 1-4094
@@ -81,7 +81,7 @@ tlv_set_vlan                    Advertise the VLAN ID associated with ``name``.
 transmit                        Enable ``True`` or Disable ``False``
                                 transmission of LLDP packets on ``name``.
                                 By default, this is enabled after LLDP is
-                                enabled globally.
+                                enabled globally::
 
                                     - Type: bool()
                                     - Valid values: False, True
@@ -136,7 +136,6 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
-
 
 '''
 
