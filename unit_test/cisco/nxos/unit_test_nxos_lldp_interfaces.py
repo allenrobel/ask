@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_lldp_interfaces.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,12 +19,6 @@ def playbook():
     pb.name = '{} task'.format(ansible_module)
     pb.add_host(ansible_host)
     return pb
-
-def add_item_to_name(item, item_value, name):
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-        return value
-    return name
 
 def add_task_name(task):
     task.append_to_task_name('v.{}'.format(our_version))
