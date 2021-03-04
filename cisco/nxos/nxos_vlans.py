@@ -1,5 +1,5 @@
 # NxosVlans() - cisco/nxos/nxos_vlans.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -35,7 +35,7 @@ Property                    Description
 enabled                     Manage administrative state of the vlan.::
 
                                 - Type: str()
-                                - Valid values: no, yes
+                                - Valid values: False, True
 mapped_vni                  The Virtual Network Identifier (VNI) ID that is mapped to the VLAN::
 
                                 - Type: int() or str()
@@ -186,7 +186,7 @@ class NxosVlans(Task):
         parameter = 'enabled'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x)
+        self.verify_boolean(x)
         self.properties[parameter] = x
 
     @property
@@ -221,16 +221,6 @@ class NxosVlans(Task):
             return
         self.properties[parameter] = x
 
-    @property
-    def vlan_state(self):
-        return self.properties['vlan_state']
-    @vlan_state.setter
-    def vlan_state(self, x):
-        parameter = 'vlan_state'
-        if self.set_none(x, parameter):
-            return
-        self.verify_nxos_vlans_vlan_state(x, parameter)
-        self.properties[parameter] = x
 
     @property
     def state(self):
@@ -264,3 +254,15 @@ class NxosVlans(Task):
         expectation = 'int() within 2-4094 inclusive'
         self.verify_vlan(x, expectation, parameter)
         self.properties[parameter] = x
+
+    @property
+    def vlan_state(self):
+        return self.properties['vlan_state']
+    @vlan_state.setter
+    def vlan_state(self, x):
+        parameter = 'vlan_state'
+        if self.set_none(x, parameter):
+            return
+        self.verify_nxos_vlans_vlan_state(x, parameter)
+        self.properties[parameter] = x
+
