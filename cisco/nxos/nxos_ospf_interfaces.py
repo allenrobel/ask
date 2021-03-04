@@ -1,5 +1,5 @@
 # NxosOspfInterfaces() - cisco/nxos/nxos_ospf_interfaces.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -25,13 +25,13 @@ Properties
 
     afi                             -   Address Family Identifier (AFI) for OSPF settings on the interfaces
     authentication_enable           -   Enable/disable authentication on the interface
-                                        Valid values: no, yes
+                                        Valid values: False, True
     authentication_key_chain        -   Authentication password key-chain
                                         Valid values: str()
     authentication_message_digest   -   Use message-digest authentication
-                                        Valid values: no, yes
+                                        Valid values: False, True
     authentication_null_auth        -   Use null(disable) authentication
-                                        Valid values: no, yes
+                                        Valid values: False, True
     authentication_key_encryption   -   authentication key encryption type
                                         Valid values: 0, 3, 7
                                             0 UNENCRYPTED
@@ -59,21 +59,21 @@ Properties
     message_digest_key_id           -   key ID
                                         Required
     mtu_ignore                      -   Enable/disable OSPF MTU mismatch detection
-                                        Valid values: no, yes
+                                        Valid values: False, True
     multi_areas                     -   Multi-Areas associated with interface (not tied to OSPF process)
                                         Valid values: python list() of Area Ids as int() or IP address
                                         Example: [10, 30, '10.1.1.1', '45.1.1.0']
     network                         -   Network type of interface
                                         Valid  values: broadcast, point-to-point
     passive_interface               -   Suppress routing updates on the interface
-                                        Valid values: no, yes
+                                        Valid values: False, True
     priority                        -   Router priority
                                         Valid values: int()
     retransmit_interval             -   Packet retransmission interval
                                         Valid values: int() range: 1-65535
                                         Default: 5
     shutdown                        -   Shutdown OSPF on this interface
-                                        Valid values: no, yes
+                                        Valid values: False, True
     transmit_delay                  -   Packet transmission delay
                                         Valid values: int() range: 1-450
                                         Default: 1
@@ -88,7 +88,7 @@ Properties
     process_area_id                 -   ip Area ID
                                         Valid values: int() or IP address
     process_area_secondaries        -   (Do not)? include secondary IPv4/IPv6 addresses
-                                        Valid values: no, yes
+                                        Valid values: False, True
     process_multi_areas             -   Multi-Areas associated with interface (not tied to OSPF process)
                                         Valid values: python list() of Area Ids as int() or IP address
                                         Example: [10, 30, '10.1.1.1', '45.1.1.0']
@@ -495,7 +495,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'authentication_enable'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -516,7 +516,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'authentication_message_digest'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -527,7 +527,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'authentication_null_auth'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -634,7 +634,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'mtu_ignore'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -678,7 +678,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'passive_interface'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -711,7 +711,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'process_area_secondaries'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -733,7 +733,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'process_id'
         if self.set_none(x, parameter):
             return
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def retransmit_interval(self):
@@ -755,7 +755,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'shutdown'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
