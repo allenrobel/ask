@@ -1,5 +1,5 @@
 # NxosOspfv2() - cisco/nxos/nxos_ospfv2.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -1982,7 +1982,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_default_cost(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def filter_list_direction(self):
@@ -2138,7 +2138,7 @@ class NxosOspfV2(Task):
             return
         # TODO: need better verification in populate_processes_auto_cost() which takes into account auto_cost_unit
         self.verify_integer_range(x, 1, 4000000, self.class_name, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def auto_cost_unit(self):
@@ -2203,7 +2203,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.verify_integer_range(x, 1, 16777214, self.class_name, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def distance(self):
@@ -2214,7 +2214,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.verify_integer_range(x, 1, 255, self.class_name, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def flush_routes(self):
@@ -2236,7 +2236,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_graceful_restart_grace_period(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def graceful_restart_helper_disable(self):
@@ -2302,7 +2302,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_max_lsa_ignore_count(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def max_lsa_ignore_time(self):
@@ -2313,7 +2313,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_max_lsa_ignore_time(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def max_lsa_max_non_self_generated_lsa(self):
@@ -2324,7 +2324,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_max_lsa_max_non_self_generated_lsa(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def max_lsa_reset_time(self):
@@ -2335,7 +2335,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_max_lsa_reset_time(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def max_lsa_threshold(self):
@@ -2346,7 +2346,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_max_lsa_threshold(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def max_lsa_warning_only(self):
@@ -2391,7 +2391,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_max_metric_router_lsa_external_lsa_max_metric_value(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def max_metric_router_lsa_external_lsa_set(self):
@@ -2435,7 +2435,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_max_metric_router_lsa_on_startup_wait_period(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def max_metric_router_lsa_summary_lsa_set(self):
@@ -2468,7 +2468,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_max_metric_router_lsa_summary_lsa_max_metric_value(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def maximum_paths(self):
@@ -2479,7 +2479,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_maximum_paths(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def mpls_traffic_eng_areas(self):
@@ -2733,7 +2733,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_timers_lsa_arrival(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def timers_lsa_group_pacing(self):
@@ -2744,7 +2744,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_timers_lsa_group_pacing(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def timers_throttle_lsa_hold_interval(self):
@@ -2755,7 +2755,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_timers_throttle_lsa_hold_interval(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def timers_throttle_lsa_max_interval(self):
@@ -2766,7 +2766,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_timers_throttle_lsa_max_interval(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def timers_throttle_lsa_start_interval(self):
@@ -2777,7 +2777,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_timers_throttle_lsa_start_interval(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def timers_throttle_spf_initial_spf_delay(self):
@@ -2788,7 +2788,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_timers_throttle_spf_initial_spf_delay(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def timers_throttle_spf_max_wait_time(self):
@@ -2799,7 +2799,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_timers_throttle_spf_max_wait_time(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def timers_throttle_spf_min_hold_time(self):
@@ -2810,7 +2810,7 @@ class NxosOspfV2(Task):
         if self.set_none(x, parameter):
             return
         self.nxos_ospfv2_verify_timers_throttle_spf_min_hold_time(x, parameter)
-        self.properties[parameter] = x
+        self.properties[parameter] = str(x)
 
     @property
     def vrf(self):
