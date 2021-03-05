@@ -1,5 +1,5 @@
 # NxosL2Interfaces() - cisco/nxos/nxos_l2_interfaces.py
-our_version = 108
+our_version = 109
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -127,6 +127,7 @@ class NxosL2Interfaces(Task):
         self.properties_set.add('allowed_vlans')
         self.properties_set.add('mode')
         self.properties_set.add('native_vlan')
+        self.properties_set.add('register')
         self.properties_set.add('running_config')
         self.properties_set.add('vlan')
         self.properties_set.add('name')
