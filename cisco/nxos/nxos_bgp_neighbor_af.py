@@ -1,5 +1,5 @@
 # NxosBgpNeighborAf() - cisco/nxos/nxos_bgp_neighbor_af.py
-our_version = 111
+our_version = 112
 
 from copy import deepcopy
 import re
@@ -658,7 +658,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'additional_paths_install'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -669,7 +669,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'additional_paths_send'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -724,7 +724,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'allowas_in'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -746,7 +746,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'as_override'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -757,7 +757,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'default_originate'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -778,7 +778,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'disable_peer_as_check'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -845,7 +845,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'max_prefix_warning'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -867,7 +867,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'next_hop_self'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -878,7 +878,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'next_hop_third_party'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -929,7 +929,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'route_reflector_client'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -994,7 +994,7 @@ class NxosBgpNeighborAf(Task):
         parameter = 'suppress_inactive'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
