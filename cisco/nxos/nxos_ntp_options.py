@@ -75,7 +75,7 @@ task_name               Name of the task. Ansible will display this
 
                             - Type: str()
                             - Example:
-                                - task.task_name = 'ntp auth config'
+                                - task.task_name = 'ntp options config'
                                         
 ====================    ==============================================
 
