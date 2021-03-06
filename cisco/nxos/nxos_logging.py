@@ -1,54 +1,191 @@
 # NxosLogging() - cisco/nxos/nxos_logging.py
-our_version = 100
+our_version = 101
 from copy import deepcopy
-import re
 from ask.common.task import Task
 '''
-Name: nxos_logging.py
+**************************************
+NxosLogging()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosLogging() generates Ansible Playbook tasks conformant with nxos_logging
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosLogging() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_logging
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_logging.py
+Ansible Module Documentation
+----------------------------
+- `nxos_logging <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_logging_module.rst>`_
 
-Properties:
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_logging.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_logging.py>`_
 
-    Valid values for all bool() types are: no, yes
-    Valid range for all type int() is: 0-65535
 
-    dest                    str()   Destination of the logs
-                                    Valid values: console, logfile, module, monitor, server
-    dest_level              int()   Set logging severity level
-                                    Valid values: range 0-7
-    event                   str()   Link/trunk enable/default interface configuration logging
-                                    Valid values: link-enable, link-default, trunk-enable, trunk-default
-    facility                str()   Facility name for logging
-    facility_level          int()   Set logging severity levels for facility based log messages
-                                    Valid values: range 0-7
-    facility_link_status    str()   Set logging facility ethpm link status. Not idempotent with version 6.0 images
-                                    Valid values: link-down-notif, link-down-error, link-up-notif, link-up-error
-    file_size               int()   Set logfile size
-                                    Valid values: range 4096-4194304
-    interface               str()   Interface to be used while configuring source-interface for logging
-    interface_message       str()   Add interface description to interface syslogs
-                                    Does not work with version 6.0 images using nxapi as a transport
-                                    Valid values: add-interface-description
-    name                    str()   If value of dest is logfile it indicates file-name
-    purge                   bool()  Remove any switch logging configuration that does not match what has been configured
-                                    Not supported for ansible_connection local
-                                    All nxos_logging tasks must use the same ansible_connection type
-    remote_server           str()   Hostname or IP Address for remote logging (when dest is 'server')
-                                    Valid values:  A.B.C.D|A:B::C:D|WORD 
-                                    Examples: 1.1.1.1, 2001::1, syslog.foo.com
-    state                   str()   The state of the configuration after module completion
-                                    Valid values: absent, present
-    timestamp               str()   Set logging timestamp format
-                                    Valid values: microseconds, milliseconds, seconds
-    use_vrf                 str()   VRF to be used while configuring remote logging (when dest is 'server')
+|
 
+========================    ==============================================
+Property                    Description
+========================    ==============================================
+dest                        Destination of the logs::
+
+                                - Type: str()
+                                - Valid values:
+                                    - console
+                                    - logfile
+                                    - module
+                                    - monitor
+                                    - server
+                                - Example
+                                    task.dest = 'monitor'
+
+dest_level                  Set logging severity level::
+
+                                - Type: int()
+                                - Valid values: range: 0-7
+                                - Example
+                                    task.dest_level = 3
+
+event                       Link/trunk enable/default interface
+                            configuration logging::
+
+                                - Type: str()
+                                - Valid values:
+                                    - link-enable
+                                    - link-default
+                                    - trunk-enable
+                                    - trunk-default
+                                - Example:
+                                    task.event = 'link-enable'
+
+facility                    Facility name for logging::
+
+                                - Type: str()
+                                - Valid values: See NX-OS documentation for list of facilities
+                                - Example:
+                                    task.facility = 'ospf'
+
+facility_level              Set logging severity levels for facility
+                            based log messages::
+
+                                - Type: int()
+                                - Valid values: range: 0-7
+                                - Example
+                                    task.facility_level = 5
+
+facility_link_status        Set logging facility ethpm link status.
+                            Not idempotent with version 6.0 images::
+
+                                - Type: str()
+                                - Valid values:
+                                    - link-down-notif
+                                    - link-down-error
+                                    - link-up-notif
+                                    - link-up-error
+                                - Example:
+                                    task.facility_link_status = 'link-down-error'
+
+file_size                   Set logfile size::
+
+                                - Type: int()
+                                - Valid values: range: 4096-4194304
+                                - Example
+                                    task.file_size = 500000
+
+interface                   Source interface when sending logging messages::
+
+                                - Type: str()
+                                - Valid values: An IP interface
+                                - Examples
+                                    task.interface = 'Ethernet1/1'
+                                    task.interface = 'mgmt0'
+
+interface_message           Add interface description to interface
+                            syslogs. Does not work with version 6.0
+                            images using nxapi as a transport::
+
+                                - Type: str()
+                                - Valid values: add-interface-description
+                                - Example:
+                                    task.interface_message = 'add-interface-description'
+
+name                        If value of ``dest`` is logfile ``name`` refers to
+                            a file name::
+
+                                - Type: str()
+                                - Example:
+                                    task.name = 'logfile.txt'
+
+purge                       Remove any switch logging configuration that does
+                            not match what has been configured.  Not supported
+                            for ansible_connection local.  All nxos_logging
+                            tasks must use the same ansible_connection type::
+
+                                - Type: bool()
+                                - Valid values: False, True
+                                - Example:
+                                    task.purge = True
+
+remote_server               Hostname or IP Address for remote logging (when
+                            ``dest`` is 'server')::
+
+                                - Type: str()
+                                - Valid values:
+                                    - ipv4 address e.g. A.B.C.D
+                                    - ipv6 address e.g. A:B::C:D
+                                    - hostname e.g. myhost.mydomain.org
+                                - Examples:
+                                    task.remote_server = '10.1.1.1'
+                                    task.remote_server = '2001::1'
+                                    task.remote_server = 'syslog.foo.com'
+
+state                       Desired state after task completion::
+
+                                - Type: str()
+                                - Valid values:
+                                    - absent
+                                    - present
+                                - Example:
+                                    task.state = 'present'
+                                - Required
+
+timestamp                   Set logging timestamp format::
+
+                                - Type: str()
+                                - Valid values:
+                                    - microseconds
+                                    - milliseconds
+                                    - seconds
+                                - Example:
+                                    task.timestamp = 'seconds'
+
+use_vrf                     VRF to be used when sending logging
+                            messages to logging servers i.e.
+                            ``when`` dest is 'server'::
+
+                                - Type: str()
+                                - Example:
+                                    task.interface = 'mgmt0'
+                                    task.use_vrf = 'management'
+
+task_name                   Name of the task. Ansible will display this
+                            when the playbook is run::
+
+                                - Type: str()
+                                - Example:
+                                    - task.task_name = 'enable lacp'
+                                        
+========================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 class NxosLogging(Task):
@@ -108,11 +245,14 @@ class NxosLogging(Task):
         self.nxos_logging_valid_timestamp.add('milliseconds')
         self.nxos_logging_valid_timestamp.add('seconds')
 
-        self.logging_file_size_min = 4096
-        self.logging_file_size_max = 4194304
+        self.nxos_logging_file_size_min = 4096
+        self.nxos_logging_file_size_max = 4194304
 
-        self.logging_level_min = 0
-        self.logging_level_max = 7
+        self.nxos_logging_level_min = 0
+        self.nxos_logging_level_max = 7
+
+        self.nxos_logging_facility_level_min = 0
+        self.nxos_logging_facility_level_max = 7
 
         self.init_properties()
 
@@ -190,10 +330,12 @@ class NxosLogging(Task):
         expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def verify_nxos_logging_file_size(self, x, parameter='file_size'):
+    def verify_nxos_logging_file_size(self, x):
         source_class = self.class_name
-        source_method = 'verify_nxos_logging_file_size'
-        self.verify_integer_range(x, self.logging_file_size_min, self.logging_file_size_max, source_class, source_method)
+        source_method='verify_nxos_logging_file_size'
+        range_min = self.nxos_logging_file_size_min
+        range_max = self.nxos_logging_file_size_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_logging_interface(self, x, parameter='logging_interface'):
         if self.is_ethernet_interface(x):
@@ -238,10 +380,19 @@ class NxosLogging(Task):
         expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
-    def verify_nxos_logging_level(self, x, source_method='verify_nxos_logging_level'):
-        self.verify_integer_range(x, self.logging_level_min, self.logging_level_max, self.class_name, source_method)
-    def verify_nxos_logging_facility_level(self, x, source_method='verify_nxos_logging_facility_level'):
-        self.verify_integer_range(x, self.logging_level_min, self.logging_level_max, self.class_name, source_method)
+    def verify_nxos_logging_level(self, x):
+        range_min = self.nxos_logging_level_min
+        range_max = self.nxos_logging_level_max
+        source_class = self.class_name
+        source_method='verify_nxos_logging_level'
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
+
+    def verify_nxos_logging_facility_level(self, x):
+        range_min = self.nxos_logging_facility_level_min
+        range_max = self.nxos_logging_facility_level_max
+        source_class = self.class_name
+        source_method='verify_nxos_logging_facility_level'
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     @property
     def dest(self):
@@ -262,7 +413,7 @@ class NxosLogging(Task):
         parameter = 'dest_level'
         if self.set_none(x, parameter):
             return
-        self.verify_nxos_logging_level(x, parameter)
+        self.verify_nxos_logging_level(x)
         self.properties[parameter] = x
 
     @property
@@ -294,7 +445,7 @@ class NxosLogging(Task):
         parameter = 'facility_level'
         if self.set_none(x, parameter):
             return
-        self.verify_nxos_logging_facility_level(x, parameter)
+        self.verify_nxos_logging_facility_level(x)
         self.properties[parameter] = x
 
     @property
@@ -316,7 +467,7 @@ class NxosLogging(Task):
         parameter = 'file_size'
         if self.set_none(x, parameter):
             return
-        self.verify_nxos_logging_file_size(x, parameter)
+        self.verify_nxos_logging_file_size(x)
         self.properties[parameter] = x
 
     @property
@@ -359,7 +510,7 @@ class NxosLogging(Task):
         parameter = 'purge'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
