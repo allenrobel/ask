@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_ntp_auth.py
-our_version = 101
+our_version = 102
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,23 +19,10 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
-def task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('auth_type', task.auth_type, task_name)
-    task_name = add_item_to_name('authentication', task.authentication, task_name)
-    task_name = add_item_to_name('key_id', task.key_id, task_name)
-    task_name = add_item_to_name('md5string', task.md5string, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('trusted_key', task.trusted_key, task_name)
-    task.task_name = task_name
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def add_task(pb):
     task = NxosNtpAuth(log)
@@ -44,8 +31,8 @@ def add_task(pb):
     task.key_id = 12345
     task.md5string = 'foobarbizbang'
     task.state = 'present'
-    task.trusted_key = 'true'
-    task_name(task)
+    task.trusted_key = True
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
