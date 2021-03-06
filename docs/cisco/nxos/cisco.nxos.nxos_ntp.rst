@@ -117,7 +117,7 @@ task_name               Name of the task. Ansible will display this
 
                             - Type: str()
                             - Example:
-                                - task.task_name = 'ntp options config'
+                                - task.task_name = 'ntp config'
 
 vrf_name                Makes the device communicate with the given
                         NTP server or peer over a specific VRF::
