@@ -157,13 +157,20 @@ def add_task_logging_timestamp(pb):
     task_name(task)
     task.update()
     pb.add_task(task)
+def add_task_logging_purge(pb):
+    task = NxosLogging(log)
+    task.purge = False
+    task.state = 'present'
+    task_name(task)
+    task.update()
+    pb.add_task(task)
 
 pb = playbook()
 
 add_task_logging_event_link_enable(pb)
 add_task_logging_facility_link_status(pb)
-#add_task_logging_facility_bgp(pb)
-#add_task_logging_facility_ospf(pb)
+add_task_logging_facility_bgp(pb)
+add_task_logging_facility_ospf(pb)
 add_task_logging_logfile(pb)
 add_task_logging_monitor(pb)
 add_task_logging_server_ipv4(pb)
@@ -172,6 +179,7 @@ add_task_logging_server_domain_name(pb)
 add_task_logging_interface(pb)
 add_task_logging_interface_message(pb)
 add_task_logging_timestamp(pb)
+add_task_logging_purge(pb)
 
 pb.append_playbook()
 pb.write_playbook()
