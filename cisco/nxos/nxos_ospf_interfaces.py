@@ -199,6 +199,7 @@ message_digest_key_encryption           Message digest authentication encryption
                                                 task.message_digest_key_encryption = 7
 
 message_digest_key                      Authentication key::
+
                                             - Type: str()
                                             - Example:
                                                 task.message_digest_key = 'fizbang'
