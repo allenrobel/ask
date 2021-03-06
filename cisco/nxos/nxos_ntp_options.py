@@ -1,30 +1,91 @@
 # NxosNtpOptions() - cisco/nxos/nxos_ntp_options.py
-our_version = 100
-import re
+our_version = 101
 from copy import deepcopy
 from ask.common.task import Task
 '''
-Name: nxos_ntp_options.py
+**************************************
+NxosNtpOptions()
+**************************************
 
-Description:
+.. contents::
+   :local:
+   :depth: 1
 
-NxosNtpOptions() generates Ansible Playbook tasks conformant with nxos_ntp_options
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosNtpOptions() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_ntp_options
+- These can then be passed to Playbook().add_task()
 
-Example usage:
-    unit_test/cisco/nxos/unit_test_nxos_ntp_options.py
+Ansible Module Documentation
+----------------------------
+- `nxos_ntp_options <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ntp_options_module.rst>`_
 
-Properties:
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_ntp_options.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_ntp_options.py>`_
 
-    Valid values for all abool() types are: no, yes
 
-    logging                 abool() Sets whether NTP logging is enabled on the device
-    master                  abool() Sets whether the device is an authoritative NTP server
-    state                   str()   The state of the configuration after module completion
-                                    Valid values: absent, present
-    stratum                 str()   If master=yes, an optional stratum can be supplied
-                                    Valid values: range 1-15
-                                    Default: 8
+|
+
+====================    ==============================================
+Property                Description
+====================    ==============================================
+logging                 Sets whether NTP logging is enabled on the
+                        device::
+
+                            - Type: bool()
+                            - Valid values:
+                                - False
+                                - True
+                            - Example:
+                                task.logging = False
+
+master                  Sets whether the device is an authoritative
+                        NTP server::
+
+                            - Type: bool()
+                            - Valid values:
+                                - False
+                                - True
+                            - Example:
+                                task.master = False
+
+state                   The state of the configuration after
+                        module completion::
+
+                            - Type: str()
+                            - Valid values:
+                                - absent
+                                - present
+                            - Example:
+                                task.state = 'present'
+                            - Required
+
+stratum                 If ``master`` is True, an optional stratum
+                        can be supplied::
+
+                            - Type: int()
+                            - Valid values: range 1-15
+                            - Default: 8
+                            - Example:
+                                task.stratum = 10
+
+task_name               Name of the task. Ansible will display this
+                        when the playbook is run::
+
+                            - Type: str()
+                            - Example:
+                                - task.task_name = 'ntp auth config'
+                                        
+====================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 class NxosNtpOptions(Task):
     def __init__(self, task_log):
@@ -45,8 +106,8 @@ class NxosNtpOptions(Task):
         self.nxos_ntp_options_valid_state.add('absent')
         self.nxos_ntp_options_valid_state.add('present')
 
-        self.stratum_min = 1
-        self.stratum_max = 15
+        self.nxos_ntp_options_stratum_min = 1
+        self.nxos_ntp_options_stratum_max = 15
 
         self.init_properties()
 
@@ -60,8 +121,8 @@ class NxosNtpOptions(Task):
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
-        if self.stratum != None and self.master != 'yes':
-            self.task_log.error('exiting. If instance.stratum is set, instance.master must be set to yes')
+        if self.stratum != None and self.master != True:
+            self.task_log.error('exiting. If instance.stratum is set, instance.master must be set to True')
             exit(1)
 
     def update(self):
@@ -91,7 +152,9 @@ class NxosNtpOptions(Task):
     def verify_nxos_ntp_options_stratum(self, x):
         source_class = self.class_name
         source_method = 'verify_nxos_ntp_options_stratum'
-        self.verify_integer_range(x, self.stratum_min, self.stratum_max, source_class, source_method)
+        range_min = self.nxos_ntp_options_stratum_min
+        range_max = self.nxos_ntp_options_stratum_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     @property
     def logging(self):
@@ -101,7 +164,7 @@ class NxosNtpOptions(Task):
         parameter = 'logging'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -112,7 +175,7 @@ class NxosNtpOptions(Task):
         parameter = 'master'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
