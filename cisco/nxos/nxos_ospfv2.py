@@ -95,8 +95,11 @@ name_lookup                             Display OSPF router ids as DNS names::
 
 process_id                              The OSPF process tag::
 
-                                            - Type: str()
-                                            - Example: task.process_id = 0
+                                            - Type: int()
+                                            - Valid values:
+                                                - range: 1-65535
+                                            - Example:
+                                                task.process_id = 100
                                             - Required
 
 rfc1583compatibility                    Configure RFC1583 compatibility for external path preferences::
