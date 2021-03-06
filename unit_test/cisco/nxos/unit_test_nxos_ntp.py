@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_ntp.py
-our_version = 107
+our_version = 108
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,29 +19,14 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('key_id', task.key_id, task_name)
-    task_name = add_item_to_name('peer', task.peer, task_name)
-    task_name = add_item_to_name('prefer', task.prefer, task_name)
-    task_name = add_item_to_name('server', task.server, task_name)
-    task_name = add_item_to_name('source_addr', task.source_addr, task_name)
-    task_name = add_item_to_name('source_int', task.source_int, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('vrf', task.vrf, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
 
 def add_task(pb):
     task = NxosNtp(log)
-    task.key_id = 'asf123sd'
+    task.key_id = 10
     task.peer = '172.29.167.1'
     task.prefer = 'enabled'
     task.server = '172.29.167.1'
