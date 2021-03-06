@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py
-our_version = 104
+our_version = 105
 '''
 ----
 Name
@@ -27,24 +27,29 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
+
 def add_ipv4_process_1(task):
     task.process_area_id = 0
-    task.process_secondaries = 'no'
+    task.process_secondaries = False
     task.process_multi_areas = [11, 21]
     task.process_id = 1
     task.add_process()
 def add_ipv4_process_2(task):
     task.process_area_id = 0
-    task.process_secondaries = 'yes'
+    task.process_secondaries = True
     task.process_multi_areas = [12, 22]
     task.process_id = 2
     task.add_process()
 
 def add_ipv4_authentication(task):
-    task.authentication_enable = 'yes'
+    task.authentication_enable = True
     task.authentication_key_chain = 'foobar'
-    task.authentication_message_digest = 'no'
-    task.authentication_null_auth = 'yes'
+    task.authentication_message_digest = False
+    task.authentication_null_auth = True
 
 def add_ipv4_authentication_key(task):
     task.authentication_key_encryption = 0
@@ -65,7 +70,7 @@ def add_ipv6_message_digest(task):
 
 def add_ipv6_process_6(task):
     task.process_area_id = 0
-    task.process_secondaries = 'yes'
+    task.process_secondaries = True
     task.process_id = 6
     task.add_process()
 
@@ -82,9 +87,9 @@ def add_timers(task):
     task.transmit_delay = 3
 
 def add_general_parameters(task):
-    task.mtu_ignore = 'no'
+    task.mtu_ignore = False
     task.network = 'point-to-point'
-    task.passive_interface = 'no'
+    task.passive_interface = False
     #task.priority = 10
 
 def add_ospf_interface(pb):
@@ -101,6 +106,11 @@ def add_ospf_interface(pb):
     #task.instance = 1
     task.name = 'Ethernet1/7'
     task.state = 'merged'
+    # Since add_process() and add_address_family()
+    # reset properties to None, and add_task_name()
+    # skips null properties, this will not include
+    # all property values in the task name.
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -108,15 +118,11 @@ def task_nxos_ospf_interfaces_shutdown(pb):
         task = NxosOspfInterfaces(log)
         task.name = 'Ethernet1/8'
         task.afi = 'ipv4'
-        task.shutdown = 'yes'
-        # We call task.task_name prior to task.add_address_family() since 
-        # task.add_address_family() calls init_address_family() which initializes
-        # afi to None.
-        task.task_name = '{} {} shutdown ospf afi {} on interface {}'.format(
-            ansible_host,
-            ansible_module,
-            task.afi,
-            task.name)
+        task.shutdown = True
+        # We call add_task_name() prior to task.add_address_family() since 
+        # task.add_address_family() calls init_address_family() which
+        # initializes afi to None.
+        add_task_name(task)
         task.add_address_family()
         task.state = 'merged'
         task.update()

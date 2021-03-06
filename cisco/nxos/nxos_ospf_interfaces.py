@@ -1,107 +1,390 @@
 # NxosOspfInterfaces() - cisco/nxos/nxos_ospf_interfaces.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
-nxos_ospf_interfaces.py
------------------------
+***********************************
+NxosOspfInterfaces()
+***********************************
 
-Description
------------
+.. contents::
+   :local:
+   :depth: 1
 
-NxosOspfInterfaces() generates Ansible Playbook tasks conformant with nxos_ospf_interfaces
-which can be fed to Playbook().add_task()
+ScriptKit Synopsis
+------------------
+- NxosOspfInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_ospf_interfaces
+- These can then be passed to Playbook().add_task()
 
-Example usage
--------------
-    unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py
 
-Properties
-----------
+Ansible Module Documentation
+----------------------------
+- `cisco.nxos.nxos_ospf_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospf_interfaces_module.rst>`_
 
-    Address Family Properties
-    -------------------------
-    - call instance.add_address_family() after setting these
 
-    afi                             -   Address Family Identifier (AFI) for OSPF settings on the interfaces
-    authentication_enable           -   Enable/disable authentication on the interface
-                                        Valid values: False, True
-    authentication_key_chain        -   Authentication password key-chain
-                                        Valid values: str()
-    authentication_message_digest   -   Use message-digest authentication
-                                        Valid values: False, True
-    authentication_null_auth        -   Use null(disable) authentication
-                                        Valid values: False, True
-    authentication_key_encryption   -   authentication key encryption type
-                                        Valid values: 0, 3, 7
-                                            0 UNENCRYPTED
-                                            3 3DES ENCRYPTED
-                                            7 Cisco type 7 ENCRYPTED
-    authentication_key              -   Authentication key for the interface
-                                        Valid values: str()
-                                        Required
-    cost                            -   Cost associated with interface
-                                        Valid values: int() range: 1-65535
-    dead_interval                   -   Dead interval value (in seconds)
-                                        Valid values: int() range: 1-65535
-    hello_interval                  -   Frequency (in seconds) of hello message transmission
-                                        Valid values: int() range: 1-65535
-                                        Default: 10
-    instance                        -   Instance identifier
-    message_digest_key_encryption   -   Message digest authentication encryption type
-                                        Valid values: 0, 3, 7
-                                            0 UNENCRYPTED
-                                            3 3DES ENCRYPTED
-                                            7 Cisco type 7 ENCRYPTED
-    message_digest_key              -   Authentication key
-                                        Valid values: str()
-                                        Required
-    message_digest_key_id           -   key ID
-                                        Required
-    mtu_ignore                      -   Enable/disable OSPF MTU mismatch detection
-                                        Valid values: False, True
-    multi_areas                     -   Multi-Areas associated with interface (not tied to OSPF process)
-                                        Valid values: python list() of Area Ids as int() or IP address
-                                        Example: [10, 30, '10.1.1.1', '45.1.1.0']
-    network                         -   Network type of interface
-                                        Valid  values: broadcast, point-to-point
-    passive_interface               -   Suppress routing updates on the interface
-                                        Valid values: False, True
-    priority                        -   Router priority
-                                        Valid values: int()
-    retransmit_interval             -   Packet retransmission interval
-                                        Valid values: int() range: 1-65535
-                                        Default: 5
-    shutdown                        -   Shutdown OSPF on this interface
-                                        Valid values: False, True
-    transmit_delay                  -   Packet transmission delay
-                                        Valid values: int() range: 1-450
-                                        Default: 1
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py>`_
 
-    OSPF Process Properties
-    -----------------------
-    - call instance.add_process() after setting these
 
-    process_id                      -   OSPF process tag
-                                        Valid values: str()
-                                        Required
-    process_area_id                 -   ip Area ID
-                                        Valid values: int() or IP address
-    process_area_secondaries        -   (Do not)? include secondary IPv4/IPv6 addresses
-                                        Valid values: False, True
-    process_multi_areas             -   Multi-Areas associated with interface (not tied to OSPF process)
-                                        Valid values: python list() of Area Ids as int() or IP address
-                                        Example: [10, 30, '10.1.1.1', '45.1.1.0']
+|
 
-    Config Properties
-    -----------------
-    name                            -   Full name of interface, e.g. Ethernet1/1
-                                        Required
+======================================  ==================================================
+Module Properties                       Description
+======================================  ==================================================
+state                                   Desired state after task completion::
 
-    Module Properties
-    -----------------
-    state                           -   Valid values: deleted, gathered, merged, overridden, parsed, rendered, replaced
-                                        Required
+                                            - Type: str()
+                                            - Valid values:
+                                                - deleted
+                                                - gathered
+                                                - merged
+                                                - overridden
+                                                - parsed (not currently supported by ScriptKit)
+                                                - rendered
+                                                - replaced
+                                            - Example:
+                                                task.state = 'merged'
+                                            - Required
+
+task_name                               Name of the task (Ansible will print this when the task
+                                        is run)::
+
+                                            - Type: str()
+                                            - Example:
+                                                task.name = 'my task'
+
+======================================  ==================================================
+
+|
+|
+
+======================================  ==================================================
+Config Properties                       Description
+======================================  ==================================================
+name                                    Full name of the interface to be configured::
+
+                                            - Type: str()
+                                            - Example:
+                                                task.name = 'Ethernet1/1'
+                                                task.name = 'port-channel3'
+                                            - Required
+
+======================================  ==================================================
+
+|
+|
+
+======================================  ==================================================
+Address Family Properties / Methods     Description
+======================================  ==================================================
+add_address_family()                    Applies address-family properties, and resets them
+                                        to None.  Call instance.add_address_family() after
+                                        setting the properties in this table::
+
+                                            - Type: method
+                                            - Example:
+                                                task.afi = 'ipv4'
+                                                task.cost = 20
+                                                task.instance = 100
+                                                task.add_address_family()
+                                                task.afi = 'ipv6'
+                                                task.cost = 20
+                                                task.instance = 100
+                                                task.add_address_family()
+
+afi                                     Address Family Identifier (AFI) for OSPF interface
+                                        configuration::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - ipv4
+                                                - ipv6
+                                            - Example:
+                                                task.afi = 'ipv4'
+
+authentication_enable                   Enable/disable authentication on the interface::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - Example:
+                                                task.authentication_enable = True
+
+authentication_key_chain                Authentication password key-chain::
+
+                                            - Type: str()
+                                            - Example:
+                                                task.authentication_key_chain = 'fizbang'
+
+authentication_message_digest           Use message-digest authentication::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - Example:
+                                                task.authentication_message_digest = True
+
+authentication_null_auth                Use null(disable) authentication::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - Example:
+                                                task.authentication_null_auth = False
+
+authentication_key_encryption           Authentication key encryption type::
+
+                                            - Type: int()
+                                            - Valid values:
+                                                - 0  : UNENCRYPTED
+                                                - 3  : 3DES ENCRYPTED
+                                                - 7  : Cisco type 7 ENCRYPTED
+                                            - Example:
+                                                task.authentication_key_encryption = 7
+
+authentication_key                      Authentication key for the interface::
+
+                                            - Type: str()
+                                            - Example:
+                                                task.authentication_key = 'fizbang'
+                                            - Required
+
+cost                                    OSPF cost associated with interface::
+
+                                            - Type: int()
+                                            - Valid values:
+                                                - range: 1-65535
+                                            - Example:
+                                                task.cost = 200
+
+dead_interval                           OSPF dead interval::
+
+                                            - Type: int()
+                                            - Units: seconds
+                                            - Valid values:
+                                                - range: 1-65535
+                                            - Example:
+                                                task.dead_interval = 3
+
+hello_interval                          Frequency of hello message transmission::
+
+                                            - Type: int()
+                                            - Units: seconds
+                                            - Default: 10
+                                            - Valid values:
+                                                - range: 1-65535
+                                            - Example:
+                                                task.hello_interval = 1
+
+instance                                OSPF instance identifier associated
+                                        with the interface::
+
+                                            - Type: int()
+                                            - Example:
+                                                task.instance = 100
+
+message_digest_key_encryption           Message digest authentication encryption
+                                        type::
+
+                                            - Type: int()
+                                            - Valid values:
+                                                - 0  : UNENCRYPTED
+                                                - 3  : 3DES ENCRYPTED
+                                                - 7  : Cisco type 7 ENCRYPTED
+                                            - Example:
+                                                task.message_digest_key_encryption = 7
+
+message_digest_key                      Authentication key::
+                                            - Type: str()
+                                            - Example:
+                                                task.message_digest_key = 'fizbang'
+                                            - Required
+
+message_digest_key_id                   Key ID::
+
+                                            - Type: int()
+                                            - Example:
+                                                task.message_digest_key_id = 2
+                                            - Required
+
+mtu_ignore                              Enable/disable OSPF MTU mismatch detection::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - Example:
+                                                task.mtu_ignore = False
+
+multi_areas                             Multi-Areas associated with interface (not tied
+                                        to OSPF process)::
+
+                                            - Type: list() of OSPF area IDs
+                                            - Example:
+                                                areas = list()
+                                                areas.append(10)
+                                                areas.append('0.0.0.17')
+                                                task.multi_areas = areas
+
+network                                 OSPF Network type of the interface::
+
+                                            - Type: str()
+                                            - Valid values:
+                                                - broadcast
+                                                - point-to-point
+                                            - Example:
+                                                task.network = 'point-to-point'
+
+passive_interface                       Suppress routing updates on the interface::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - Example:
+                                                task.passive_interface = False
+
+priority                                Router priority::
+
+                                            - Type: int()
+                                            - Example:
+                                                task.priority = 100
+
+retransmit_interval                     Packet retransmission interval::
+
+                                            - Type: int()
+                                            - Units: seconds
+                                            - Default: 5
+                                            - Valid values:
+                                                - range: 1-65535
+                                            - Example:
+                                                task.retransmit_interval = 2
+
+shutdown                                Shutdown OSPF on this interface::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - Example:
+                                                task.shutdown = False
+
+transmit_delay                          Packet transmission delay::
+
+                                            - Type: int()
+                                            - Units: seconds
+                                            - Default: 1
+                                            - Valid values:
+                                                - range: 1-450
+                                            - Example:
+                                                task.transmit_delay = 3
+
+======================================  ==================================================
+
+|
+|
+
+======================================  ==================================================
+OSPF Process Properties /Methods        Description
+======================================  ==================================================
+add_process()                           Applies OSPF process properties, and resets them
+                                        to None.  Call instance.add_process() after
+                                        setting the properties in this table::
+
+                                            - Type: method
+                                            - Example:
+                                                task.process_area_id = 0
+                                                task.process_secondaries = 'no'
+                                                task.process_multi_areas = [11, 21]
+                                                task.process_id = 1
+                                                task.add_process()
+
+process_id                              OSPF process ID associated with the interface::
+
+                                            - Type: int()
+                                            - Valid values:
+                                                - range: 1-65535
+                                            - Example:
+                                                task.process_id = 100
+                                            - Required
+
+process_area_id                         OSPF Area ID as a decimal or dotted decimal
+                                        address format::
+
+                                            - Type: int() or str()
+                                            - Valid values:
+                                                - int()
+                                                - ipv4 address format
+                                                    - though not necessarily an
+                                                      actual address
+                                            - Example:
+                                                task.process_area_id = 0
+                                                task.process_area_id = '0.0.0.20'
+                                                task.process_area_id = '10.1.1.1'
+
+process_area_secondaries                Include secondary IPv4/IPv6 addresses::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - Example:
+                                                task.process_area_secondaries = False
+
+process_multi_areas                     Multi-Areas associated with interface (not
+                                        tied to OSPF process)::
+
+                                            - Type: list() of OSPF area IDs
+                                            - Example:
+                                                areas = list()
+                                                areas.append(10)
+                                                areas.append('0.0.0.17')
+                                                task.process_multi_areas = areas
+
+======================================  ==================================================
+
+|
+
+NOTES
+=====
+
+1. Properties names which differ from the Ansible Module
+
+================    ==============================
+Ansible Module      ScriptKit
+================    ==============================
+enable              authentication_enable
+key_chain           authentication_key_chain
+message_digest      authentication_message_digest
+null_auth           authentication_null_auth
+key_encryption      authentication_key_encryption
+key                 authentication_key
+key_encryption      message_digest_key_encryption
+key                 message_digest_key
+key_id              message_digest_key_id
+area_id             process_area_id
+area_secondaries    process_area_secondaries
+multi_areas         process_multi_areas
+multi_areas         multi_areas
+================    ==============================
+
+
+2. multi_areas property
+
+- Appears under both address_family and processes
+- Use task.process_multi_areas when adding to a process
+- Use task.multi_areas when adding to an address_family 
+
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 
 class NxosOspfInterfaces(Task):
@@ -164,6 +447,14 @@ class NxosOspfInterfaces(Task):
         self.property_map['message_digest_key']             = 'key'
         self.property_map['message_digest_key_id']          = 'key_id'
 
+        # properties_set is accessed by Task().append_to_task_name()
+        # which uses it to set instance.task_name (the playbook task name)
+        self.properties_set = set()
+        self.properties_set.update(self.properties_process)
+        self.properties_set.update(self.properties_address_family)
+        self.properties_set.update(self.properties_message_digest_key)
+        self.properties_set.update(self.properties_authentication)
+
         self.nxos_ospf_interfaces_valid_afi = set()
         self.nxos_ospf_interfaces_valid_afi.add('ipv4')
         self.nxos_ospf_interfaces_valid_afi.add('ipv6')
@@ -191,27 +482,30 @@ class NxosOspfInterfaces(Task):
         self.nxos_ospf_interfaces_valid_state.add('rendered')
         self.nxos_ospf_interfaces_valid_state.add('replaced')
 
-        self.cost_min = 1
-        self.cost_max = 65535
+        self.nxos_ospf_interfaces_cost_min = 1
+        self.nxos_ospf_interfaces_cost_max = 65535
 
-        self.dead_interval_min = 1
-        self.dead_interval_max = 65535
+        self.nxos_ospf_interfaces_dead_interval_min = 1
+        self.nxos_ospf_interfaces_dead_interval_max = 65535
 
-        self.hello_interval_min = 1
-        self.hello_interval_max = 65535
-        self.hello_interval_default = 10
+        self.nxos_ospf_interfaces_hello_interval_min = 1
+        self.nxos_ospf_interfaces_hello_interval_max = 65535
+        self.nxos_ospf_interfaces_hello_interval_default = 10
 
-        self.retransmit_interval_min = 1
-        self.retransmit_interval_max = 65535
-        self.retransmit_interval_default = 5
+        self.nxos_ospf_interfaces_retransmit_interval_min = 1
+        self.nxos_ospf_interfaces_retransmit_interval_max = 65535
+        self.nxos_ospf_interfaces_retransmit_interval_default = 5
 
-        self.priority_min = 0
-        self.priority_max = 255
-        self.priority_default = 1
+        self.nxos_ospf_interfaces_priority_min = 0
+        self.nxos_ospf_interfaces_priority_max = 255
+        self.nxos_ospf_interfaces_priority_default = 1
 
-        self.transmit_delay_min = 1
-        self.transmit_delay_max = 450
-        self.transmit_delay_default = 1
+        self.nxos_ospf_interfaces_transmit_delay_min = 1
+        self.nxos_ospf_interfaces_transmit_delay_max = 450
+        self.nxos_ospf_interfaces_transmit_delay_default = 1
+
+        self.nxos_ospf_interfaces_process_id_min = 1
+        self.nxos_ospf_interfaces_process_id_max = 65535
 
         self.init_properties()
 
@@ -356,42 +650,51 @@ class NxosOspfInterfaces(Task):
         self.init_properties()
 
     def verify_nxos_ospf_interfaces_afi(self, x, parameter='receive'):
-        if x in self.nxos_ospf_interfaces_valid_afi:
+        verify_set = self.nxos_ospf_interfaces_valid_afi
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_afi'
-        expectation = ','.join(self.nxos_ospf_interfaces_valid_afi)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_ospf_interfaces_authentication_key_encryption(self, x, parameter='authentication_key_encryption'):
-        if x in self.nxos_ospf_interfaces_valid_authentication_key_encryption:
+        verify_set = self.nxos_ospf_interfaces_valid_authentication_key_encryption
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_authentication_key_encryption'
-        expectation = ','.join(self.nxos_ospf_interfaces_valid_authentication_key_encryption)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_ospf_interfaces_cost(self, x, parameter='cost'):
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_cost'
-        self.verify_integer_range(x, self.cost_min, self.cost_max, source_class, source_method)
+        range_min = self.nxos_ospf_interfaces_cost_min
+        range_max = self.nxos_ospf_interfaces_cost_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_ospf_interfaces_dead_interval(self, x, parameter='dead_interval'):
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_dead_interval'
-        self.verify_integer_range(x, self.dead_interval_min, self.dead_interval_max, source_class, source_method)
+        range_min = self.nxos_ospf_interfaces_dead_interval_min
+        range_max = self.nxos_ospf_interfaces_dead_interval_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_ospf_interfaces_hello_interval(self, x, parameter='hello_interval'):
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_hello_interval'
-        self.verify_integer_range(x, self.hello_interval_min, self.hello_interval_max, source_class, source_method)
+        range_min = self.nxos_ospf_interfaces_hello_interval_min
+        range_max = self.nxos_ospf_interfaces_hello_interval_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_ospf_interfaces_message_digest_key_encryption(self, x, parameter='message_digest_key_encryption'):
-        if x in self.nxos_ospf_interfaces_valid_message_digest_key_encryption:
+        verify_set = self.nxos_ospf_interfaces_valid_message_digest_key_encryption
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_message_digest_key_encryption'
-        expectation = ','.join(self.nxos_ospf_interfaces_valid_message_digest_key_encryption)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_ospf_interfaces_message_digest_key_id(self, x, parameter='message_digest_key_id'):
@@ -419,17 +722,27 @@ class NxosOspfInterfaces(Task):
             self.fail(source_class, source_method, x, parameter, expectation)            
 
     def verify_nxos_ospf_interfaces_network(self, x, parameter='network'):
-        if x in self.nxos_ospf_interfaces_valid_network:
+        verify_set = self.nxos_ospf_interfaces_valid_network
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_network'
-        expectation = ','.join(self.nxos_ospf_interfaces_valid_network)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_ospf_interfaces_priority(self, x, parameter='priority'):
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_priority'
-        self.verify_integer_range(x, self.priority_min, self.priority_max, source_class, source_method)
+        range_min = self.nxos_ospf_interfaces_priority_min
+        range_max = self.nxos_ospf_interfaces_priority_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
+
+    def verify_nxos_ospf_interfaces_process_id(self, x, parameter='process_id'):
+        source_class = self.class_name
+        source_method = 'verify_nxos_ospf_interfaces_process_id'
+        range_min = self.nxos_ospf_interfaces_process_id_min
+        range_max = self.nxos_ospf_interfaces_process_id_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_ospf_interfaces_process_area_id(self, x, parameter='area_id'):
         if self.is_ipv4_unicast_address(x):
@@ -460,21 +773,25 @@ class NxosOspfInterfaces(Task):
     def verify_nxos_ospf_interfaces_retransmit_interval(self, x, parameter='retransmit_interval'):
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_retransmit_interval'
-        self.verify_integer_range(x, self.retransmit_interval_min, self.retransmit_interval_max, source_class, source_method)
+        range_min = self.nxos_ospf_interfaces_retransmit_interval_min
+        range_max = self.nxos_ospf_interfaces_retransmit_interval_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_ospf_interfaces_state(self, x, parameter='state'):
-        if x in self.nxos_ospf_interfaces_valid_state:
+        verify_set = self.nxos_ospf_interfaces_valid_state
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_state'
-        expectation = ','.join(self.nxos_ospf_interfaces_valid_state)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_ospf_interfaces_transmit_delay(self, x, parameter='transmit_delay'):
         source_class = self.class_name
         source_method = 'verify_nxos_ospf_interfaces_transmit_delay'
-        self.verify_integer_range(x, self.transmit_delay_min, self.transmit_delay_max, source_class, source_method)
-
+        range_min = self.nxos_ospf_interfaces_transmit_delay_min
+        range_max = self.nxos_ospf_interfaces_transmit_delay_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     @property
     def afi(self):
@@ -733,6 +1050,7 @@ class NxosOspfInterfaces(Task):
         parameter = 'process_id'
         if self.set_none(x, parameter):
             return
+        self.verify_nxos_ospf_interfaces_process_id(x, parameter)
         self.properties[parameter] = str(x)
 
     @property
