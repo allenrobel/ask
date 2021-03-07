@@ -1,56 +1,198 @@
 # NxosPimInterface() - cisco/nxos/nxos_pim_interface.py
-our_version = 101
+our_version = 102
 from copy import deepcopy
-import re
 from ask.common.task import Task
 '''
-==========================================
-NxosPimInterface() - nxos_pim_interface.py
-==========================================
+**************************************
+NxosFeature()
+**************************************
 
-Description
------------
-NxosPimInterface() generates Ansible tasks conformant with Ansible module nxos_pim_interface
-These can then be passed to Playbook().add_task()
+.. contents::
+   :local:
+   :depth: 1
 
-Example usage
--------------
-unit_test/cisco/nxos/unit_test_nxos_pim_interface.py
+ScriptKit Synopsis
+------------------
+- NxosFeature() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_feature
+- These can then be passed to Playbook().add_task()
+
+Ansible Module Documentation
+----------------------------
+- `nxos_feature <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_feature_module.rst>`_
+
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_feature.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_feature.py>`_
 
 Dependencies
 ------------
 
-The following must be enabled prior to applying nxos_pim_interface playbook
-    - nv overlay evpn
+The following must be enabled prior to applying nxos_pim_interface playbook::
 
-Properties
-----------
+    feature pim
 
-Valid values for all bool() types are: no, yes
+|
 
-bfd             str()   Enables BFD for PIM at the interface level. This overrides the bfd variable set at the pim global level.
-                        Valid values: enable, disable, default
-                        Dependency: feature bfd
-border          bool()  Configures interface to be a boundary of a PIM domain
-dr_prio         int()   Configures priority for PIM DR election on interface
-                        Valid values: range 1-4294967295
-hello_auth_key  str()   Authentication for hellos on this interface.
-hello_interval  int()   Hello interval in milliseconds for this interface
-                        Valid values: range 1-18724286
-interface       str()   Full name of the interface e.g. Ethernet1/33
-jp_policy_in    str()   Policy for join-prune messages (inbound)
-jp_policy_out   str()   Policy for join-prune messages (outbound)
-jp_type_in      str()   Type of policy mapped to jp_policy_in
-                        Valid values: prefix, routemap
-jp_type_out     str()   Type of policy mapped to jp_policy_out
-                        Valid values: prefix, routemap
-neighbor_policy str()   Configures a neighbor policy for filtering adjacencies
-neighbor_type   str()   Type of policy mapped to neighbor_policy
-                        Valid values: prefix, routemap
-sparse          bool()  Enable/disable sparse-mode on the interface
-state           str()   Manages desired state of the resource
-                        Valid values: absent, default, present
-                        Default: present
+====================    ==============================================
+Property                Description
+====================    ==============================================
+bfd                     Enables BFD for PIM at the interface level.
+                        This overrides the bfd variable set at the
+                        pim global level::
+
+                            - Type: str()
+                            - Valid values:
+                                - enable
+                                - disable
+                                - default
+                            - Dependencies: feature bfd
+                            - Example:
+                                task.bfd = 'enable'
+
+border                  Configures interface to be a boundary of a
+                        PIM domain::
+
+                            - Type: bool()
+                            - Valid values:
+                                - False
+                                - True
+                            - Example:
+                                task.border = True
+
+dr_prio                 Configures priority for PIM DR election on
+                        the interface::
+
+                            - Type: int()
+                            - Valid values:
+                                - range: 1-4294967295
+                            - Example:
+                                task.dr_prio = 3000
+
+hello_auth_key          Authentication for PIM hellos on this interface::
+
+                            - Type: str()
+                            - Example:
+                                task.hello_auth_key = 'zippofinetic'
+
+hello_interval          Hello interval in milliseconds or seconds for this
+                        interface. Use the option ``hello_interval_ms`` to
+                        specify if the given value is in milliseconds or
+                        seconds. The default is seconds.::
+
+                            - Type: int()
+                            - Valid values:
+                                - range: 1-18724286
+                            - Example (set pim hello interval to 100ms):
+                                task.hello_interval_ms = True
+                                task.hello_interval = 100
+                            - Example (set pim hello interval to 1 second):
+                                task.hello_interval_ms = False
+                                task.hello_interval = 1
+
+hello_interval_ms       Specifies that the hello_interval is in milliseconds.
+                        If set to True, the value of ``hello_interval`` will
+                        be interpreted as milliseconds.  If set to False,
+                        the value of ``hello_interval`` will be interpreted
+                        as seconds.::
+
+                            - Type: bool()
+                            - Valid values:
+                                - False
+                                - True
+                            - Version added: 2.0.0
+                            - Example:
+                                task.hello_interval_ms = True
+
+interface               Full name of the PIM interface::
+
+                            - Type: str()
+                            - Example:
+                                task.interface = 'Ethernet1/33'
+                            - Required
+
+jp_policy_in            Inbound policy for join-prune messages::
+
+                            - Type: str()
+                            - Example:
+                                task.jp_policy_in = 'PIM_JP_IN'
+
+jp_policy_out           Outbound policy for join-prune messages::
+
+                            - Type: str()
+                            - Example:
+                                task.jp_policy_out = 'PIM_JP_OUT'
+
+jp_type_in              Type of policy mapped to jp_policy_in::
+
+                            - Type: str()
+                            - Valid values:
+                                - prefix
+                                - routemap
+                            - Example:
+                                task.jp_type_in = 'routemap'
+
+jp_type_out             Type of policy mapped to jp_policy_out::
+
+                            - Type: str()
+                            - Valid values:
+                                - prefix
+                                - routemap
+                            - Example:
+                                task.jp_type_out = 'routemap'
+
+neighbor_policy         Configures a neighbor policy for filtering
+                        adjacencies::
+
+                            - Type: str()
+                            - Example:
+                                task.neighbor_policy = 'PIM_POLICY'
+
+neighbor_type           Type of policy mapped to neighbor_policy::
+
+                            - Type: str()
+                            - Valid values:
+                                - prefix
+                                - routemap
+                            - Example:
+                                task.neighbor_type = 'prefix'
+
+sparse                  Enable/disable sparse-mode on the interface::
+
+                            - Type: bool()
+                            - Valid values:
+                                - False
+                                - True
+                            - Example:
+                                task.sparse = True
+
+state                   Desired state after task has completed::
+
+                            - Type: str()
+                            - Valid values:
+                                - absent
+                                - default
+                                - present
+                            - Example:
+                                task.state = 'present'
+                            - Required
+
+task_name               Name of the task. Ansible will display this
+                        when the playbook is run::
+
+                            - Type: str()
+                            - Example:
+                                - task.task_name = 'my task'
+                                        
+====================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
+
 '''
 class NxosPimInterface(Task):
     def __init__(self, task_log):
@@ -65,6 +207,7 @@ class NxosPimInterface(Task):
         self.properties_set.add('dr_prio')
         self.properties_set.add('hello_auth_key')
         self.properties_set.add('hello_interval')
+        self.properties_set.add('hello_interval_ms')
         self.properties_set.add('interface')
         self.properties_set.add('jp_policy_in')
         self.properties_set.add('jp_policy_out')
@@ -97,11 +240,11 @@ class NxosPimInterface(Task):
         self.nxos_pim_interface_valid_state.add('default')
         self.nxos_pim_interface_valid_state.add('present')
 
-        self.pim_dr_priority_min = 1
-        self.pim_dr_priority_max = 4294967295
+        self.nxos_pim_interface_pim_dr_priority_min = 1
+        self.nxos_pim_interface_pim_dr_priority_max = 4294967295
 
-        self.pim_hello_interval_min = 1
-        self.pim_hello_interval_max = 18724286
+        self.nxos_pim_interface_pim_hello_interval_min = 1
+        self.nxos_pim_interface_pim_hello_interval_max = 18724286
 
         self.init_properties()
 
@@ -156,12 +299,16 @@ class NxosPimInterface(Task):
     def verify_nxos_pim_interface_dr_prio(self, x):
         source_class = self.class_name
         source_method = 'verify_nxos_pim_interface_dr_prio'
-        self.verify_integer_range(x, self.pim_dr_priority_min, self.pim_dr_priority_max, source_class, source_method)
+        range_min = self.nxos_pim_interface_pim_dr_priority_min
+        range_max = self.nxos_pim_interface_pim_dr_priority_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_pim_interface_hello_interval(self, x):
         source_class = self.class_name
         source_method = 'verify_nxos_pim_interface_hello_interval'
-        self.verify_integer_range(x, self.pim_hello_interval_min, self.pim_hello_interval_max, source_class, source_method)
+        range_min = self.nxos_pim_interface_pim_hello_interval_min
+        range_max = self.nxos_pim_interface_pim_hello_interval_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_pim_interface_interface(self, x, parameter='interface'):
         if self.is_ethernet_interface(x):
@@ -232,7 +379,7 @@ class NxosPimInterface(Task):
         parameter = 'border'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -266,6 +413,17 @@ class NxosPimInterface(Task):
             return
         self.verify_nxos_pim_interface_hello_interval(x)
         self.properties[parameter] = str(x)
+
+    @property
+    def hello_interval_ms(self):
+        return self.properties['hello_interval_ms']
+    @hello_interval_ms.setter
+    def hello_interval_ms(self, x):
+        parameter = 'hello_interval_ms'
+        if self.set_none(x, parameter):
+            return
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
 
     @property
     def interface(self):
@@ -349,7 +507,7 @@ class NxosPimInterface(Task):
         parameter = 'sparse'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property

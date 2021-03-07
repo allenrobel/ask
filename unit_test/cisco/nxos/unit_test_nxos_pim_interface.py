@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_pim_interface.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -28,11 +28,12 @@ def add_task_name(task):
 def add_task_pim_interface_base(pb):
     task = NxosPimInterface(log)
     task.bfd = 'enable'
-    task.border = 'no'
+    task.border = False
     task.dr_prio = 4
     task.hello_interval = 3
+    task.hello_interval_ms = True
     task.interface = 'Ethernet1/49'
-    task.sparse = 'yes'
+    task.sparse = True
     task.state = 'present'
     add_task_name(task)
     task.update()
