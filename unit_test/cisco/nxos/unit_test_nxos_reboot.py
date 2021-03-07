@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_reboot.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -27,7 +27,7 @@ def add_task_name(task):
 
 def add_task(pb):
     task = NxosReboot(log)
-    task.confirm = 'yes'
+    task.confirm = True
     add_task_name(task)
     task.update()
     pb.add_task(task)
