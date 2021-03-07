@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_pim.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -28,7 +28,11 @@ def add_task_name(task):
 def add_task(pb):
     task = NxosPim(log)
     task.bfd = 'enable'
-    task.ssm_range = '232.1.2.0/24'
+    ssm = list()
+    ssm.append('225.1.1.0/24')
+    ssm.append('225.2.1.0/24')
+    task.ssm_range = ssm
+    #task.ssm_range = 'default'
     add_task_name(task)
     task.update()
     pb.add_task(task)

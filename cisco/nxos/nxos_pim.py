@@ -1,26 +1,78 @@
 # NxosPim() - cisco/nxos/nxos_pim.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
-=======================
-NxosPim() - nxos_pim.py
-=======================
+**************************************
+NxosPim()
+**************************************
 
-Description
------------
-NxosPim() generates Ansible tasks conformant with Ansible module nxos_pim
-These can then be passed to Playbook().add_task()
+.. contents::
+   :local:
+   :depth: 1
 
-Example usage
--------------
-unit_test/cisco/nxos/unit_test_nxos_pim.py
+ScriptKit Synopsis
+------------------
+- NxosPim() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_pim
+- These can then be passed to Playbook().add_task()
 
-Properties
-----------
+Ansible Module Documentation
+----------------------------
+- `nxos_pim <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_module.rst>`_
 
-bfd         -   Valid values: enable, disable
-ssm_range   -   Valid values: default, none, ipv4 multicast group range e.g. 225.1.0.0/16
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_pim.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_pim.py>`_
+
+Dependencies
+------------
+The following must be enabled prior to applying nxos_pim playbook::
+
+  feature pim
+
+|
+
+================    ==============================================
+Property            Description
+================    ==============================================
+bfd                 Enables BFD on all PIM interfaces::
+
+                        - Type: str()  
+                        - Valid values:
+                            - disable
+                            - enable
+                        - Dependency: 'feature bfd
+                        - Example:
+                            task.bfd = 'enable'
+
+ssm_range           Configure group ranges for Source Specific Multicast (SSM)::
+
+                        - Type: list() or str()
+                        - Valid values:
+                            - default
+                                - set ssm_range to 232.0.0.0/8
+                            - none
+                                - remove all ssm group ranges
+                            - list()
+                                - list of multicast group ranges
+                        - Examples:
+                            task.ssm_range = 'default'
+                            task.ssm_range = 'none'
+
+                            ssm = list()
+                            ssm.append('225.1.0.0/16')
+                            ssm.append('225.4.1.0/24')
+                            task.ssm_range = ssm
+
+================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 '''
 
 class NxosPim(Task):
@@ -40,18 +92,26 @@ class NxosPim(Task):
         self.properties = dict()
         for p in self.properties_set:
             self.properties[p] = None
-        self.properties['task_name']    = None
+        self.properties['task_name'] = None
+
+    def ssm_range_list_ok(self, x):
+        if type(x) != type(list()):
+            return False
+        for r in x:
+            if not self.is_ipv4_multicast_range(r):
+                return False
+        return True
 
     def verify_ssm_range(self, x, parameter='ssm_range'):
-        if x == 'none':
-            return
         if x == 'default':
             return
-        if self.is_ipv4_multicast_range(x):
+        if x == 'none':
+            return
+        if self.ssm_range_list_ok(x):
             return
         source_class = self.class_name
         source_method = 'verify_ssm_range'
-        expectation = '[default, none, or ipv4_multicast_address/prefixlen e.g. 232.1.1.0/24]'
+        expectation = "default, none, or python list() of ipv4_multicast_address/prefixlen e.g. ['232.1.1.0/24', '225.1.0.0/16']"
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def final_verification(self):
