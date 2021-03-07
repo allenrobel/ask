@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_pim_rp_address.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -27,8 +27,8 @@ def add_task_name(task):
 
 def add_task_pim_rp_address_group_list(pb):
     task = NxosPimRpAddress(log)
-    task.bidir = 'no'
-    task.group_list = '224.1.2.0/24'
+    task.bidir = False
+    task.group_list = '225.1.2.0/24'
     task.rp_address = '2.2.2.2'
     task.state = 'present'
     add_task_name(task)
@@ -37,7 +37,7 @@ def add_task_pim_rp_address_group_list(pb):
 
 def add_task_pim_rp_address_prefix_list(pb):
     task = NxosPimRpAddress(log)
-    task.bidir = 'no'
+    task.bidir = False
     task.prefix_list = 'PIM_RP_PREFIX_LIST'
     task.rp_address = '3.3.3.3'
     task.state = 'present'
@@ -47,7 +47,7 @@ def add_task_pim_rp_address_prefix_list(pb):
 
 def add_task_pim_rp_address_route_map(pb):
     task = NxosPimRpAddress(log)
-    task.bidir = 'no'
+    task.bidir = False
     task.route_map = 'PIM_RP_ROUTE_MAP'
     task.rp_address = '4.4.4.4'
     task.state = 'present'
@@ -57,7 +57,7 @@ def add_task_pim_rp_address_route_map(pb):
 
 def add_task_pim_rp_address_bidir(pb):
     task = NxosPimRpAddress(log)
-    task.bidir = 'yes'
+    task.bidir = True
     task.group_list = '225.5.0.0/16'
     task.rp_address = '5.5.5.5'
     task.state = 'present'

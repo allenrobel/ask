@@ -1,65 +1,119 @@
 # NxosPimRpAddress() - cisco/nxos/nxos_pim_rp_address.py
-our_version = 101
+our_version = 102
 from copy import deepcopy
 from ask.common.task import Task
 '''
-===========================================
-NxosPimRpAddress() - nxos_pim_rp_address.py
-===========================================
+**************************************
+NxosPimRpAddress()
+**************************************
 
-Description
------------
-NxosPimRpAddress() generates Ansible Playbook tasks conformant with nxos_pim_rp_address
-which can be fed to Playbook().add_task()
+.. contents::
+   :local:
+   :depth: 1
 
-Example usage
--------------
-unit_test/cisco/nxos/unit_test_nxos_pim_rp_address.py
+ScriptKit Synopsis
+------------------
+- NxosPimRpAddress() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_pim_rp_address
+- These can then be passed to Playbook().add_task()
+
+Ansible Module Documentation
+----------------------------
+- `nxos_pim_rp_address <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_rp_address_module.rst>`_
+
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_pim_rp_address.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_pim_rp_address.py>`_
 
 Dependencies
 ------------
-The following must be enabled prior to applying nxos_pim_rp_address playbook
+The following must be enabled prior to applying nxos_pim_rp_address playbook::
 
-- feature pim
-
-Properties
-----------
-
-Valid values for all bool() types are: no, yes
-
-=========== ===========
-Property    Description
-=========== ===========
-bidir       Group range is treated in PIM bidirectional mode::
-
-                - Type: bool()  
-group_list  Group range for static RP::
-
-                - Type: str()
-                - Valid values: multicast addresses
-prefix_list Prefix list policy for static RP::
-
-                - Type: str()
-                - Valid values: prefix-list policy names
-route_map   Route map policy for static RP::
-
-                - Type: str()
-                - Valid values: route-map policy names
-rp_address  Configures a Protocol Independent Multicast (PIM) static rendezvous point (RP) address::
-
-                - Type: str()
-                - Valid values: unicast addresses
-state       Specify desired state of the resource::
-
-                - Type: str()
-                - Valid values: absent, present
-                - Default: present
-=========== ===========
+  feature pim
 
 NOTES
 -----
 
    1. state=absent is currently not supported on all platforms
+
+
+|
+
+================    ==============================================
+Property            Description
+================    ==============================================
+bidir               If True, ``group_list`` refers to a set of PIM
+                    bidirectional mode multicast groups.
+                    If False, ``group_list`` refers to a set of
+                    PIM Sparse mode groups::
+
+                        - Type: bool()  
+                        - Valid values:
+                            - False
+                            - True
+                        - Example:
+                            task.bidir = False
+
+group_list          Multicast groups for which ``rp_address`` will
+                    act as the rendezvous point::
+
+                        - Type: str()
+                        - Valid values:
+                            - ipv4 multicast address with prefixlen
+                              - A.B.C.D/LEN
+                        - Example:
+                            task.group_list = '225.1.0.0/16'
+
+prefix_list         Prefix list policy for static RP::
+
+                        - Type: str()
+                        - Valid values:
+                            - ip prefix-list name
+                        - Example:
+                            task.prefix_list = 'ALLOW_SOURCES'
+
+route_map           Route map policy for static RP::
+
+                        - Type: str()
+                        - Valid values:
+                            route-map name
+                        - Example:
+                            task.route_map = 'ALLOW_SOURCES'
+
+rp_address          Configures a Protocol Independent Multicast
+                    (PIM) static rendezvous point (RP) address::
+
+                        - Type: str()
+                        - Valid values:
+                            - ipv4 unicast address
+                              - A.B.C.D
+                        - Example:
+                            task.rp_address = '10.1.1.3'
+
+state               Desired state after task completion::
+
+                        - Type: str()
+                        - Valid values:
+                            - absent
+                            - present
+                        - Example:
+                            task.state = 'present'
+                        - Required
+
+task_name           Name of the task. Ansible will display this
+                    when the playbook is run::
+
+                        - Type: str()
+                        - Example:
+                            - task.task_name = 'my task'
+
+================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 class NxosPimRpAddress(Task):
@@ -149,7 +203,7 @@ class NxosPimRpAddress(Task):
         parameter = 'bidir'
         if self.set_none(x, parameter):
             return
-        self.verify_toggle(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
@@ -160,7 +214,8 @@ class NxosPimRpAddress(Task):
         parameter = 'group_list'
         if self.set_none(x, parameter):
             return
-        self.properties[parameter] = str(x)
+        self.verify_ipv4_multicast_address_with_prefix(x, parameter)
+        self.properties[parameter] = x
 
     @property
     def prefix_list(self):
