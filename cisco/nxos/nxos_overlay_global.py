@@ -114,7 +114,7 @@ class NxosOverlayGlobal(Task):
     def verify_nxos_overlay_global_anycast_gateway_mac(self, x, parameter='anycast_gateway_mac'):
         if self.is_default(x):
             return
-        if self.is_mac_address(x):  # inherited from AnsCommon via Ask
+        if self.is_mac_address(x):
             return
         source_class = self.class_name
         source_method = 'verify_nxos_overlay_global_anycast_gateway_mac'
