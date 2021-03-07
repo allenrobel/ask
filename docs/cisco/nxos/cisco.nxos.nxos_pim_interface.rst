@@ -1,5 +1,5 @@
 **************************************
-NxosFeature()
+NxosPimInterface()
 **************************************
 
 .. contents::
@@ -8,16 +8,16 @@ NxosFeature()
 
 ScriptKit Synopsis
 ------------------
-- NxosFeature() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_feature
+- NxosPimInterface() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_pim_interface
 - These can then be passed to Playbook().add_task()
 
 Ansible Module Documentation
 ----------------------------
-- `nxos_feature <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_feature_module.rst>`_
+- `nxos_pim_interface <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_pim_interface_module.rst>`_
 
 ScriptKit Example
 -----------------
-- `unit_test/cisco/nxos/unit_test_nxos_feature.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_feature.py>`_
+- `unit_test/cisco/nxos/unit_test_nxos_pim_interface.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_pim_interface.py>`_
 
 Dependencies
 ------------
