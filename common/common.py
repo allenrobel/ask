@@ -582,13 +582,18 @@ class Common(object):
     def verify_ipv4_multicast_address(self, x, parameter='unspecified'):
         if self.is_ipv4_multicast_address(x):
             return
-        expectation = "[ipv4 multicast address without prefix e.g. X.X.X.X]"
+        expectation = "ipv4 multicast address without prefix e.g. 225.1.1.2"
         self.fail(self.class_name, parameter, x, parameter, expectation)
 
-    def verify_ipv4_address_with_prefix(self, x, parameter='unspecified'):
-        if self.is_ipv4_interface(x):
+    def verify_ipv4_multicast_address_with_prefix(self, x, parameter='unspecified'):
+        result = True
+        if '/' not in x:
+            result = False
+        if not self.is_ipv4_multicast_address(re.split('/', x)[0]):
+            result = False
+        if result == True:
             return
-        expectation = "[ipv4 address with prefixlen e.g. X.X.X.X/Y]"
+        expectation = "ipv4 multicast address with prefixlen e.g. 225.1.0.0/16"
         self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ipv6_address_with_prefix(self, x, parameter='unspecified'):
