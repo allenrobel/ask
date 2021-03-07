@@ -153,14 +153,28 @@ lines                   The ordered set of commands that should be configured in
                         as found in the device running-config to ensure idempotency
                         and correct diff. Be sure to note the configuration command
                         syntax as some commands are automatically modified by the
-                        device config parser::
+                        device config parser.
+
+                        ScriptKit note: Please note the indentation in the examples
+                        below.  ScriptKit requires consistent indentation since it
+                        uses this to construct the YAML that nxos_config expects::
 
                             - Type: list()
                             - Valid values: list() containing configuration CLIs
-                            - Example:
+                            - Examples:
                                 config = list()
                                 config.append('interface Ethernet1/1')
                                 config.append('  no shutdown')
+                                task.lines = config
+
+                                config = list()
+                                config.append('router bgp 65418')
+                                config.append('  address-family ipv4 unicast')
+                                config.append('    redistribute direct route-map TOR-EXPORT')
+                                config.append('    maximum-paths ibgp 16'
+                                config.append('  address-family ipv6 unicast')
+                                config.append('    redistribute direct route-map TOR-EXPORT')
+                                config.append('    maximum-paths ibgp 16'
                                 task.lines = config
 
 match                   Instructs the module on the way to perform the matching
