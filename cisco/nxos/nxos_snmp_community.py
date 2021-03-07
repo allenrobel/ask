@@ -3,48 +3,92 @@ our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
-============================================
-NxosSnmpCommunity() - nxos_snmp_community.py
-============================================
+**************************************
+NxosSnmpCommunity()
+**************************************
 
-Description
------------
-NxosSnmpCommunity() generates Ansible task instances conformant with its identically-named Ansible module.
-These task instances can then be passed to Playbook().add_task()
+.. contents::
+   :local:
+   :depth: 1
 
-Example usage
--------------
+ScriptKit Synopsis
+------------------
+- NxosSnmpCommunity() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_snmp_community
+- These can then be passed to Playbook().add_task()
 
-unit_test/cisco/nxos/unit_test_nxos_snmp_community.py
+Ansible Module Documentation
+----------------------------
+- `nxos_snmp_community <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_community_module.rst>`_
 
-Properties
-----------
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_snmp_community.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_snmp_community.py>`_
 
-=========== ===========
-Property    Description
-=========== ===========
-access      Access type for community::
+|
 
-                - Type: str()
-                - Valid values: ro, rw
-acl         ACL name to filter snmp requests::
+============    ==============================================
+Property        Description
+============    ==============================================
+access          Access type for community.  ro (read-only),
+                rw (read-write)::
 
-                - Type: str()
-                - Value values: str() or keyword 'default'
-community   Case-sensitive community string::
+                    - Type: str()
+                    - Valid values:
+                        - ro
+                        - rw
+                    - Example:
+                        - task.access = 'ro'
 
-                - Type: str()
-                - Value values: str()
-                - Required
-group       Group to which the community belongs::
+acl             ACL name to filter snmp requests::
 
-                - Type: str()
-                - Value values: str()
-state       Manage the state of the resource::
+                    - Type: str()
+                    - Value values:
+                        - ip access-list name
+                        - keyword: default
+                    - Example:
+                        - task.acl = 'default'
+                        - task.acl = 'SNMP_ACL'
 
-                - Type: str()
-                - Value values: absent, present
-=========== ===========
+community       Case-sensitive community string::
+
+                    - Type: str()
+                    - Value values:
+                        - An SNMP community name
+                    - Required
+                    - Example:
+                        - task.community = 'management_geeks'
+
+group           Group to which the community belongs::
+
+                    - Type: str()
+                    - Example:
+                        - task.group = 'geek_group'
+
+state           Manage the state of the resource::
+
+                    - Type: str()
+                    - Value values:
+                        - absent
+                        - present
+                    - Example:
+                        - task.state = 'present'
+
+task_name       Name of the task. Ansible will display this
+                when the playbook is run::
+
+                    - Type: str()
+                    - Example:
+                        - task.task_name = 'my task'
+
+============    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
+
 
 '''
 
