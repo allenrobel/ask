@@ -49,7 +49,8 @@ portchannel                 Group number of the portchannel that will be
 vpc                         VPC group/id that will be configured on associated portchannel::
 
                                 - Type: int()
-                                - Valid values: int() range: 1-4096
+                                - Valid values:
+                                    - range: 1-4096
                                 - Example:
                                     task.vpc = 10
 
