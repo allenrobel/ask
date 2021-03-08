@@ -1,38 +1,65 @@
 # NxosSnmpLocation() - cisco/nxos/nxos_snmp_location.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
-==========================================
-NxosSnmpLocation() - nxos_snmp_location.py
-==========================================
+**************************************
+NxosSnmpLocation()
+**************************************
 
-Description
------------
-NxosSnmpLocation() generates Ansible task instances conformant with its identically-named Ansible module.
-These task instances can then be passed to Playbook().add_task()
+.. contents::
+   :local:
+   :depth: 1
 
-Example usage
--------------
+ScriptKit Synopsis
+------------------
+- NxosSnmpLocation() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_snmp_location
+- These can then be passed to Playbook().add_task()
 
-unit_test/cisco/nxos/unit_test_nxos_snmp_location.py
+Ansible Module Documentation
+----------------------------
+- `nxos_snmp_location <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_location_module.rst>`_
 
-Properties
-----------
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_snmp_location.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_snmp_location.py>`_
 
-=========== ===========
-Property    Description
-=========== ===========
-location    Location information::
+|
 
-                - Type: str()
-                - Valid values: str()
-                - Required
-state       Manage the state of the resource::
+============    ==============================================
+Property        Description
+============    ==============================================
+location        Location information::
 
-                - Type: str()
-                - Value values: absent, present
-=========== ===========
+                    - Type: str()
+                    - Example:
+                        task.location = 'Row: 7, Rack: 10'
+                    - Required
+
+state           Manage the state of the resource::
+
+                    - Type: str()
+                    - Value values:
+                        - absent
+                        - present
+                    - Example:
+                        - task.state = 'present'
+
+task_name       Name of the task. Ansible will display this
+                when the playbook is run::
+
+                    - Type: str()
+                    - Example:
+                        - task.task_name = 'my task'
+
+============    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 
 '''
 
