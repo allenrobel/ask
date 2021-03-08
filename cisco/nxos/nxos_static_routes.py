@@ -1,5 +1,5 @@
 # NxosStaticRoutes() - cisco/nxos/nxos_static_routes.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -27,8 +27,38 @@ ScriptKit Example
 |
 
 ========================    ==============================================
-Property                    Description
+Properties / Methods        Description
 ========================    ==============================================
+add_next_hop()              Add a next hop to the curent ``dest``.  This
+                            can be called multiple times for the same
+                            ``dest``::
+
+                                - Type: method
+                                - Example:
+                                    task = NxosStaticRoutes(log_instance)
+                                    # set general route attributes
+                                    task.dest = '1.1.0.0/16'
+                                    task.afi = 'ipv4'
+                                    task.admin_distance = 100
+                                    # add a next hop for this route
+                                    task.forward_router_address = '2.1.1.1'
+                                    task.interface = 'Ethernet1/1'
+                                    task.add_next_hop()
+                                    # add a second next hop for this route
+                                    task.forward_router_address = '2.2.1.1'
+                                    task.interface = 'Ethernet1/2'
+                                    task.add_next_hop()
+                                    # update the task to store this route
+                                    task.update()
+                                    # add the task to the playbook
+                                    # See ScriptKit Example above for how
+                                    # to instantiate the Playbook() class
+                                    pb.add_task(task)
+                                    # Append this play with its single task
+                                    pb.append_playbook()
+                                    # write the playbook
+                                    pb.write_playbook()
+
 afi                         Specifies the top level address family 
                             indicator::
 
@@ -329,7 +359,9 @@ class NxosStaticRoutes(Task):
     def verify_nxos_static_routes_admin_distance(self, x):
         source_class = self.class_name
         source_method = 'verify_nxos_static_routes_admin_distance'
-        self.verify_integer_range(x, self.nxos_static_routes_admin_distance_min, self.nxos_static_routes_admin_distance_max, source_class, source_method)
+        range_min = self.nxos_static_routes_admin_distance_min
+        range_max = self.nxos_static_routes_admin_distance_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     def verify_nxos_static_routes_afi(self, x, parameter='receive'):
         verify_set = self.nxos_static_routes_valid_afi
@@ -396,7 +428,9 @@ class NxosStaticRoutes(Task):
     def verify_nxos_static_routes_track(self, x):
         source_class = self.class_name
         source_method = 'verify_nxos_static_routes_track'
-        self.verify_integer_range(x, self.nxos_static_routes_track_min, self.nxos_static_routes_track_max, source_class, source_method)
+        range_min = self.nxos_static_routes_track_min
+        range_max = self.nxos_static_routes_track_max
+        self.verify_integer_range(x, range_min, range_max, source_class, source_method)
 
     @property
     def afi(self):
