@@ -1,74 +1,144 @@
 # NxosStaticRoutes() - cisco/nxos/nxos_static_routes.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
-==========================================
-NxosStaticRoutes() - nxos_static_routes.py
-==========================================
+**************************************
+NxosStaticRoutes()
+**************************************
 
-Description
------------
-NxosStaticRoutes() generates Ansible task instances conformant with its identically-named Ansible module.
-These task instances can then be passed to Playbook().add_task()
+.. contents::
+   :local:
+   :depth: 1
 
-Example usage
--------------
+ScriptKit Synopsis
+------------------
+- NxosStaticRoutes() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_static_routes
+- These can then be passed to Playbook().add_task()
 
-unit_test/cisco/nxos/unit_test_nxos_static_routes.py
+Ansible Module Documentation
+----------------------------
+- `nxos_static_routes <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_static_routes_module.rst>`_
 
-Properties
-----------
+ScriptKit Example
+-----------------
+- `unit_test/cisco/nxos/unit_test_nxos_static_routes.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_static_routes.py>`_
 
-========================    ===========
+|
+
+========================    ==============================================
 Property                    Description
-========================    ===========
-afi                         Specifies the top level address family indicator::
+========================    ==============================================
+afi                         Specifies the top level address family 
+                            indicator::
 
                                 - Type: str()
                                 - Valid values: ipv4, ipv6
+                                - Example
+                                    task.afi = 'ipv4'
                                 - Required
+
 dest                        Destination prefix of static route::
 
                                 - Type: str()
-                                - The address format is <ipv4/v6 address>/<prefixlen>
-                                - prefixlen is int() in range 0-32 for IPv4
-                                - prefixlen is int() in range 0-128 for IPv6
+                                - Valid values:
+                                    - IPv4 address with prefixlen
+                                        - prefixlen range: 0-32
+                                    - IPv6 address with prefixlen
+                                        - prefixlen range: 0-128
+                                Examples:
+                                    task.dest = '10.1.0.0/16'
+                                    task.dest = '2001:aaaa:bbbb::/48'
                                 - Required
-admin_distance              Preference or administrative distance of route::
 
-                                - Type: int() converted to str()
+admin_distance              Preference or administrative distance of
+                            route::
+
+                                - Type: int()
                                 - Valid values: range 1-255
+                                - Example:
+                                    task.admin_distance = 100
+
 dest_vrf                    VRF of the destination::
 
                                 - Type: str()
+                                - Example:
+                                    task.dest_vrf = "ENG"
+
 forward_router_address      IP address of the next hop router::
 
                                 - Type: str()
-                                - Valid values: ip address in same address-family as dest/afi
-interface                   Outgoing interface to take::
+                                - Valid values:
+                                    - ip address in same address-family as dest/afi
+                                - Examples:
+                                    task.forward_router_address = '10.2.1.1'
+                                    task.forward_router_address = '2001:aaaa::3'
+
+interface                   Outgoing interface of next-hop::
 
                                 - Type: str()
-                                - Full name of interface e.g. Ethernet1/1
-                                - For anything except 'Null0', then next hop IP address should also be configured
+                                - Valid values:
+                                    - Full interface name
+                                    - Null0
+                                - Examples:
+                                    task.interface = 'Null0'
+                                    task.interface = 'Ethernet1/1'
+
 route_name                  Name of the static route::
 
                                 - Type: str()
+                                - Example:
+                                    task.route_name = 'POD_2'
+
 tag                         Route tag value::
 
-                                - Type: int() converted to str()
+                                - Type: int()
+                                - Example:
+                                    task.tag = 5000
+
 track                       Track value::
 
-                                - Track must already be configured on the device before adding the route.
+                                - Type: int()
                                 - Valid values: range 1-512
+                                - Example:
+                                    task.track = 100
+                                - NOTES:
+                                    - Track must already be configured on
+                                      the device before adding the route.
+
 vrf                         The VRF to which the static route(s) belong::
 
                                 - Type: str()
+                                - Example:
+                                    task.vrf = 'ENG'
+
 state                       Desired state after task has completed::
 
                                 - Type: str()
-                                - Valid values: deleted, merged, overridden, replaced, gathered, rendered, parsed
-========================    ===========
+                                - Valid values:
+                                    - deleted
+                                    - gathered
+                                    - merged
+                                    - overridden
+                                    - parsed  (not currently supported by ScriptKit)
+                                    - rendered
+                                    - replaced
+
+task_name                   Name of the task. Ansible will display this
+                            when the playbook is run::
+
+                                - Type: str()
+                                - Example:
+                                    - task.task_name = 'my task'
+
+========================    ==============================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
 '''
 
 class NxosStaticRoutes(Task):
