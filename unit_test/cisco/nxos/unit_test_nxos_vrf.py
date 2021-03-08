@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_vrf.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -61,7 +61,7 @@ def add_aggregate_task(pb):
     task.vni = 20003
     task.add_vrf()
 
-    task.purge = 'yes'
+    task.purge = True
     task.task_name = 'aggregate vrfs'
     task.update()
     pb.add_task(task)
