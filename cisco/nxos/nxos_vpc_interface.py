@@ -38,7 +38,8 @@ peer_link                   Set to True (enable) or False (disable) to
                                 - Valid values:
                                     - False
                                     - True
-                                - Example: task.peer_link = False
+                                - Example:
+                                    task.peer_link = False
 
 portchannel                 Group number of the portchannel that will be
                             configured::
