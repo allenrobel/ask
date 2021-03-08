@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_vlans.py
-our_version = 101
+our_version = 102
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -25,7 +25,7 @@ def add_task(pb):
     vnis = [10010, 10020]
 
     for vlan_id,mapped_vni in zip(vlans, vnis):
-        task.enabled = 'yes'
+        task.enabled = True
         task.mapped_vni = mapped_vni
         task.vlan_state = 'active'
         task.vlan_id = vlan_id
