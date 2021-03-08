@@ -165,6 +165,7 @@ task_name                       Name of the task. Ansible will display this
 
 ============================    ================================================
 
+|
 
 Authors
 ~~~~~~~

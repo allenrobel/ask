@@ -1,5 +1,5 @@
 *******************************************
-NxosVrfInterface() - nxos_vrf_interface.py
+NxosVrfInterface()
 *******************************************
 
 .. contents::
@@ -29,21 +29,30 @@ interface                               Full name of interface to be managed::
 
                                             - Type: str()
                                             - Examples:
-                                                - task.interface = 'Ethernet1/1' 
-                                                - task.interface = 'Vlan10'
-                                                - task.interface = 'port-channel200'
+                                                task.interface = 'Ethernet1/1' 
+                                                task.interface = 'Vlan10'
+                                                task.interface = 'port-channel200'
 
 state                                   Manages desired state of the resource::
 
                                             - Type: str()
-                                            - Valid values: absent, present
-                                            - Examples:
-                                                - task.state = 'present'
+                                            - Valid values:
+                                                - absent
+                                                - present
+                                            - Example:
+                                                task.state = 'present'
 
 vrf                                     Name of VRF to be managed::
 
                                             - Type: str()
-                                            - Examples:
-                                                - task.vrf = 'my_vrf'
+                                            - Example:
+                                                task.vrf = 'my_vrf'
 
 ======================================  ==================================================
+
+|
+
+Authors
+~~~~~~~
+
+- Allen Robel (@PacketCalc)
