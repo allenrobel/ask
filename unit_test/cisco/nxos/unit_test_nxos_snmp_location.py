@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-our_version = 103
+our_version = 104
 # unit_test/cisco/nxos/unit_test_nxos_snmp_location.py
 
 from ask.common.playbook import Playbook
@@ -29,7 +29,7 @@ def add_task(pb):
     task = NxosSnmpLocation(log)
     task.location = 'DC_004:Pod_035:Rack_142'
     task.state = 'present'
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
