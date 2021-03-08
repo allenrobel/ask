@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_system.py
-our_version = 106
+our_version = 107
 from ask.common.playbook import Playbook
 from ask.common.log import Log
 from ask.cisco.nxos.nxos_system import NxosSystem
@@ -34,7 +34,7 @@ def hostname(pb):
 
 def domain_lookup(pb):
     task = NxosSystem(log)
-    task.domain_lookup = 'yes'
+    task.domain_lookup = True
     task.state = 'present'
     add_task_name(task)
     task.update()
