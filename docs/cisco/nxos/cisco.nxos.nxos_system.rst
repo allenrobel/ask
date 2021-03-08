@@ -1,5 +1,5 @@
 **************************************
-NxosStaticRoutes()
+NxosSystem()
 **************************************
 
 .. contents::
@@ -8,16 +8,16 @@ NxosStaticRoutes()
 
 ScriptKit Synopsis
 ------------------
-- NxosStaticRoutes() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_static_routes
+- NxosSystem() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_system
 - These can then be passed to Playbook().add_task()
 
 Ansible Module Documentation
 ----------------------------
-- `nxos_static_routes <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_static_routes_module.rst>`_
+- `nxos_system <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_system_module.rst>`_
 
 ScriptKit Example
 -----------------
-- `unit_test/cisco/nxos/unit_test_nxos_static_routes.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_static_routes.py>`_
+- `unit_test/cisco/nxos/unit_test_nxos_system.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_system.py>`_
 
 |
 
