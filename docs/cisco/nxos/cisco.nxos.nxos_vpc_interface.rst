@@ -53,7 +53,7 @@ vpc                         VPC group/id that will be configured on associated p
                                 - Example:
                                     task.vpc = 10
 
-state                       Desired state of after task completion::
+state                       Desired state after task completion::
 
                                 - Type: str()
                                 - Valid values:
