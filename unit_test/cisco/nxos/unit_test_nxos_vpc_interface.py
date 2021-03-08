@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_vpc_interface.py
-our_version = 106
+our_version = 107
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -26,7 +26,7 @@ def add_task_name(task):
 
 def add_task_vpc_peer_link(pb):
     task = NxosVpcInterface(log)
-    task.peer_link = 'yes'
+    task.peer_link = True
     task.portchannel = 1
     task.state = 'present'
     add_task_name(task)

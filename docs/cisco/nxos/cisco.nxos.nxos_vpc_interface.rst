@@ -1,6 +1,6 @@
-******************************************
-NxosVpcInterface() - nxos_vpc_interface.py
-******************************************
+**************************************
+NxosVpcInterface()
+**************************************
 
 .. contents::
    :local:
@@ -8,8 +8,8 @@ NxosVpcInterface() - nxos_vpc_interface.py
 
 ScriptKit Synopsis
 ------------------
-NxosVpcInterface() generates Ansible task instances conformant with its identically-named Ansible module.
-These task instances can then be passed to Playbook().add_task()
+- NxosVpcInterface() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_vpc_interface
+- These can then be passed to Playbook().add_task()
 
 Ansible Module Documentation
 ----------------------------
@@ -17,41 +17,62 @@ Ansible Module Documentation
 
 ScriptKit Example
 -----------------
-- `unit_test/cisco/interfaces/unit_test_nxos_vpc_interface.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_vpc_interface.py>`_
+- `unit_test/cisco/nxos/unit_test_nxos_vpc_interface.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_vpc_interface.py>`_
 
-Properties
-----------
 
-- Property names are identical to the cisco.nxos.nxos_vpc_interface module.
+|
 
-========================    ===========
+========================    ==============================================
 Property                    Description
-========================    ===========
-peer_link                   Set to true/false for peer link config on associated portchannel.::
+========================    ==============================================
+peer_link                   Set to True (enable) or False (disable) to
+                            configure VPC Peer Link on the associated
+                            portchannel interface::
 
-                                - Type: str()
-                                - Valid values: no, yes
-                                - Example: task.peer_link = 'no'
-portchannel                 Group number of the portchannel that will be configured::
+                                - Type: bool()
+                                - Valid values:
+                                    - False
+                                    - True
+                                - Example: task.peer_link = False
 
-                                - Type: str()
-                                - Valid values: int() range: 1-4096
-                                - Example: task.portchannel = 10
+portchannel                 Group number of the portchannel that will be
+                            configured::
+
+                                - Type: int()
+                                - Valid values:
+                                    - range: 1-4096
+                                - Example:
+                                    task.portchannel = 10
                                 - Required
-state                       The state of the configuration after module completion. The state overridden would 
-                            override the configuration of all the VLANs on the device (including VLAN 1) with
-                            the provided configuration in the task. Use caution with this state.::
 
-                                - Type: str()
-                                - Valid values: deleted, gathered, merged, overridden, parsed, rendered, replaced
-                                - Example: task.state = 'merged'
 
 vpc                         VPC group/id that will be configured on associated portchannel::
 
                                 - Type: int()
                                 - Valid values: int() range: 1-4096
-                                - Example: task.vpc = 10
-========================    ===========
+                                - Example:
+                                    task.vpc = 10
+
+state                       Desired state of after task completion::
+
+                                - Type: str()
+                                - Valid values:
+                                    - disabled
+                                    - enabled
+                                - Example:
+                                    task.state = 'enabled'
+                                - Required
+
+task_name                   Name of the task. Ansible will display this
+                            when the playbook is run::
+
+                                - Type: str()
+                                - Example:
+                                    - task.task_name = 'my task'
+                                        
+========================    ==============================================
+
+|
 
 Authors
 ~~~~~~~
