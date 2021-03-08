@@ -62,10 +62,10 @@ state                       Desired state of after task completion::
 
                                 - Type: str()
                                 - Valid values:
-                                    - disabled
-                                    - enabled
+                                    - absent
+                                    - present
                                 - Example:
-                                    task.state = 'enabled'
+                                    task.state = 'present'
                                 - Required
 
 task_name                   Name of the task. Ansible will display this
