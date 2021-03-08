@@ -95,6 +95,16 @@ udp             UDP port number::
                     - Example:
                         task.udp = 8162
 
+v3              SNMPv3 Security level.  Valid when ``version`` is v3::
+
+                    - Type: str()
+                    - Valid values:
+                        - auth
+                        - noauth
+                        - priv
+                    - Example:
+                        task.v3 = 'priv'
+
 version         SNMP version. If this is not specified, v1 is used::
 
                     - Type: str()
