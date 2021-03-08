@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_vpc.py
-our_version = 103
+our_version = 104
 from ask.common.playbook import Playbook
 from ask.common.log import Log
 from ask.cisco.nxos.nxos_vpc import NxosVpc
@@ -30,7 +30,7 @@ def add_task(pb):
     task.domain = 1
     task.delay_restore = 200
     task.delay_restore_interface_vlan = 400
-    task.peer_gw = 'yes'
+    task.peer_gw = True
     task.pkl_dest = '1.1.1.1'
     task.pkl_src = '1.1.1.0'
     task.pkl_vrf = 'VPC'
