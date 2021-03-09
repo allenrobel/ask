@@ -1,4 +1,3 @@
-
 ******************************************
 NxosAaaServerHost() 
 ******************************************
@@ -21,66 +20,96 @@ Ansible Module Documentation
 ============================    ==============================================
 Property                        Description
 ============================    ==============================================
-acct_port                       Alternate UDP port for RADIUS accounting.::
+acct_port                       Alternate UDP port for RADIUS accounting::
+
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - range: UDP port-range
+                                        - keyword: default
+                                    - Examples:
+                                        task.acct_port = 8030
+                                        task.acct_port = 'default'
+
+address                         Address or name of the radius or tacacs host::
 
                                     - Type: str()
-                                    - Valid values: int() range: UDP port-range, or keyword 'default'
-                                    - NOTES:
-                                      - auto-converted to str()
-
-address                         Address or name of the radius or tacacs host.::
-
-                                    - Type: str()
-                                    - Valid values: ip address or hostname
+                                    - Valid values:
+                                        - ip address
+                                        - hostname
+                                    - Examples:
+                                        task.address = '10.1.1.2'
+                                        task.address = 'aaa.foo.com'
                                     - Required
 
-auth_port                       Alternate UDP port for RADIUS authentication.::
+auth_port                       Alternate UDP port for RADIUS authentication::
 
-                                    - Type: str()
-                                    - Valid values: int() range: UDP port-range, or keyword 'default'
-                                    - NOTES:
-                                      - auto-converted to str()
+                                    - Type: int() or str()
+                                    - Valid values:
+                                        - range: UDP port-range
+                                        - keyword: default
+                                    - Examples:
+                                        task.auth_port = 8031
+                                        task.auth_port = 'default'
 
 encrypt_type                    The state of encryption applied to the entered global key.
-                                Type-6 encryption is not supported.::
+                                Type-6 encryption is not supported::
 
                                     - Type: str()
-                                    - Valid values: 0, 7
+                                    - Valid values:
                                         0 - clear text
                                         7 - encrypted
-                                    - NOTES:
-                                      - auto-converted to str()
+                                    - Example:
+                                        task.encrypt_type = 7
 
-host_timeout                    Timeout period for specified host.::
+host_timeout                    Timeout period for the specified host::
 
-                                    - Type: str()
+                                    - Type: int() or str()
                                     - Units: seconds
-                                    - Valid values: int() range: 1-60, or keyword 'default'
-                                    - NOTES:
-                                      - auto-converted to str()
+                                    - Valid values:
+                                        - range: 1-60
+                                        - keyword: default
+                                    - Examples:
+                                        task.host_timeout = 30
+                                        task.host_timeout = 'default'
 
-key                             Shared secret for the specified host.::
-
-                                    - Type: str()
-                                    - Valid values: str(), or keyword 'default'
-
-server_type                     The authentication protocol used by the server.::
+key                             Shared secret for the specified host::
 
                                     - Type: str()
-                                    - Valid values: radius, tacacs
+                                    - Valid values:
+                                        - a shared secret key
+                                        - keyword: default
+                                    - Examples:
+                                        task.key = 'a1fe45004f'
+                                        task.key = 'default'
 
-state                           State of the resource after playbook execution.::
+server_type                     The authentication protocol used by the server::
 
                                     - Type: str()
-                                    - Valid values: present, default
+                                    - Valid values:
+                                        - radius
+                                        - tacacs
+                                    - Example:
+                                        task.server_type = 'tacacs'
+
+state                           State of the resource after playbook execution::
+
+                                    - Type: str()
+                                    - Valid values:
+                                        - present
+                                        - default
                                     - Default: present
+                                    - Example:
+                                        task.state = 'default'
 
-tacacs_port                     Alternate TCP port TACACS Server.::
+tacacs_port                     Alternate TCP port TACACS Server::
 
                                     - Type: str()
-                                    - Valid values: int() range: TCP port-range, or keyword 'default'
-                                    - NOTES:
-                                      - auto-converted to str()
+                                    - Valid values:
+                                        - range: TCP port-range
+                                        - keyword: default
+                                    - Examples:
+                                        task.tacacs_port = 8045
+                                        task.tacacs_port = 'default'
 
 ============================    ==============================================
 
