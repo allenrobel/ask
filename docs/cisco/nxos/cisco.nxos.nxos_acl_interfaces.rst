@@ -23,26 +23,39 @@ Property                        Description
 acl_direction                   Direction to be applied for the ACL::
 
                                     - Type: str()
-                                    - Valid values: in, out
+                                    - Valid values:
+                                        - in
+                                        - out
+                                    - Example:
+                                        task.acl_direction = 'out'
                                     - Required
 
 acl_name                        Name of the ACL to be added/removed::
 
                                     - Type: str()
+                                    - Example:
+                                        task.acl_name = 'TOR_OUT'
                                     - Required
 
-acl_port                        Use ACL as port policy::
+acl_port                        Use ACL as port policy. If True, ``name``
+                                must be a (L2) switchport.  If False, ``name``
+                                must be a (L3) routed port::
 
-                                    If 'yes', interface must be a switchport
-                                    If 'no', interface must be a routed port (i.e. no switchport)
-
-                                    - Type: str()
-                                    - Valid values: no, yes
+                                    - Type: bool()
+                                    - Valid values:
+                                        - False
+                                        - True
+                                    - Example:
+                                        task.acl_port = True
 
 afi                             Address Family Indicator of the ACLs to be configured::
 
                                     - Type: str()
-                                    - Valid values: ipv4, ipv6
+                                    - Valid values:
+                                        - ipv4
+                                        - ipv6
+                                    - Example:
+                                        task.afi = 'ipv4'
                                     - Required
 
 name                            Name of the interface on which the ACL is applied::
@@ -64,6 +77,8 @@ state                           The state after playbook has executed::
                                         - parsed
                                         - rendered
                                         - replaced
+                                    - Example:
+                                        task.state = 'merged'
                                     - Required
 
 task_name                       Name of the task. Ansible will display this when
@@ -71,6 +86,8 @@ task_name                       Name of the task. Ansible will display this when
 
                                     - Type: str()
                                     - Default: Task name is not displayed
+                                    - Example:
+                                        task.task_name = 'my task'
 
 ============================    ==============================================
 

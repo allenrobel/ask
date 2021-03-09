@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_acl_interfaces.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,21 +19,20 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.properties_set):
+        task.append_to_task_name(key)
+
 def ipv4_interface_acl(pb):
     task = NxosAclInterfaces(log)
     task.name = 'Ethernet1/36'
     task.acl_name = 'IPv4_ACL'
     task.afi = 'ipv4'
-    task.acl_port = 'no'
+    task.acl_port = False
     task.acl_direction = 'in'
     task.state = 'merged'
-    task.task_name = 'name {}, afi {}, acl {}, port {}, direction {}, state {}'.format(
-        task.name,
-        task.afi,
-        task.acl_name,
-        task.acl_port,
-        task.acl_direction,
-        task.state)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -42,16 +41,10 @@ def ipv6_interface_acl(pb):
     task.name = 'Ethernet1/36'
     task.acl_name = 'IPv6_ACL'
     task.afi = 'ipv6'
-    task.acl_port = 'no'
+    task.acl_port = False
     task.acl_direction = 'in'
     task.state = 'merged'
-    task.task_name = 'name {}, afi {}, acl {}, port {}, direction {}, state {}'.format(
-        task.name,
-        task.afi,
-        task.acl_name,
-        task.acl_port,
-        task.acl_direction,
-        task.state)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

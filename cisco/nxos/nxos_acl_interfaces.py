@@ -1,8 +1,6 @@
 # NxosAclInterfaces() - cisco/nxos/nxos_acl_interfaces.py
-our_version = 103
-# standard library
+our_version = 104
 from copy import deepcopy
-# scriptkit library
 from ask.common.task import Task
 '''
 ******************************************
@@ -30,26 +28,39 @@ Property                        Description
 acl_direction                   Direction to be applied for the ACL::
 
                                     - Type: str()
-                                    - Valid values: in, out
+                                    - Valid values:
+                                        - in
+                                        - out
+                                    - Example:
+                                        task.acl_direction = 'out'
                                     - Required
 
 acl_name                        Name of the ACL to be added/removed::
 
                                     - Type: str()
+                                    - Example:
+                                        task.acl_name = 'TOR_OUT'
                                     - Required
 
-acl_port                        Use ACL as port policy::
+acl_port                        Use ACL as port policy. If True, ``name``
+                                must be a (L2) switchport.  If False, ``name``
+                                must be a (L3) routed port::
 
-                                    If 'yes', interface must be a switchport
-                                    If 'no', interface must be a routed port (i.e. no switchport)
-
-                                    - Type: str()
-                                    - Valid values: no, yes
+                                    - Type: bool()
+                                    - Valid values:
+                                        - False
+                                        - True
+                                    - Example:
+                                        task.acl_port = True
 
 afi                             Address Family Indicator of the ACLs to be configured::
 
                                     - Type: str()
-                                    - Valid values: ipv4, ipv6
+                                    - Valid values:
+                                        - ipv4
+                                        - ipv6
+                                    - Example:
+                                        task.afi = 'ipv4'
                                     - Required
 
 name                            Name of the interface on which the ACL is applied::
@@ -71,6 +82,8 @@ state                           The state after playbook has executed::
                                         - parsed
                                         - rendered
                                         - replaced
+                                    - Example:
+                                        task.state = 'merged'
                                     - Required
 
 task_name                       Name of the task. Ansible will display this when
@@ -78,6 +91,8 @@ task_name                       Name of the task. Ansible will display this when
 
                                     - Type: str()
                                     - Default: Task name is not displayed
+                                    - Example:
+                                        task.task_name = 'my task'
 
 ============================    ==============================================
 
@@ -106,10 +121,6 @@ class NxosAclInterfaces(Task):
         self.nxos_acl_interfaces_valid_direction = set()
         self.nxos_acl_interfaces_valid_direction.add('in')
         self.nxos_acl_interfaces_valid_direction.add('out')
-
-        self.nxos_acl_interfaces_valid_port = set()
-        self.nxos_acl_interfaces_valid_port.add('no')
-        self.nxos_acl_interfaces_valid_port.add('yes')
 
         self.nxos_acl_interfaces_valid_state = set()
         self.nxos_acl_interfaces_valid_state.add('deleted')
@@ -155,7 +166,7 @@ class NxosAclInterfaces(Task):
     def update(self):
         '''
         call final_verification()
-        populate and append dict() to self.ansible_task[self.ansible_module]['config']
+        populate self.ansible_task
         '''
         self.final_verification()
 
@@ -193,15 +204,6 @@ class NxosAclInterfaces(Task):
             return
         source_class = self.class_name
         source_method = 'nxos_acl_interfaces_verify_direction'
-        expectation = ','.join(verify_set)
-        self.fail(source_class, source_method, x, parameter, expectation)
-
-    def nxos_acl_interfaces_verify_port(self, x, parameter='port'):
-        verify_set = self.nxos_acl_interfaces_valid_port
-        if x in verify_set:
-            return
-        source_class = self.class_name
-        source_method = 'nxos_acl_interfaces_verify_port'
         expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
@@ -254,7 +256,7 @@ class NxosAclInterfaces(Task):
         parameter = 'acl_port'
         if self.set_none(x, parameter):
             return
-        self.nxos_acl_interfaces_verify_port(x, parameter)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
