@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_banner.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -43,7 +43,7 @@ def banner_exec(pb):
     task.banner = 'exec'
     task.text = exec_banner
     task.state = 'present'
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -52,7 +52,7 @@ def banner_motd(pb):
     task.banner = 'motd'
     task.text = motd_banner
     task.state = 'present'
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

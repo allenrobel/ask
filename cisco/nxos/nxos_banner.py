@@ -1,10 +1,10 @@
 # NxosBanner() - cisco/nxos/nxos_banner.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
 **************************************
-NxosBanner() - cisco.nxos.nxos_banner
+NxosBanner()
 **************************************
 
 .. contents::
@@ -34,7 +34,11 @@ banner                          Specifies which banner to configure on the
                                 remote device::
 
                                     - Type: str()
-                                    - Valid values: exec, motd
+                                    - Valid values:
+                                        - exec
+                                        - motd
+                                    - Example:
+                                        task.banner = 'motd'
                                     - Required
 
 text                            The banner text that should be present in the
@@ -43,18 +47,30 @@ text                            The banner text that should be present in the
                                 empty lines::
 
                                     - Type: str()
+                                    - Example:
+                                        task.text = 'message of the day'
                                     - Requires: task.state = 'present'
+                                    - Notes:
+                                        1. Ampersand '@' cannot be used within
+                                           text, since this is the delimiter
+                                           character.
 
 state                           Controls whether banner should be configured
                                 on the remote device::
 
                                     - Type: str()
-                                    - Valid values: absent, present
+                                    - Valid values:
+                                        - absent
+                                        - present
+                                    - Example:
+                                        task.state = 'present'
 
 task_name                       Name of the task. Ansible will display this
                                 when the playbook is run::
 
                                     - Type: str()
+                                    - Example:
+                                        task.task_name = 'my task'
 
 ============================    ==============================================
 
