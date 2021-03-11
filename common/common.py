@@ -1,5 +1,5 @@
 # Common() - common/common.py
-our_version = 110
+our_version = 111
 '''
 ====================
 Common() - common.py
@@ -594,6 +594,12 @@ class Common(object):
         if result == True:
             return
         expectation = "ipv4 multicast address with prefixlen e.g. 225.1.0.0/16"
+        self.fail(self.class_name, parameter, x, parameter, expectation)
+
+    def verify_ipv4_address_with_prefix(self, x, parameter='unspecified'):
+        if self.is_ipv4_address_with_prefix(x):
+            return
+        expectation = "[ipv6 address with prefixlen e.g. 2001:aaaa::1/64]"
         self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_ipv6_address_with_prefix(self, x, parameter='unspecified'):
