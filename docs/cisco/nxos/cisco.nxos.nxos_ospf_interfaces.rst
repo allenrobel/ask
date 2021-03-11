@@ -21,6 +21,9 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py>`_
 
+Caveats
+-------
+-  `#264 nxos_ospf_interfaces: no ip ospf passive-interface is never issued. <https://github.com/ansible-collections/cisco.nxos/issues/264>`_
 
 |
 
