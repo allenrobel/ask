@@ -1,5 +1,5 @@
 # NxosInterfaces() - cisco/nxos/nxos_interfaces.py
-our_version = 120
+our_version = 121
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -186,6 +186,12 @@ class NxosInterfaces(Task):
         self.properties_set.add('mtu')
         self.properties_set.add('name')
         self.properties_set.add('speed')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.add('state')
 
         self.nxos_interfaces_valid_duplex = set()
         self.nxos_interfaces_valid_duplex.add('full')

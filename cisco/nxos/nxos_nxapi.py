@@ -1,5 +1,5 @@
 # NxosNxapi() - cisco/nxos/nxos_nxapi.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -132,6 +132,11 @@ class NxosNxapi(Task):
         self.properties_set.add('tlsv1_0')
         self.properties_set.add('tlsv1_1')
         self.properties_set.add('tlsv1_2')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_nxapi_valid_state = set()
         self.nxos_nxapi_valid_state.add('absent')

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_banner.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -32,8 +32,8 @@ Project: Customer PoC
 motd_banner = "This device is going down for maintenance on April Fool's Day"
 
 def add_task_name(task):
-    task.append_to_task_name(ansible_host)
-    for key in sorted(task.properties_set):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
         if key == 'text':
             continue
         task.append_to_task_name(key)

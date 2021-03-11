@@ -48,11 +48,14 @@ class Task(Common):
         If item is a key in self.properties and item's value is not None::
 
             - Append item and item's value to self.task_name
+
         '''
         if self.task_name == None:
             self.task_name = "[{} : v.{}]".format(self.ansible_module, self.lib_version)
-        if item not in self.properties:
+        if item not in self.scriptkit_properties:
             self.task_name += ", {}".format(item)
+            return
+        if item not in self.properties:
             return
         if self.properties[item] != None:
             self.task_name += ", {}: {}".format(item, self.properties[item])

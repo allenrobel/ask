@@ -1,5 +1,5 @@
 # NxosSnmpHost() - cisco/nxos/nxos_snmp_host.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -187,8 +187,13 @@ class NxosSnmpHost(Task):
         self.properties_set.add('version')
         self.properties_set.add('vrf')
         self.properties_set.add('vrf_filter')
-        self.init_properties()
 
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+
+        self.init_properties()
 
     def init_properties(self):
         self.properties = dict()

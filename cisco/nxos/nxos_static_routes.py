@@ -1,5 +1,5 @@
 # NxosStaticRoutes() - cisco/nxos/nxos_static_routes.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -185,19 +185,6 @@ class NxosStaticRoutes(Task):
         self.ipv4_routes = dict()
         self.ipv6_routes = dict()
 
-        self.nxos_static_routes_valid_afi = set()
-        self.nxos_static_routes_valid_afi.add('ipv4')
-        self.nxos_static_routes_valid_afi.add('ipv6')
-
-        self.nxos_static_routes_valid_state = set()
-        self.nxos_static_routes_valid_state.add('deleted')
-        self.nxos_static_routes_valid_state.add('gathered')
-        self.nxos_static_routes_valid_state.add('merged')
-        self.nxos_static_routes_valid_state.add('overridden')
-        self.nxos_static_routes_valid_state.add('replaced')
-        self.nxos_static_routes_valid_state.add('rendered')
-        self.nxos_static_routes_valid_state.add('parsed')
-
         self.address_family_set = set()
         self.address_family_set.add('afi')
 
@@ -213,15 +200,8 @@ class NxosStaticRoutes(Task):
         self.next_hop_set.add('tag')
         self.next_hop_set.add('track')
 
-        self.nxos_static_routes_admin_distance_min = 1
-        self.nxos_static_routes_admin_distance_max = 255
-
-        self.nxos_static_routes_track_min = 1
-        self.nxos_static_routes_track_max = 512
-
         # properties_set is not currently used in this class,
-        # but it can be used by scripts to set task_name.
-        # See Task().append_to_task_name() method in common/task.py
+        # except to populate public set() scriptkit_properties.  
         self.properties_set = set()
         self.properties_set.add('afi')
         self.properties_set.add('dest')
@@ -234,6 +214,30 @@ class NxosStaticRoutes(Task):
         self.properties_set.add('track')
         self.properties_set.add('vrf')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+
+        self.nxos_static_routes_valid_afi = set()
+        self.nxos_static_routes_valid_afi.add('ipv4')
+        self.nxos_static_routes_valid_afi.add('ipv6')
+
+        self.nxos_static_routes_valid_state = set()
+        self.nxos_static_routes_valid_state.add('deleted')
+        self.nxos_static_routes_valid_state.add('gathered')
+        self.nxos_static_routes_valid_state.add('merged')
+        self.nxos_static_routes_valid_state.add('overridden')
+        self.nxos_static_routes_valid_state.add('replaced')
+        self.nxos_static_routes_valid_state.add('rendered')
+        self.nxos_static_routes_valid_state.add('parsed')
+
+        self.nxos_static_routes_admin_distance_min = 1
+        self.nxos_static_routes_admin_distance_max = 255
+
+        self.nxos_static_routes_track_min = 1
+        self.nxos_static_routes_track_max = 512
 
         self.init_properties()
 

@@ -1,5 +1,5 @@
 # NxosNtpOptions() - cisco/nxos/nxos_ntp_options.py
-our_version = 101
+our_version = 102
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -101,6 +101,11 @@ class NxosNtpOptions(Task):
         self.properties_set.add('master')
         self.properties_set.add('state')
         self.properties_set.add('stratum')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_ntp_options_valid_state = set()
         self.nxos_ntp_options_valid_state.add('absent')

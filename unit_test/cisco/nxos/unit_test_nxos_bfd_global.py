@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bfd_global.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,33 +19,10 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('echo_rx_interval', task.echo_rx_interval, task_name)
-    task_name = add_item_to_name('slow_timer', task.slow_timer, task_name)
-    task_name = add_item_to_name('bfd_interval', task.bfd_interval, task_name)
-    task_name = add_item_to_name('bfd_min_rx', task.bfd_min_rx, task_name)
-    task_name = add_item_to_name('bfd_multiplier', task.bfd_multiplier, task_name)
-    task_name = add_item_to_name('ipv4_echo_rx_interval', task.ipv4_echo_rx_interval, task_name)
-    task_name = add_item_to_name('ipv4_slow_timer', task.ipv4_slow_timer, task_name)
-    task_name = add_item_to_name('bfd_fabricpath_interval', task.bfd_fabricpath_interval, task_name)
-    task_name = add_item_to_name('bfd_fabricpath_min_rx', task.bfd_fabricpath_min_rx, task_name)
-    task_name = add_item_to_name('bfd_fabricpath_multiplier', task.bfd_fabricpath_multiplier, task_name)
-    task_name = add_item_to_name('bfd_ipv4_interval', task.bfd_ipv4_interval, task_name)
-    task_name = add_item_to_name('bfd_ipv4_min_rx', task.bfd_ipv4_min_rx, task_name)
-    task_name = add_item_to_name('bfd_ipv4_multiplier', task.bfd_ipv4_multiplier, task_name)
-    task_name = add_item_to_name('bfd_ipv6_interval', task.bfd_ipv6_interval, task_name)
-    task_name = add_item_to_name('bfd_ipv6_min_rx', task.bfd_ipv6_min_rx, task_name)
-    task_name = add_item_to_name('bfd_ipv6_multiplier', task.bfd_ipv6_multiplier, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_bfd_general(pb):
     task = NxosBfdGlobal(log)
@@ -54,7 +31,7 @@ def add_task_bfd_general(pb):
     task.bfd_interval = 50
     task.bfd_min_rx = 50
     task.bfd_multiplier = 3
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -63,7 +40,7 @@ def add_task_bfd_fabricpath(pb):
     task.bfd_fabricpath_interval = 50
     task.bfd_fabricpath_min_rx = 50
     task.bfd_fabricpath_multiplier = 3
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -74,7 +51,7 @@ def add_task_bfd_ipv4(pb):
     task.bfd_ipv4_interval = 50
     task.bfd_ipv4_min_rx = 50
     task.bfd_ipv4_multiplier = 3
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -83,7 +60,7 @@ def add_task_bfd_ipv6(pb):
     task.bfd_ipv6_interval = 50
     task.bfd_ipv6_min_rx = 50
     task.bfd_ipv6_multiplier = 3
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

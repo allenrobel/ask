@@ -1,5 +1,5 @@
 # NxosLagInterfaces() - cisco/nxos/nxos_lag_interfaces.py
-our_version = 106
+our_version = 107
 
 from copy import deepcopy
 from ask.common.task import Task
@@ -194,6 +194,13 @@ class NxosLagInterfaces(Task):
         self.properties_member.add('force')
         self.properties_member.add('member')
         self.properties_member.add('mode')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.update(self.properties_lag)
+        self.scriptkit_properties.update(self.properties_member)
 
         self.init_properties()
 

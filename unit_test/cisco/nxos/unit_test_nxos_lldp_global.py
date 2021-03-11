@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_ans_task_nxos_lldp_global.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -21,10 +21,8 @@ def playbook():
     return pb
 
 def add_task_name(task):
-    task.append_to_task_name('v.{}'.format(our_version))
-    task.append_to_task_name(ansible_host)
-    task.append_to_task_name('state: {}'.format(task.state))
-    for key in sorted(task.properties_set):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
 def add_task_global(pb):
@@ -81,6 +79,7 @@ def add_task_state_parsed(pb):
     task.state = 'parsed'
     task.register = 'parsed'
     task.task_name = 'test state parsed'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -88,6 +87,7 @@ def add_task_state_parsed(pb):
     task.filename = '/tmp/parsed_output.txt'
     task.var = 'parsed'
     task.task_name = 'save register'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

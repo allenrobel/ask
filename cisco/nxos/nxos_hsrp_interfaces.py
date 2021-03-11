@@ -1,5 +1,5 @@
 # NxosHsrpInterfaces() - cisco/nxos/nxos_hsrp_interfaces.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -91,6 +91,12 @@ class NxosHsrpInterfaces(Task):
         self.properties_set = set()
         self.properties_set.add('name')
         self.properties_set.add('bfd')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.add('state')
 
         self.nxos_hsrp_interfaces_valid_bfd = set()
         self.nxos_hsrp_interfaces_valid_bfd.add('disable')

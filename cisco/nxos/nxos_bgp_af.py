@@ -1,5 +1,5 @@
 # NxosBgpAf() - cisco/nxos/nxos_bgp_af.py
-our_version = 114
+our_version = 115
 
 from copy import deepcopy
 import re
@@ -410,6 +410,12 @@ class NxosBgpAf(Task):
         self.nxos_bgp_af_valid_state.add('present')
         self.nxos_bgp_af_valid_state.add('absent')
 
+        self.dampening_set = set()
+        self.dampening_set.add('dampening_half_time')
+        self.dampening_set.add('dampening_suppress_time')
+        self.dampening_set.add('dampening_reuse_time')
+        self.dampening_set.add('dampening_max_suppress_time')
+
         self.properties_set = set()
         self.properties_set.add('additional_paths_install')
         self.properties_set.add('additional_paths_receive')
@@ -443,19 +449,20 @@ class NxosBgpAf(Task):
         self.properties_set.add('table_map_filter')
         self.properties_set.add('vrf')
         self.properties_set.add('state')
-        self.init_properties()
 
-        self.dampening_set = set()
-        self.dampening_set.add('dampening_half_time')
-        self.dampening_set.add('dampening_suppress_time')
-        self.dampening_set.add('dampening_reuse_time')
-        self.dampening_set.add('dampening_max_suppress_time')
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.update(self.dampening_set)
 
         self.nxos_bgp_af_maximum_paths_min = 1
         self.nxos_bgp_af_maximum_paths_max = 64
 
         self.nxos_bgp_af_maximum_paths_ibgp_min = 1
         self.nxos_bgp_af_maximum_paths_ibgp_max = 64
+
+        self.init_properties()
 
     def init_properties(self):
         self.properties = dict()

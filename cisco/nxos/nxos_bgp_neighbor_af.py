@@ -1,5 +1,5 @@
 # NxosBgpNeighborAf() - cisco/nxos/nxos_bgp_neighbor_af.py
-our_version = 112
+our_version = 113
 
 from copy import deepcopy
 import re
@@ -496,6 +496,11 @@ class NxosBgpNeighborAf(Task):
         self.properties_set.add('suppress_inactive')
         self.properties_set.add('unsuppress_map')
         self.properties_set.add('weight')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_bgp_neighbor_af_valid_additional_paths_receive = set()
         self.nxos_bgp_neighbor_af_valid_additional_paths_receive.add('enable')

@@ -1,5 +1,5 @@
 # NxosVlans() - cisco/nxos/nxos_vlans.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -148,6 +148,11 @@ class NxosVlans(Task):
         self.properties_set.add('name')
         self.properties_set.add('vlan_state')
         self.properties_set.add('vlan_id')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.property_map = dict()
         self.property_map['vlan_state'] = 'state'

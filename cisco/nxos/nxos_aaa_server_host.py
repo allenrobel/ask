@@ -1,5 +1,5 @@
 # NxosAaaServerHost() - cisco/nxos/nxos_aaa_server_host.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -170,6 +170,11 @@ class NxosAaaServerHost(Task):
         self.properties_set.add('state')
         self.properties_set.add('tacacs_port')
         self.init_properties()
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
     def init_properties(self):
         self.properties = dict()

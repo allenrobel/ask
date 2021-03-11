@@ -1,5 +1,5 @@
 # NxosNtpAuth() - cisco/nxos/nxos_ntp_auth.py
-our_version = 101
+our_version = 102
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -117,6 +117,11 @@ class NxosNtpAuth(Task):
         self.properties_set.add('md5string')
         self.properties_set.add('state')
         self.properties_set.add('trusted_key')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_ntp_auth_valid_auth_type = set()
         self.nxos_ntp_auth_valid_auth_type.add('text')

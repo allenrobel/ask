@@ -1,5 +1,5 @@
 # NxosSnmpContact() - cisco/nxos/nxos_snmp_contact.py
-our_version = 108
+our_version = 109
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -72,6 +72,11 @@ class NxosSnmpContact(Task):
         self.properties_set = set()
         self.properties_set.add('contact')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_snmp_contact_valid_state = set()
         self.nxos_snmp_contact_valid_state.add('absent')

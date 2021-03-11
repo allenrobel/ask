@@ -1,5 +1,5 @@
 # NxosAaaServer() - cisco/nxos/nxos_aaa_server.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -146,6 +146,11 @@ class NxosAaaServer(Task):
         self.properties_set.add('server_timeout')
         self.properties_set.add('server_type')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.init_properties()
 

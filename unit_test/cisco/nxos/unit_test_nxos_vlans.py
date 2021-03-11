@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_vlans.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,6 +19,11 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
+
 def add_task(pb):
     task = NxosVlans(log)
     vlans = [10, 20]
@@ -29,7 +34,7 @@ def add_task(pb):
         task.mapped_vni = mapped_vni
         task.vlan_state = 'active'
         task.vlan_id = vlan_id
-        task.name = 'vlan_{}_vni_{}'.format(task.vlan_id, task.mapped_vni)
+        add_task_name(task)
         task.add_vlan()
     task.state = 'deleted'
     task.task_name = '{}: vlans {}, vnis {} state {}'.format(ansible_module, vlans, vnis, task.state)

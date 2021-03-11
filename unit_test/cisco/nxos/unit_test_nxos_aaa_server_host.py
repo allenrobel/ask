@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_aaa_server_host.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,6 +19,11 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
+
 def nxos_aaa_server_host(pb):
     task = NxosAaaServerHost(log)
     task.address = '172.29.167.250'
@@ -27,16 +32,7 @@ def nxos_aaa_server_host(pb):
     task.key = 'foobar'
     task.server_type = 'tacacs'
     task.state = 'present'
-    task.task_name = '{} (v{}): address {}, encrypt_type {}, host_timeout {}, key {}, server_type {}, state {}, hosts {}'.format(
-        ansible_module,
-        our_version,
-        task.address,
-        task.encrypt_type,
-        task.host_timeout,
-        task.key,
-        task.server_type,
-        task.state,
-        ','.join(pb.hosts))
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

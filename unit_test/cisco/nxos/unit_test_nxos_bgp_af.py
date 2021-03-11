@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_af.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -21,7 +21,7 @@ def playbook():
 
 def add_task_name(task):
     task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
-    for key in sorted(task.properties_set):
+    for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
 def additional_paths_install(pb, asn, afi, safi, vrf):

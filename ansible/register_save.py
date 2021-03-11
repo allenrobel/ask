@@ -1,5 +1,5 @@
 # RegisterSave() - ansible/register_save.py
-our_version = 103
+our_version = 104
 from ask.common.task import Task
 '''
 Name: register_save.py
@@ -24,6 +24,11 @@ class RegisterSave(Task):
         self.properties_set = set()
         self.properties_set.add('filename')
         self.properties_set.add('var')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.init_properties()
 

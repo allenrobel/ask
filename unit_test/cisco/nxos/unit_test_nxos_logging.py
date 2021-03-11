@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_logging.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,38 +19,16 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-def task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('dest', task.dest, task_name)
-    task_name = add_item_to_name('dest_level', task.dest_level, task_name)
-    task_name = add_item_to_name('event', task.event, task_name)
-    task_name = add_item_to_name('facility', task.facility, task_name)
-    task_name = add_item_to_name('facility_level', task.facility_level, task_name)
-    task_name = add_item_to_name('facility_link_status', task.facility_link_status, task_name)
-    task_name = add_item_to_name('file_size', task.file_size, task_name)
-    task_name = add_item_to_name('interface', task.interface, task_name)
-    task_name = add_item_to_name('interface_message', task.interface_message, task_name)
-    task_name = add_item_to_name('name', task.name, task_name)
-    task_name = add_item_to_name('purge', task.purge, task_name)
-    task_name = add_item_to_name('remote_server', task.remote_server, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('timestamp', task.timestamp, task_name)
-    task_name = add_item_to_name('use_vrf', task.use_vrf, task_name)
-    task_name = add_item_to_name('name', task.name, task_name)
-    task.task_name = task_name
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_logging_event_link_enable(pb):
     task = NxosLogging(log)
     task.event = 'link-enable'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_facility_link_status(pb):
@@ -58,7 +36,7 @@ def add_task_logging_facility_link_status(pb):
     task.facility = 'ethpm'
     task.facility_link_status = 'link-up-notif'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_facility_bgp(pb):
@@ -67,7 +45,7 @@ def add_task_logging_facility_bgp(pb):
     task.facility_level = 2
     task.remove_server = '1.2.3.4'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_facility_ospf(pb):
@@ -76,7 +54,7 @@ def add_task_logging_facility_ospf(pb):
     task.facility_level = 3
     task.remove_server = '1.2.3.4'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_logfile(pb):
@@ -86,7 +64,7 @@ def add_task_logging_logfile(pb):
     task.file_size = 4194300
     task.name = 'mylog'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_server_ipv4(pb):
@@ -97,7 +75,7 @@ def add_task_logging_server_ipv4(pb):
     task.use_vrf = 'management'
     task.facility = 'local0'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_server_ipv6(pb):
@@ -107,7 +85,7 @@ def add_task_logging_server_ipv6(pb):
     task.remote_server = '2001:a:b:c:d::e'
     task.use_vrf = 'management'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_server_domain_name(pb):
@@ -117,7 +95,7 @@ def add_task_logging_server_domain_name(pb):
     task.remote_server = 'foo.bar.com'
     task.use_vrf = 'management'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_monitor(pb):
@@ -125,14 +103,14 @@ def add_task_logging_monitor(pb):
     task.dest = 'monitor'
     task.dest_level = 0
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_timestamp(pb):
     task = NxosLogging(log)
     task.timestamp = '0'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_interface(pb):
@@ -140,28 +118,28 @@ def add_task_logging_interface(pb):
     task.interface = 'mgmt0'
     task.use_vrf = 'management'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_interface_message(pb):
     task = NxosLogging(log)
     task.interface_message = 'add-interface-description'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_timestamp(pb):
     task = NxosLogging(log)
     task.timestamp = 'microseconds'
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 def add_task_logging_purge(pb):
     task = NxosLogging(log)
     task.purge = False
     task.state = 'present'
-    task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

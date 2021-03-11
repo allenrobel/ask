@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_l3_interface.py
-our_version = 105
+our_version = 106
 from ask.common.playbook import Playbook
 from ask.common.log import Log
 from ask.cisco.nxos.nxos_l3_interface import NxosL3Interface
@@ -18,21 +18,10 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('name', task.name, task_name)
-    task_name = add_item_to_name('ipv4', task.ipv4, task_name)
-    task_name = add_item_to_name('ipv6', task.ipv6, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_interface_dual_stack(pb):
     task = NxosL3Interface(log)

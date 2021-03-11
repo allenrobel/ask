@@ -1,5 +1,5 @@
 # NxosVrfInterface() - cisco/nxos/nxos_vrf_interface.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -81,6 +81,11 @@ class NxosVrfInterface(Task):
         self.properties_set.add('interface')
         self.properties_set.add('state')
         self.properties_set.add('vrf')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         # used in update() to resolve any disambiguated property
         # names back into the names used by the Ansible module.

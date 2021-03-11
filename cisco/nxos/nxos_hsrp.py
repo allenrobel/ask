@@ -1,5 +1,5 @@
 # NxosHsrp() - cisco/nxos/nxos_hsrp.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -160,6 +160,11 @@ class NxosHsrp(Task):
         self.properties_set.add('state')
         self.properties_set.add('version')
         self.properties_set.add('vip')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_hsrp_valid_auth_type = set()
         self.nxos_hsrp_valid_auth_type.add('text')

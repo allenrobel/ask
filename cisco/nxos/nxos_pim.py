@@ -1,5 +1,5 @@
 # NxosPim() - cisco/nxos/nxos_pim.py
-our_version = 107
+our_version = 108
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -85,6 +85,11 @@ class NxosPim(Task):
         self.properties_set = set()
         self.properties_set.add('bfd')
         self.properties_set.add('ssm_range')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.init_properties()
 

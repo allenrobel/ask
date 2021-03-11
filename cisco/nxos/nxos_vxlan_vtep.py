@@ -1,5 +1,5 @@
 # NxosVxlanVtep() - python/lib3/nxos_vxlan_vtep.py
-our_version = 107
+our_version = 108
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -191,6 +191,11 @@ class NxosVxlanVtep(Task):
         self.properties_set.add('source_interface')
         self.properties_set.add('source_interface_hold_down_time')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         # used in update() to resolve any disambiguated property
         # names back into the names used by the Ansible module.

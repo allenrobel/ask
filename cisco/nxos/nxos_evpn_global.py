@@ -1,5 +1,5 @@
 # NxosEvpnGlobal() - cisco/nxos/nxos_evpn_global.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -71,6 +71,11 @@ class NxosEvpnGlobal(Task):
 
         self.properties_set = set()
         self.properties_set.add('nv_overlay_evpn')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.init_properties()
 

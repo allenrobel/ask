@@ -1,5 +1,5 @@
 # NxosOspfv2() - cisco/nxos/nxos_ospfv2.py
-our_version = 107
+our_version = 108
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -792,9 +792,6 @@ class NxosOspfV2(Task):
         self.properties_summary_address_set.add('summary_address_prefix')
         self.properties_summary_address_set.add('summary_address_tag')
 
-        # properties set is not used within this class, but is used by
-        # some scripts that use this class to set task.task_name
-        # See, Task().append_to_task_name() method in common/task.py
         self.properties_set = set()
         self.properties_set.update(self.properties_areas_authentication_set)
         self.properties_set.update(self.properties_areas_filter_list_set)
@@ -820,6 +817,11 @@ class NxosOspfV2(Task):
         self.properties_set.update(self.properties_processes_timers_throttle_spf_set)
         self.properties_set.update(self.properties_processes_top_level_set)
         self.properties_set.update(self.properties_summary_address_set)
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         # map disambiguated property names back into their ambiguous names
         # see the various populate_*() methods

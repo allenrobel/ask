@@ -1,5 +1,5 @@
 # NxosBgpNeighbor() - cisco/nxos/nxos_bgp_neighbor.py
-our_version = 112
+our_version = 113
 # Deprecation: Ansible module nxos_bgp_neighbor is DEPRECATED
 # Deprecated on: 2021.01.27
 # Removed after: 2023-01-27
@@ -402,6 +402,11 @@ class NxosBgpNeighbor(Task):
         self.properties_set.add('timers_keepalive')
         self.properties_set.add('transport_passive_only')
         self.properties_set.add('update_source')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.init_properties()
 

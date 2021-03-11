@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_lacp_interfaces.py
-our_version = 104
+our_version = 105
 '''
 Name: unit_test_nxos_lacp_interfaces.py
 
@@ -28,9 +28,8 @@ def playbook():
     return pb
 
 def add_task_name(task):
-    task.append_to_task_name('v.{}'.format(our_version))
-    task.append_to_task_name(ansible_host)
-    for key in sorted(task.properties_set):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
 def add_task_single_lacp_interface(pb):
@@ -43,9 +42,8 @@ def add_task_single_lacp_interface(pb):
     task.vpc = True
     task.suspend_individual = True
     task.mode = 'delay'
+    add_task_name(task)
     task.add_interface()
-
-    task.task_name = 'configure single lacp interface'
     task.state = 'replaced'
     task.update()
     pb.add_task(task)
@@ -60,20 +58,23 @@ def add_task_multiple_lacp_interfaces(pb):
     task.vpc = True
     task.suspend_individual = True
     task.mode = 'delay'
+    add_task_name(task)
     task.add_interface()
 
     task.name = 'Ethernet1/49'
     task.rate = 'fast'
     task.port_priority = 200
+    add_task_name(task)
     task.add_interface()
 
     task.name = 'Ethernet1/50'
     task.rate = 'fast'
     task.port_priority = 100
+    add_task_name(task)
     task.add_interface()
 
-    task.task_name = 'configure multiple lacp interfaces'
     task.state = 'merged'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

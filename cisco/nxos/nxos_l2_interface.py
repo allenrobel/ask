@@ -1,5 +1,5 @@
 # NxosL2Interface() - cisco/nxos/nxos_l2_interface.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -67,6 +67,11 @@ class NxosL2Interface(Task):
         self.properties_set.add('state')
         self.properties_set.add('trunk_allowed_vlans')
         self.properties_set.add('trunk_vlans')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.init_properties()
 

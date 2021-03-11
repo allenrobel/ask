@@ -1,5 +1,5 @@
 # NxosVpc() - cisco/nxos/nxos_vpc.py
-our_version = 109
+our_version = 110
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -221,6 +221,11 @@ class NxosVpc(Task):
         self.properties_set.add('role_priority')
         self.properties_set.add('state')
         self.properties_set.add('system_priority')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.init_properties()
 

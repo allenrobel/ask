@@ -1,5 +1,5 @@
 # NxosFeature() - cisco/nxos/nxos_feature.py
-our_version = 107
+our_version = 108
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -74,6 +74,11 @@ class NxosFeature(Task):
         self.properties_set = set()
         self.properties_set.add('feature')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_feature_valid_state = set()
         self.nxos_feature_valid_state.add('enabled')

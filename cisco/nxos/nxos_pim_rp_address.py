@@ -1,5 +1,5 @@
 # NxosPimRpAddress() - cisco/nxos/nxos_pim_rp_address.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -130,6 +130,11 @@ class NxosPimRpAddress(Task):
         self.properties_set.add('route_map')
         self.properties_set.add('rp_address')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_pim_rp_address_valid_state = set()
         self.nxos_pim_rp_address_valid_state.add('absent')

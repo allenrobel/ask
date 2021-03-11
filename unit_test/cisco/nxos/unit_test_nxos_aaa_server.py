@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_aaa_server.py
-our_version = 102
+our_version = 103
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,6 +19,11 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
+
 def nxos_aaa_server(pb):
     task = NxosAaaServer(log)
     task.deadtime = 10
@@ -29,17 +34,7 @@ def nxos_aaa_server(pb):
     task.server_timeout = 40
     task.server_type = 'tacacs'
     task.state = 'present'
-    task.task_name = '{} (v{}): deadtime {}, directed_request {}, encrypt_type {}, global_key {}, server_timeout {}, server_type {}, state {}, hosts {}'.format(
-        ansible_module,
-        our_version,
-        task.deadtime,
-        task.directed_request,
-        task.encrypt_type,
-        task.global_key,
-        task.server_timeout,
-        task.server_type,
-        task.state,
-        ','.join(pb.hosts))
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

@@ -1,5 +1,5 @@
 # NxosSnmpCommunity() - cisco/nxos/nxos_snmp_community.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -105,6 +105,11 @@ class NxosSnmpCommunity(Task):
         self.properties_set.add('community')
         self.properties_set.add('group')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_snmp_community_valid_state = set()
         self.nxos_snmp_community_valid_state.add('present')

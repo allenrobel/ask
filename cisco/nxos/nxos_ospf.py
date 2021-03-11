@@ -1,5 +1,5 @@
 # NxosOspf() - cisco/nxos/nxos_ospf.py
-our_version = 111
+our_version = 112
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -32,6 +32,11 @@ class NxosOspf(Task):
         self.properties_set = set()
         self.properties_set.add('ospf')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_ospf_valid_state = set()
         self.nxos_ospf_valid_state.add('absent')

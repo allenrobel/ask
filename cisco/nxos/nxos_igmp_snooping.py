@@ -1,5 +1,5 @@
 # NxosIgmpSnooping() - cisco/nxos/nxos_igmp_snooping.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -114,6 +114,11 @@ class NxosIgmpSnooping(Task):
         self.properties_set.add('snooping')
         self.properties_set.add('state')
         self.properties_set.add('v3_report_supp')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_igmp_snooping_valid_state = set()
         self.nxos_igmp_snooping_valid_state.add('default')

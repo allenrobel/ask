@@ -1,5 +1,5 @@
 # NxosInterface() - cisco/nxos/nxos_interface.py
-our_version = 115
+our_version = 116
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -285,6 +285,12 @@ class NxosInterface(Task):
         self.properties_set.add('speed')
         self.properties_set.add('rx_rate')
         self.properties_set.add('tx_rate')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+
         self.init_properties()
 
     def init_properties(self):

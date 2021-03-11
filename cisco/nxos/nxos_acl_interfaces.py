@@ -1,5 +1,5 @@
 # NxosAclInterfaces() - cisco/nxos/nxos_acl_interfaces.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -138,6 +138,12 @@ class NxosAclInterfaces(Task):
         self.properties_set.add('afi')
         self.properties_set.add('name')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+
         self.init_properties()
 
     def init_properties(self):

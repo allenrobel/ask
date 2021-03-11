@@ -1,5 +1,5 @@
 # NxosLldpGlobal() - cisco/nxos/nxos_lldp_global.py
-our_version = 103
+our_version = 104
 import re
 from copy import deepcopy
 from ask.common.task import Task
@@ -228,6 +228,15 @@ class NxosLldpGlobal(Task):
         self.properties_set = self.properties_set.union(self.properties_tlv_select_management_address)
         self.properties_set = self.properties_set.union(self.properties_tlv_select_port)
         self.properties_set = self.properties_set.union(self.properties_tlv_select_system)
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.add('name')
+        self.scriptkit_properties.add('register')
+        self.scriptkit_properties.add('running_config')
+        self.scriptkit_properties.add('state')
 
         # property_map is used to:
         #    1. Map between disambiguated property names and the ambiguous Ansible

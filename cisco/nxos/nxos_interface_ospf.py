@@ -1,5 +1,5 @@
 # NxosInterfaceOspf() - cisco/nxos/nxos_interface_ospf.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -98,6 +98,11 @@ class NxosInterfaceOspf(Task):
         self.properties_set.add('ospf')
         self.properties_set.add('passive_interface')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.init_properties()
 

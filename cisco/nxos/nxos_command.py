@@ -1,5 +1,5 @@
 # NxosCommand() - cisco/nxos/nxos_command.py
-our_version = 104
+our_version = 105
 
 from copy import deepcopy
 from ask.common.task import Task
@@ -175,6 +175,11 @@ class NxosCommand(Task):
         self.properties_set.add('retries')
         self.properties_set.add('register')
         self.properties_set.add('wait_for')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_command_valid_output = set()
         self.nxos_command_valid_output.add('text')

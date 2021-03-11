@@ -1,5 +1,5 @@
 # NxosBfdInterfaces() - cisco/nxos/nxos_bfd_interfaces.py
-our_version = 103
+our_version = 104
 
 from copy import deepcopy
 from ask.common.task import Task
@@ -107,6 +107,11 @@ class NxosBfdInterfaces(Task):
         self.interface_properties_set.add('bfd')
         self.interface_properties_set.add('echo')
         self.interface_properties_set.add('name')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         # map disambiguated property names back into
         # their ambiguous names.  For example:

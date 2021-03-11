@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_l3_interfaces.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -21,9 +21,8 @@ def playbook():
     return pb
 
 def add_task_name(task):
-    task.append_to_task_name('v.{}'.format(our_version))
-    task.append_to_task_name(ansible_host)
-    for key in sorted(task.properties_set):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
 def dual_stack_interface(pb):

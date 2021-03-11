@@ -1,5 +1,5 @@
 # NxosNtp() - cisco/nxos/nxos_ntp.py
-our_version = 110
+our_version = 111
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -166,6 +166,12 @@ class NxosNtp(Task):
         self.properties_set.add('source_int')
         self.properties_set.add('state')
         self.properties_set.add('vrf_name')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+
         self.init_properties()
 
     def init_properties(self):

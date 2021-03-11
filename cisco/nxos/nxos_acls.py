@@ -1,5 +1,5 @@
 # NxosAcls() - cisco/nxos/nxos_acls.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -646,6 +646,17 @@ class NxosAcls(Task):
         self.properties_tcp.add('tcp_rst')
         self.properties_tcp.add('tcp_syn')
         self.properties_tcp.add('tcp_urg')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_ace)
+        self.scriptkit_properties.update(self.properties_acl)
+        self.scriptkit_properties.update(self.properties_destination)
+        self.scriptkit_properties.update(self.properties_icmp)
+        self.scriptkit_properties.update(self.properties_igmp)
+        self.scriptkit_properties.update(self.properties_source)
+        self.scriptkit_properties.update(self.properties_tcp)
 
         # property_map is used to map between de-ambiguated property names
         # and the ambiguous Ansible property names used in the Ansible playbook

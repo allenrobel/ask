@@ -1,5 +1,5 @@
 # NxosOspfInterfaces() - cisco/nxos/nxos_ospf_interfaces.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -455,6 +455,11 @@ class NxosOspfInterfaces(Task):
         self.properties_set.update(self.properties_address_family)
         self.properties_set.update(self.properties_message_digest_key)
         self.properties_set.update(self.properties_authentication)
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_ospf_interfaces_valid_afi = set()
         self.nxos_ospf_interfaces_valid_afi.add('ipv4')

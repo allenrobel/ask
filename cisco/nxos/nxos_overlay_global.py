@@ -1,5 +1,5 @@
 # NxosOverlayGlobal() - cisco/nxos/nxos_overlay_global.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -69,6 +69,11 @@ class NxosOverlayGlobal(Task):
 
         self.properties_set = set()
         self.properties_set.add('anycast_gateway_mac')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_overlay_global_valid_state = set()
         self.nxos_overlay_global_valid_state.add('absent')

@@ -19,10 +19,15 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_task_name(task):
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
+
 def test_positive():
     task = NxosEvpnGlobal(log)
     task.nv_overlay_evpn = True
-    task.task_name = '{}: {} : test_positive'.format(ansible_module, task.nv_overlay_evpn)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

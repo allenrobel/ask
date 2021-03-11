@@ -1,5 +1,5 @@
 # NxosPimInterface() - cisco/nxos/nxos_pim_interface.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -217,6 +217,11 @@ class NxosPimInterface(Task):
         self.properties_set.add('neighbor_type')
         self.properties_set.add('sparse')
         self.properties_set.add('state')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_pim_interface_valid_bfd = set()
         self.nxos_pim_interface_valid_bfd.add('default')

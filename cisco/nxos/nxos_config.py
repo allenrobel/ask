@@ -1,5 +1,5 @@
 # NxosConfig() - cisco/nxos/nxos_config.py
-our_version = 114
+our_version = 115
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -307,6 +307,10 @@ class NxosConfig(Task):
         self.ansible_task = dict()
         self.ansible_task[self.ansible_module] = dict()
 
+        self.backup_options_set = set()
+        self.backup_options_set.add('dir_path')
+        self.backup_options_set.add('filename')
+
         self.properties_set = set()
         self.properties_set.add('after')
         self.properties_set.add('backup')
@@ -323,6 +327,12 @@ class NxosConfig(Task):
         self.properties_set.add('running_config')
         self.properties_set.add('save_when')
         self.properties_set.add('src')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.update(self.backup_options_set)
 
         self.nxos_config_verify_diff_against = set()
         self.nxos_config_verify_diff_against.add('intended')

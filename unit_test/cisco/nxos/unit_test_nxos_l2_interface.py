@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_l2_interface.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,23 +19,10 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('name', task.name, task_name)
-    task_name = add_item_to_name('access_vlan', task.access_vlan, task_name)
-    task_name = add_item_to_name('mode', task.mode, task_name)
-    task_name = add_item_to_name('trunk_allowed_vlans', task.trunk_allowed_vlans, task_name)
-    task_name = add_item_to_name('trunk_vlans', task.trunk_vlans, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_access_interface(pb):
     task = NxosL2Interface(log)
@@ -43,7 +30,7 @@ def add_task_access_interface(pb):
     task.mode = 'access'
     task.access_vlan = 10
     task.state = 'present'
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -54,7 +41,7 @@ def add_task_trunk_interface(pb):
     task.trunk_allowed_vlans = '2,10-20'
     task.trunk_vlans = '3,30-31'
     task.state = 'present'
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

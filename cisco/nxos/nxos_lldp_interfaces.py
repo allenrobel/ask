@@ -1,5 +1,5 @@
 # NxosLldpInterfaces() - cisco/nxos/nxos_lldp_interfaces.py
-our_version = 105
+our_version = 106
 
 from copy import deepcopy
 from ask.common.task import Task
@@ -175,6 +175,13 @@ class NxosLldpInterfaces(Task):
         self.config_properties_set.add('tlv_set_management_address')
         self.config_properties_set.add('tlv_set_vlan')
         self.config_properties_set.add('transmit')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.update(self.config_properties_set)
+        self.scriptkit_properties.add('state')
 
         self.init_properties()
 

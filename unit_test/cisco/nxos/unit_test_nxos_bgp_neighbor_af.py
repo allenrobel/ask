@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor_af.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -19,24 +19,10 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
-def add_item_to_name(item, item_value, name):
-    value = ''
-    if item_value != None:
-        value = '{}, {} {}'.format(name, item, item_value)
-    else:
-        value = name
-    return value
-
 def add_task_name(task):
-    task_name = '{} {}'.format(ansible_module, ansible_host)
-    task_name = add_item_to_name('additional_paths_receive', task.additional_paths_receive, task_name)
-    task_name = add_item_to_name('afi', task.afi, task_name)
-    task_name = add_item_to_name('asn', task.asn, task_name)
-    task_name = add_item_to_name('neighbor', task.neighbor, task_name)
-    task_name = add_item_to_name('safi', task.safi, task_name)
-    task_name = add_item_to_name('state', task.state, task_name)
-    task_name = add_item_to_name('vrf', task.vrf, task_name)
-    task.task_name = task_name
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_nxos_bgp_neighbor_af_ipv4(pb):
     task = NxosBgpNeighborAf(log)
@@ -47,7 +33,7 @@ def add_task_nxos_bgp_neighbor_af_ipv4(pb):
     task.safi = 'unicast'
     task.state = 'present'
     task.vrf = 'default'
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -59,7 +45,7 @@ def add_task_nxos_bgp_neighbor_af_ipv6(pb):
     task.safi = 'unicast'
     task.state = 'present'
     task.vrf = 'default'
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

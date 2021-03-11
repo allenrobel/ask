@@ -1,5 +1,5 @@
 # NxosEvpnVni() - cisco/nxos/nxos_evpn_vni.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -174,11 +174,17 @@ class NxosEvpnVni(Task):
         self.properties_set.add('route_target_import')
         self.properties_set.add('state')
         self.properties_set.add('vni')
-        self.init_properties()
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         self.nxos_evpn_vni_valid_state = set()
         self.nxos_evpn_vni_valid_state.add('absent')
         self.nxos_evpn_vni_valid_state.add('present')
+
+        self.init_properties()
 
     def init_properties(self):
         self.properties = dict()
