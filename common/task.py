@@ -1,9 +1,9 @@
 # Task() - common/task.py
-our_version = 103
+our_version = 104
 '''
-==========================
-Task() = common/task.pu
-==========================
+**********
+Task()
+**********
 
 Description
 -----------
@@ -52,6 +52,11 @@ class Task(Common):
         '''
         if self.task_name == None:
             self.task_name = "[{} : v.{}]".format(self.ansible_module, self.lib_version)
+        try:
+            count = len(self.scriptkit_properties)
+        except:
+            self.task_log.error('exiting. Ansible module {} missing scriptkit_properties set()'.format(self.ansible_module))
+            exit(1)
         if item not in self.scriptkit_properties:
             self.task_name += ", {}".format(item)
             return
