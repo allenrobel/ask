@@ -1,5 +1,5 @@
 # StcDrvCreate() - spirent/stc_drv_create.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -168,28 +168,40 @@ class StcDrvCreate(Task):
         self.lib_version = our_version
         self.class_name = __class__.__name__
 
+        self.properties_set = set()
+        self.properties_set.add('drv_name')
+        self.properties_set.add('reset_existing')
+        self.properties_set.add('sort_direction')
+
+        self.presentation_result_query_set = set()
+        self.presentation_result_query_set.add('disable_auto_grouping')
+        self.presentation_result_query_set.add('from_objects')
+        self.presentation_result_query_set.add('limit_size')
+        self.presentation_result_query_set.add('select_properties')
+        self.presentation_result_query_set.add('sort_by')
+        self.presentation_result_query_set.add('sort_direction')
+        self.presentation_result_query_set.add('where_conditions')
+
+        # property_map is used in init_*() to map between ScriptKit
+        # property names and Spirent property names
+        self.property_map = dict()
+        self.property_map['disable_auto_grouping'] = 'DisableAutoGrouping'
+        self.property_map['from_objects']          = 'FromObjects'
+        self.property_map['limit_size']            = 'LimitSize'
+        self.property_map['select_properties']     = 'SelectProperties'
+        self.property_map['sort_by']               = 'SortBy'
+        self.property_map['sort_direction']        = 'sort_direction'
+        self.property_map['where_conditions']      = 'WhereConditions'
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.update(self.presentation_result_query_set)
+
         self.stc_drv_create_valid_sort_direction = set()
         self.stc_drv_create_valid_sort_direction.add('ASCENDING')
         self.stc_drv_create_valid_sort_direction.add('DESCENDING')
-
-        self.init_properties()
-        self.init_presentation_result_query()
-
-    def init_properties(self):
-        self.properties = dict()
-        self.properties['drv_name']         = None
-        self.properties['reset_existing']   = None
-        self.properties['sort_direction']   = None
-
-    def init_presentation_result_query(self):
-        self.select_properties_set = set()
-        self.presentation_result_query = dict()
-        self.presentation_result_query['DisableAutoGrouping'] = True
-        self.presentation_result_query['FromObjects'] = None
-        self.presentation_result_query['LimitSize'] = None
-        self.presentation_result_query['SelectProperties'] = None
-        self.presentation_result_query['SortBy'] = None
-        self.presentation_result_query['WhereConditions'] = None
 
         self.valid_select_properties = set()
         self.valid_select_properties.add('StreamBlock.StreamId')
@@ -211,6 +223,23 @@ class StcDrvCreate(Task):
         self.valid_select_properties.add('StreamBlock.MaxLatency')
         self.valid_select_properties.add('StreamBlock.AvgLatency')
         self.valid_select_properties.add('StreamBlock.IsExpected')
+
+        self.init_properties()
+        self.init_presentation_result_query()
+
+    def init_properties(self):
+        self.properties = dict()
+        for p in self.properties_set:
+            self.properties[p] = None
+
+    def init_presentation_result_query(self):
+        self.select_properties_set = set()
+        self.presentation_result_query = dict()
+        for p in self.presentation_result_query_set:
+            if p == 'disable_auto_grouping':
+                self.properties[p] = True
+            else:
+                self.properties[p] = None
 
     def verify_stc_drv_create_select_properties(self, x, parameter='select_properties'):
         verify_set = self.valid_select_properties
@@ -335,29 +364,29 @@ class StcDrvCreate(Task):
     #-----------------------------------------------------------
     @property
     def disable_auto_grouping(self):
-        return self.presentation_result_query['DisableAutoGrouping']
+        return self.properties['disable_auto_grouping']
     @disable_auto_grouping.setter
     def disable_auto_grouping(self, x):
         self.verify_boolean(x)
-        parameter = 'DisableAutoGrouping'
-        self.presentation_result_query[parameter] = x
+        parameter = 'disable_auto_grouping'
+        self.properties[parameter] = x
 
     @property
     def from_objects(self):
-        return self.presentation_result_query['FromObjects']
+        return self.properties['from_objects']
     @from_objects.setter
     def from_objects(self, x):
-        parameter = 'FromObjects'
-        self.presentation_result_query[parameter] = x
+        parameter = 'from_objects'
+        self.properties[parameter] = x
 
     @property
     def limit_size(self):
-        return self.presentation_result_query['LimitSize']
+        return self.properties['limit_size']
     @limit_size.setter
     def limit_size(self, x):
         self.verify_digits(x)
-        parameter = 'LimitSize'
-        self.presentation_result_query[parameter] = x
+        parameter = 'limit_size'
+        self.properties[parameter] = x
 
     @property
     def select_properties(self):
@@ -369,12 +398,12 @@ class StcDrvCreate(Task):
 
     @property
     def sort_by(self):
-        return self.presentation_result_query['SortBy']
+        return self.properties['sort_by']
     @sort_by.setter
     def sort_by(self, x):
-        parameter = 'SortBy'
+        parameter = 'sort_by'
         self.verify_stc_drv_create_sort_by(x)
-        self.presentation_result_query[parameter] = x
+        self.properties[parameter] = x
 
     @property
     def sort_direction(self):
@@ -387,8 +416,8 @@ class StcDrvCreate(Task):
 
     @property
     def where_conditions(self):
-        return self.presentation_result_query['WhereConditions']
+        return self.properties['where_conditions']
     @where_conditions.setter
     def where_conditions(self, x):
-        parameter = 'WhereConditions'
-        self.presentation_result_query[parameter] = x
+        parameter = 'where_conditions'
+        self.properties[parameter] = x

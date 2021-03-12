@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_bgp_device.py
-our_version = 101
+our_version = 102
 '''
 ****************************
 unit_test_stc_bgp_device.py
@@ -49,13 +49,12 @@ def playbook():
     pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.add_host('labserver-2001')
+    pb.add_host(ansible_host)
     return pb
 
 def add_task_name(task):
-    task.append_to_task_name('v.{}'.format(our_version))
-    task.append_to_task_name(ansible_host)
-    for key in sorted(task.properties_set):
+    task.append_to_task_name('{} v{}, {}'.format(ansible_module, our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
 def add_task(pb):
@@ -67,7 +66,7 @@ def add_task(pb):
     task.dut_asn = 12000
     task.ip_version = 'IPV4'
     task.name = 'bgp_device_1'
-    task.task_name = add_task_name(task)
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

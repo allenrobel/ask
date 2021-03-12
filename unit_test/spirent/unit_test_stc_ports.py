@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_ports.py
-our_version = 101
+our_version = 102
 '''
 ****************************
 unit_test_stc_ports.py
@@ -37,6 +37,7 @@ from ask.common.log import Log
 from ask.spirent.stc_ports import StcPorts
 
 ansible_module = 'stc_ports'
+ansible_host = 'labserver-2001'
 log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
@@ -44,13 +45,21 @@ def playbook():
     pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.add_host('labserver-2001')
+    pb.add_host(ansible_host)
     return pb
+
+def add_task_name(task):
+    task.append_to_task_name('{} v{}, {}'.format(ansible_module, our_version, ansible_host))
+    for key in task.scriptkit_properties:
+        task.append_to_task_name(key)
 
 def add_stc_port(task, chassis, module, port):
     task.chassis = chassis
     task.module = module
     task.port = port
+    # This sets the name of the task, not the name of the port.
+    add_task_name(task)
+    # task.name is the name of the port, not the name of the task.
     # By default, task.name will be the following format.
     #task.name = 'Stc{}/{}/{}'.format(chassis, module, port)
     task.add_port()

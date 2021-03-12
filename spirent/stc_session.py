@@ -1,5 +1,5 @@
 # StcSession() - spirent/stc_session.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -144,6 +144,12 @@ class StcSession(Task):
         self.stc_properties_set.add('name')
         self.stc_properties_set.add('reset_existing')
         self.stc_properties_set.add('user')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.stc_properties_set)
+        self.scriptkit_properties.add('action')
 
         # used in self.update() to map between this class's property names
         # and Spirent's property names. This dict() is keyed on the items in

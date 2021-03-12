@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_port_control.py
-our_version = 101
+our_version = 102
 '''
 ***********************************************
 unit_test_stc_port_control.py
@@ -37,6 +37,7 @@ from ask.common.log import Log
 from ask.spirent.stc_port_control import StcPortControl
 
 ansible_module = 'stc_port_control'
+ansible_host = 'labserver-2001'
 log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
@@ -44,8 +45,13 @@ def playbook():
     pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.add_host('labserver-2001')
+    pb.add_host(ansible_host)
     return pb
+
+def add_task_name(task):
+    task.append_to_task_name('{} v{}, {}'.format(ansible_module, our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_stc_port_control_default(pb):
     '''
@@ -53,7 +59,7 @@ def add_task_stc_port_control_default(pb):
     '''
     task = StcPortControl(log)
     task.command = 'attach'
-    task.task_name = 'attach ports default'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -84,8 +90,8 @@ def add_task_stc_port_control_add_by_standard_name(pb):
         task.chassis = chassis
         task.module = module
         task.port = port
+        add_task_name(task)
         task.add_port_by_standard_name()
-    task.task_name = 'attach ports by standard name'
     task.update()
     pb.add_task(task)
 
@@ -108,7 +114,7 @@ def add_task_stc_port_control_add_by_custom_name(pb):
     ports.append('MyPort2')
     for port in ports:
         task.add_port_by_custom_name(port)
-    task.task_name = 'attach ports by custom name'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

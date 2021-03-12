@@ -1,5 +1,5 @@
 # StcBgpDevice() - spirent/stc_bgp_device.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -129,6 +129,13 @@ class StcBgpDevice(Task):
         self.stc_set.add('action')
         self.stc_set.add('count')
         self.stc_set.add('under')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.update(self.bgp_router_config_set)
+        self.scriptkit_properties.update(self.stc_set)
 
         # used in self.update() to map between this class's property names
         # and Spirent's property names. This dict() is keyed on the items in

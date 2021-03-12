@@ -1,5 +1,5 @@
 # StcStreamblock() - spirent/stc_streamblock.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -413,6 +413,11 @@ class StcStreamblock(Task):
         self.streamblock_set.add('name')
         self.streamblock_set.add('stream_only_generation')
         self.streamblock_set.add('traffic_pattern')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
 
         # maps between properties in this class and Spirent playbook properties
         # May also contain internally-used properties

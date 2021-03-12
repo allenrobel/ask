@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_device.py
-our_version = 101
+our_version = 102
 '''
 ******************************
 unit_test_stc_device.py
@@ -39,6 +39,7 @@ from ask.common.log import Log
 from ask.spirent.stc_device import StcDeviceMac, StcDeviceIpv4, StcDeviceIpv6
 
 ansible_module = 'stc_device'
+ansible_host = 'labserver-2001'
 log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
@@ -46,8 +47,13 @@ def playbook():
     pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.add_host('labserver-2001')
+    pb.add_host(ansible_host)
     return pb
+
+def add_task_name(task):
+    task.append_to_task_name('{} v{}, {}'.format(ansible_module, our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_stc_device_mac(pb):
     task = StcDeviceMac(log)
@@ -55,7 +61,7 @@ def add_task_stc_device_mac(pb):
     task.device_count = 20
     task.device_name = 'mac_device_1'
     task.port_name = '401_mac_port'
-    task.task_name = 'create mac_device_1'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -65,7 +71,7 @@ def add_task_stc_device_ipv4(pb):
     task.device_count = 20
     task.device_name = 'ipv4_device_1'
     task.port_name = '402_ipv4_port'
-    task.task_name = 'create ipv4_device_1'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -75,7 +81,7 @@ def add_task_stc_device_ipv6(pb):
     task.device_count = 10
     task.device_name = 'ipv6_device_1'
     task.port_name = '403_ipv6_port'
-    task.task_name = 'create ipv6_device_1'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

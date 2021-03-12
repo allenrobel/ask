@@ -1,5 +1,5 @@
 # StcPorts() - spirent/stc_ports.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -131,6 +131,12 @@ class StcPorts(Task):
         self.properties_set.add('module')
         self.properties_set.add('port')
         self.properties_set.add('name')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.properties_set)
+        self.scriptkit_properties.add('action')
 
         # used in self.update() to map between this class's property names
         # and Spirent's property names. This dict() is keyed on the items in

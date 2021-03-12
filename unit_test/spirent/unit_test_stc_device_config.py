@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_device_config.py
-our_version = 102
+our_version = 103
 '''
 ******************************
 unit_test_stc_device_config.py
@@ -39,6 +39,7 @@ from ask.common.log import Log
 from ask.spirent.stc_device_config import StcDeviceConfigIpv4,StcDeviceConfigIpv6
 
 ansible_module = 'stc_device_config'
+ansible_host = 'labserver-2001'
 log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
@@ -46,8 +47,13 @@ def playbook():
     pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.add_host('labserver-2001')
+    pb.add_host(ansible_host)
     return pb
+
+def add_task_name(task):
+    task.append_to_task_name('{} v{}, {}'.format(ansible_module, our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_stc_device_config_ipv4(pb):
     task = StcDeviceConfigIpv4(log)
@@ -56,7 +62,7 @@ def add_task_stc_device_config_ipv4(pb):
     task.prefixlen = 25
     task.gateway = '10.1.1.1'
     task.device_name = 'ipv4_device'
-    task.task_name = 'ipv4 device config'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -67,7 +73,7 @@ def add_task_stc_device_config_ipv6(pb):
     task.prefixlen = 120
     task.gateway = '2001:a::1'
     task.device_name = 'ipv6_device'
-    task.task_name = 'ipv6 device config'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_device_config_ipv6_link_local.py
-our_version = 101
+our_version = 102
 '''
 ***********************************************
 unit_test_stc_device_config_ipv6_link_local.py
@@ -40,6 +40,7 @@ from ask.common.log import Log
 from ask.spirent.stc_device_config_ipv6_link_local import StcDeviceConfigIpv6LinkLocal
 
 ansible_module = 'stc_device_config_ipv6_link_local'
+ansible_host = 'labserver-2001'
 log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
@@ -47,13 +48,18 @@ def playbook():
     pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.add_host('labserver-2001')
+    pb.add_host(ansible_host)
     return pb
+
+def add_task_name(task):
+    task.append_to_task_name('{} v{}, {}'.format(ansible_module, our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_using_defaults(pb):
     task = StcDeviceConfigIpv6LinkLocal(log)
     task.device_name = 'ipv6_device_1'
-    task.task_name = 'default ipv6 link local device config'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -62,7 +68,7 @@ def add_task_custom(pb):
     task.device_name = 'ipv6_device_2'
     task.link_local_address = 'fe80::2'
     task.link_local_gateway = '::2'
-    task.task_name = 'custom ipv6 link local device config'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 

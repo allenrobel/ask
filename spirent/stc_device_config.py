@@ -1,5 +1,5 @@
 # StcDeviceConfig() - spirent/stc_device_config.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -116,6 +116,12 @@ class StcDeviceConfig(Task):
         self.stc_device_properties_set.add('address')
         self.stc_device_properties_set.add('gateway')
         self.stc_device_properties_set.add('prefixlen')
+
+        # scriptkit_properties can be used by scripts when
+        # setting task_name. See Task().append_to_task_name()
+        self.scriptkit_properties = set()
+        self.scriptkit_properties.update(self.stc_command_properties_set)
+        self.scriptkit_properties.update(self.stc_device_properties_set)
 
         # used in self.update() to map between this class's property names
         # and Spirent's property names. This dict() is keyed on the items in

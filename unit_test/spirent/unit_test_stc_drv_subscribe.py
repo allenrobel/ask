@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/spirent/unit_test_stc_drv_subscribe.py
-our_version = 101
+our_version = 102
 '''
 *******************************
 unit_test_stc_drv_subscribe.py
@@ -42,6 +42,7 @@ from ask.common.log import Log
 from ask.spirent.stc_drv_subscribe import StcDrvSubscribe
 
 ansible_module = 'stc_drv_subscribe'
+ansible_host = 'labserver-2001'
 log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
 
 def playbook():
@@ -49,12 +50,17 @@ def playbook():
     pb.profile_spirent()
     pb.file = '/tmp/{}.yaml'.format(ansible_module)
     pb.name = 'unit_test_{}'.format(ansible_module)
-    pb.add_host('labserver-2001')
+    pb.add_host(ansible_host)
     return pb
+
+def add_task_name(task):
+    task.append_to_task_name('{} v{}, {}'.format(ansible_module, our_version, ansible_host))
+    for key in sorted(task.scriptkit_properties):
+        task.append_to_task_name(key)
 
 def add_task_stc_drv_subscribe_default(pb):
     task = StcDrvSubscribe(log)
-    task.task_name = 'subscribe DRV default'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
@@ -62,7 +68,7 @@ def add_task_stc_drv_subscribe_custom(pb):
     task = StcDrvSubscribe(log)
     task.reset_existing = True
     task.drv_name = 'My DRV'
-    task.task_name = 'subscribe DRV custom'
+    add_task_name(task)
     task.update()
     pb.add_task(task)
 
