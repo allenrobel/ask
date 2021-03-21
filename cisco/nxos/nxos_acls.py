@@ -1,5 +1,5 @@
 # NxosAcls() - cisco/nxos/nxos_acls.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -1533,7 +1533,7 @@ class NxosAcls(Task):
             return
         source_class = self.class_name
         source_method = 'verify_nxos_acls_dscp'
-        expectation = ','.join(sorted([str(x) for x in self.nxos_acls_valid_dscp]))
+        expectation = ','.join(sorted([str(x) for x in verify_set]))
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_acls_prefix(self, x, parameter='prefix'):
@@ -1547,11 +1547,12 @@ class NxosAcls(Task):
         self.fail(source_class, source_method, x, parameter, expectation)            
 
     def verify_nxos_acls_state(self, x, parameter='state'):
-        if x in self.nxos_acls_valid_state:
+        verify_set = self.nxos_acls_valid_state
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_acls_state'
-        expectation = ','.join(self.nxos_acls_valid_state)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
 
