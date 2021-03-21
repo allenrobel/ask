@@ -1,5 +1,5 @@
 # NxosBgp() - cisco/nxos/nxos_bgp.py
-our_version = 117
+our_version = 118
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -621,9 +621,9 @@ class NxosBgp(Task):
         if not type(x) == type(list()):
             self.fail(source_class, source_method, x, parameter, expectation)
         for item in x:
-            if self.is_digits(x):
+            if self.is_digits(item):
                 continue
-            if re.search('^\d+\.\d+$', str(x)):
+            if re.search('^\d+\.\d+$', str(item)):
                 continue
             self.fail(source_class, source_method, x, parameter, expectation)
 
