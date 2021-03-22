@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_global.py
 # Status = BETA
-our_version = 100
+our_version = 101
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -32,9 +32,12 @@ def ipv4_neighbors(pb):
     task.bestpath_med_non_deterministic = False
     task.confederation_identifier = 65000
     task.confederation_peers = [65001, 65002]
-    task.neighbor_down_fib_accelerate = True
     task.disable_policy_batching_ipv4_prefix_list = 'IPV4_DPB'
     task.disable_policy_batching_nexthop = True
+    task.neighbor_down_fib_accelerate = True
+    task.timers_prefix_peer_timeout = 10
+    task.timers_prefix_peer_wait = 30
+
     task.neighbor_affinity_group_group_id = 200
     task.neighbor_bfd_singlehop = True
     task.neighbor_bfd_set = True
@@ -67,8 +70,6 @@ def ipv4_neighbors(pb):
     task.neighbor_remote_as = '6201.3'
     task.neighbor_update_source = 'port-channel33'
     task.neighbor_capability_suppress_4_byte_as = True
-    task.timers_prefix_peer_timeout = 10
-    task.timers_prefix_peer_wait = 30
     task.add_bgp_neighbor()
 
     task.state = 'merged'
