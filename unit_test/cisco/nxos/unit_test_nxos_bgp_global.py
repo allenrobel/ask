@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_global.py
 # Status = BETA
-our_version = 003
+our_version = 100
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log

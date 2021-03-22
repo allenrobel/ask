@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 003
+our_version = 100
 from copy import deepcopy
 import re
 from ask.common.task import Task
