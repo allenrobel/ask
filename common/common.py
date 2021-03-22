@@ -1,5 +1,5 @@
 # Common() - common/common.py
-our_version = 111
+our_version = 112
 '''
 ====================
 Common() - common.py
@@ -745,8 +745,9 @@ class Common(object):
         self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_state(self, x, parameter=''):
-        if x not in self.valid_state:
-            expectation = ','.join(self.valid_state)
+        verify_set = self.valid_state
+        if x not in verify_set:
+            expectation = ','.join(verify_set)
             self.fail(self.class_name, parameter, x, parameter, expectation)
 
     def verify_toggle(self, x, parameter=''):
