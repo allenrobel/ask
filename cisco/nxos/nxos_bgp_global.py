@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 100
+our_version = 101
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -1217,7 +1217,6 @@ class NxosBgpGlobal(Task):
         self.bgp_neighbor_atomic_properties.add('neighbor_dynamic_capability')
         self.bgp_neighbor_atomic_properties.add('neighbor_ebgp_multihop')
         self.bgp_neighbor_atomic_properties.add('neighbor_local_as')
-        self.bgp_neighbor_atomic_properties.add('neighbor_low_memory_exempt')
         self.bgp_neighbor_atomic_properties.add('neighbor_peer_type')
         self.bgp_neighbor_atomic_properties.add('neighbor_remote_as')
         self.bgp_neighbor_atomic_properties.add('neighbor_shutdown')
