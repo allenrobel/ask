@@ -6,20 +6,27 @@ NxosBgpGlobal()
    :local:
    :depth: 1
 
+Version
+-------
+102
+
 Status
 ------
 
 - BETA
 
-- This library is in development and not yet complete, nor fully-tested.  See TODO below for missing functionality.
+- This library is in development and not yet complete, nor fully-tested.
+- See TODO below for missing functionality.
+- Initial vrf support is added as of version 102
 
 TODO
 ----
-1. Support for vrf not included yet
-2. Support for states running_config, rendered not included yet
-3. Verification of property mutual-exclusion not complete
-4. Verification of required properties not complete
-5. Verification of missing/dependent properties not complete
+
+1. Support for states ``parsed`` and ``rendered`` not yet included
+    - Hence ``running_config`` property is not yet supported
+2. Verification of property mutual-exclusion not complete
+3. Verification of required properties not complete
+4. Verification of missing/dependent properties not complete
 
 ScriptKit Synopsis
 ------------------
@@ -37,10 +44,47 @@ ScriptKit Example
 NOTES
 -----
 
-1. If ``vrf`` is set, all other properties will be applied to
-   the vrf when ``task.add_vrf()`` is called.
-2. Calling ``task.add_vrf()`` adds the vrf (along with all properties
-   set in #1) and resets all properties.
+1.  When ``task.add_vrf()`` is called, the following happens:
+
+    a.  All currently-defined neighbors are added to the vrf and the bgp neighbor list is cleared
+        so that a new set of neighbors can be added either to the global config, or another vrf.
+
+    b.  All currently-defined properties that are supported under vrf config are added to the vrf
+        config, and these properties are cleared.
+
+    c.  Properties that are not supported under vrf config are NOT cleared.
+
+2.  Based on the above note, you should first add bgp neighbors to any non-default
+    vrfs.  Then, add bgp neighbors to the default vrf.  For example::
+
+        task = NxosBgpGlobal(log)
+        task.as_number = '6202.0'
+
+        # Add two bgp neighbors to VRF_1
+        task.neighbor_address = '10.1.1.1'
+        task.neighbor_remote_as = '6201.1'
+        task.add_bgp_neighbor()
+        task.neighbor_address = '10.2.1.1'
+        task.neighbor_remote_as = '6201.2'
+        task.add_bgp_neighbor()
+        task.vrf = "VRF_1"
+        task.add_vrf()
+
+        # Add one bgp neighbor to VRF_2
+        task.neighbor_address = '10.1.1.1'
+        task.neighbor_remote_as = '6301.1'
+        task.add_bgp_neighbor()
+        task.vrf = "VRF_2"
+        task.add_vrf()
+
+        # Finally, add a bgp neighbor to the global/default vrf
+        task.neighbor_address = '10.1.1.1'
+        task.neighbor_remote_as = '6401.1'
+        task.add_bgp_neighbor()
+
+        task.task_name = 'bgp neighbors under vrf and in default vrf'
+        task.state = 'merged'
+        task.update()
 
 |
 
@@ -181,7 +225,7 @@ confederation_identifier            Routing domain confederation AS::
                                         - Type: int() or str()
                                         - Valid values:
                                             - int() range 1-4294967295
-                                            - <1-65535>.<0-65535>
+                                            - str() <1-65535>.<0-65535>
                                         - Examples:
                                             task.confederation_identifier = 64512
                                             task.confederation_identifier = 4200000000

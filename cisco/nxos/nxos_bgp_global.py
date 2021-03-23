@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 101
+our_version = 102
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -12,20 +12,27 @@ NxosBgpGlobal()
    :local:
    :depth: 1
 
+Version
+-------
+102
+
 Status
 ------
 
 - BETA
 
-- This library is in development and not yet complete, nor fully-tested.  See TODO below for missing functionality.
+- This library is in development and not yet complete, nor fully-tested.
+- See TODO below for missing functionality.
+- Initial vrf support is added as of version 102
 
 TODO
 ----
-1. Support for vrf not included yet
-2. Support for states running_config, rendered not included yet
-3. Verification of property mutual-exclusion not complete
-4. Verification of required properties not complete
-5. Verification of missing/dependent properties not complete
+
+1. Support for states ``parsed`` and ``rendered`` not yet included
+    - Hence ``running_config`` property is not yet supported
+2. Verification of property mutual-exclusion not complete
+3. Verification of required properties not complete
+4. Verification of missing/dependent properties not complete
 
 ScriptKit Synopsis
 ------------------
@@ -43,10 +50,47 @@ ScriptKit Example
 NOTES
 -----
 
-1. If ``vrf`` is set, all other properties will be applied to
-   the vrf when ``task.add_vrf()`` is called.
-2. Calling ``task.add_vrf()`` adds the vrf (along with all properties
-   set in #1) and resets all properties.
+1.  When ``task.add_vrf()`` is called, the following happens:
+
+    a.  All currently-defined neighbors are added to the vrf and the bgp neighbor list is cleared
+        so that a new set of neighbors can be added either to the global config, or another vrf.
+
+    b.  All currently-defined properties that are supported under vrf config are added to the vrf
+        config, and these properties are cleared.
+
+    c.  Properties that are not supported under vrf config are NOT cleared.
+
+2.  Based on the above note, you should first add bgp neighbors to any non-default
+    vrfs.  Then, add bgp neighbors to the default vrf.  For example::
+
+        task = NxosBgpGlobal(log)
+        task.as_number = '6202.0'
+
+        # Add two bgp neighbors to VRF_1
+        task.neighbor_address = '10.1.1.1'
+        task.neighbor_remote_as = '6201.1'
+        task.add_bgp_neighbor()
+        task.neighbor_address = '10.2.1.1'
+        task.neighbor_remote_as = '6201.2'
+        task.add_bgp_neighbor()
+        task.vrf = "VRF_1"
+        task.add_vrf()
+
+        # Add one bgp neighbor to VRF_2
+        task.neighbor_address = '10.1.1.1'
+        task.neighbor_remote_as = '6301.1'
+        task.add_bgp_neighbor()
+        task.vrf = "VRF_2"
+        task.add_vrf()
+
+        # Finally, add a bgp neighbor to the global/default vrf
+        task.neighbor_address = '10.1.1.1'
+        task.neighbor_remote_as = '6401.1'
+        task.add_bgp_neighbor()
+
+        task.task_name = 'bgp neighbors under vrf and in default vrf'
+        task.state = 'merged'
+        task.update()
 
 |
 
@@ -187,7 +231,7 @@ confederation_identifier            Routing domain confederation AS::
                                         - Type: int() or str()
                                         - Valid values:
                                             - int() range 1-4294967295
-                                            - <1-65535>.<0-65535>
+                                            - str() <1-65535>.<0-65535>
                                         - Examples:
                                             task.confederation_identifier = 64512
                                             task.confederation_identifier = 4200000000
@@ -1116,6 +1160,7 @@ class NxosBgpGlobal(Task):
 
         self.bgp_neighbor_path_attribute_list = list()
         self.bgp_neighbors_list  = list()
+        self.vrf_list = list()
 
         # The set of ansible module properties that should be written
         # when the user calls instance.update().
@@ -1276,6 +1321,21 @@ class NxosBgpGlobal(Task):
         self.neighbor_path_attribute_set.add('neighbor_path_attribute_range_end')
         self.neighbor_path_attribute_set.add('neighbor_path_attribute_range_start')
         self.neighbor_path_attribute_set.add('neighbor_path_attribute_type')
+
+        # The set of atomic -- not members of a dict() -- 
+        # bgp vrf global (non-neighbor, non-global) properties.
+        # Written when the user calls instance.add_vrf().
+        # These will be written to the top-level of self.config dict, 
+        # after disambiguation, which is then appended to vrfs list()
+        self.vrf_atomic_properties = set()
+        self.vrf_atomic_properties.add('vrf_allocate_index')
+        self.vrf_atomic_properties.add('cluster_id')
+        self.vrf_atomic_properties.add('local_as')
+        self.vrf_atomic_properties.add('log_neighbor_changes')
+        self.vrf_atomic_properties.add('maxas_limit')
+        self.vrf_atomic_properties.add('reconnect_interval')
+        self.vrf_atomic_properties.add('router_id')
+        self.vrf_atomic_properties.add('vrf')
 
         # The set of properties that should be written if 
         # the caller has set vrf and calls instance.add_vrf().
@@ -1454,6 +1514,8 @@ class NxosBgpGlobal(Task):
         self.property_map['timers_bgp_keepalive'] = 'keepalive'
         self.property_map['timers_prefix_peer_timeout'] = 'prefix_peer_timeout'
         self.property_map['timers_prefix_peer_wait'] = 'prefix_peer_wait'
+        self.property_map['vrf_allocate_index'] = 'allocate_index'
+        self.property_map['vrf'] = 'vrf'
 
         self.nxos_bgp_global_valid_log_neighbor_changes = set()
         self.nxos_bgp_global_valid_log_neighbor_changes.add('no')
@@ -1494,6 +1556,38 @@ class NxosBgpGlobal(Task):
         self.properties_set.update(self.bgp_global_set)
         self.properties_set.update(self.bgp_neighbor_set)
         self.properties_set.update(self.vrf_set)
+
+        # The set of properties that are not supported under vrf config.
+        # This is used in init_properties_vrf() to skip initialization of
+        # non-vrf properties the user may have already set.  Basically,
+        # let's not allow add_vrf() to clear properties that are unrelated
+        # to vrf config.
+        self.properties_vrf_unsupported_set = set()
+        self.properties_vrf_unsupported_set.add('affinity_group_group_id')
+        self.properties_vrf_unsupported_set.add('as_number')
+        self.properties_vrf_unsupported_set.add('disable_policy_batching_ipv4_prefix_list')
+        self.properties_vrf_unsupported_set.add('disable_policy_batching_ipv6_prefix_list')
+        self.properties_vrf_unsupported_set.add('disable_policy_batching_nexthop')
+        self.properties_vrf_unsupported_set.add('disable_policy_batching_set')
+        self.properties_vrf_unsupported_set.add('dynamic_med_interval')
+        self.properties_vrf_unsupported_set.add('enforce_first_as')
+        self.properties_vrf_unsupported_set.add('enhanced_error')
+        self.properties_vrf_unsupported_set.add('fabric_soo')
+        self.properties_vrf_unsupported_set.add('fast_external_fallover')
+        self.properties_vrf_unsupported_set.add('flush_routes')
+        self.properties_vrf_unsupported_set.add('graceful_shutdown_activate_route_map')
+        self.properties_vrf_unsupported_set.add('graceful_shutdown_activate_set')
+        self.properties_vrf_unsupported_set.add('graceful_shutdown_aware')
+        self.properties_vrf_unsupported_set.add('graceful_shutdown_aware')
+        self.properties_vrf_unsupported_set.add('isolate_include_local')
+        self.properties_vrf_unsupported_set.add('isolate_set')
+        self.properties_vrf_unsupported_set.add('nexthop_suppress_default_resolution')
+        self.properties_vrf_unsupported_set.add('rd_dual')
+        self.properties_vrf_unsupported_set.add('rd_id')
+        self.properties_vrf_unsupported_set.add('shutdown')
+        self.properties_vrf_unsupported_set.add('suppress_fib_pending')
+        self.properties_vrf_unsupported_set.add('state')
+        self.properties_vrf_unsupported_set.add('running_config')
 
         # scriptkit_properties can be used by scripts when
         # setting task_name. See Task().append_to_task_name()
@@ -1771,6 +1865,8 @@ class NxosBgpGlobal(Task):
         self.update_bgp_global_atomic()
         if len(self.bgp_neighbors_list) != 0:
             self.config['neighbors'] = deepcopy(self.bgp_neighbors_list)
+        if len(self.vrf_list) != 0:
+            self.config['vrfs'] = deepcopy(self.vrf_list)
         self.ansible_task = dict()
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
@@ -2002,9 +2098,54 @@ class NxosBgpGlobal(Task):
         self.bgp_neighbors_list.append(deepcopy(self.bgp_neighbor_dict))
         self.init_bgp_neighbor()
 
-    def add_vrf(self):
+    def add_vrf_no_support(self):
         self.task_log.error('exiting. add_vrf() is not yet supported.')
         exit(1)
+
+    def update_vrf_atomic(self):
+        '''
+        Update all atomic (not member of a dictionary) properties at
+        the top-level of self.config
+        '''
+        for p in self.vrf_atomic_properties:
+            if self.properties[p] != None:
+                mapped_p = self.property_map[p]
+                self.config[mapped_p] = self.properties[p]
+
+    def init_properties_vrf(self):
+        for p in self.properties_set:
+            if p in self.properties_vrf_unsupported_set:
+                continue
+            self.properties[p] = None
+    def final_verification_vrf(self):
+        if self.vrf == None:
+            self.task_log.error('exiting. instance.vrf must be set before calling instance.add_vrf()')
+            exit(1)
+    def add_vrf(self):
+        '''
+        add all configured properties to self.vrf_list
+        '''
+        self.final_verification_vrf()
+        self.config = dict()
+        #self.update_affinity_group()
+        self.update_bestpath()
+        self.update_confederation()
+        #self.update_disable_policy_batching()
+        self.update_graceful_restart()
+        self.update_graceful_shutdown()
+        #self.update_isolate()
+        self.update_neighbor_down()
+        #self.update_nexthop()
+        #self.update_rd()
+        self.update_timers()
+        self.update_vrf_atomic()
+        if len(self.bgp_neighbors_list) != 0:
+            self.config['neighbors'] = deepcopy(self.bgp_neighbors_list)
+            self.bgp_neighbors_list = list()
+        if len(self.config) != 0:
+            self.vrf_list.append(deepcopy(self.config))
+            self.config = dict()
+        self.init_properties_vrf()
 
     def verify_nxos_bgp_global_affinity_group_group_id(self, x, parameter='affinity_group_group_id'):
         source_class = self.class_name

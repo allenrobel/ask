@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_global.py
 # Status = BETA
-our_version = 101
+our_version = 102
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -29,11 +29,24 @@ def add_task_name(task):
 def ipv4_neighbors(pb):
     task = NxosBgpGlobal(log)
     task.as_number = '12000.0'
+
+    # Since disable_policy_batching_* is not supported
+    # under vrf config, it will not be cleared by
+    # task.add_vrf(), and will be added to the global
+    # bgp config when task.update() is called.
+    task.disable_policy_batching_ipv4_prefix_list = 'IPV4_DPB'
+    task.disable_policy_batching_nexthop = True
+
+    # Since bestpath_* is supported under vrf config, it
+    # will be cleared by task.add_vrf() after it has
+    # been added to the vrf. The same holds for all other
+    # properties that are supported under vrf config.
+    # Hence, it's probably better when structuring your
+    # script, to group vrf-supported properties separately
+    # from vrf-non-supported properties.
     task.bestpath_med_non_deterministic = False
     task.confederation_identifier = 65000
     task.confederation_peers = [65001, 65002]
-    task.disable_policy_batching_ipv4_prefix_list = 'IPV4_DPB'
-    task.disable_policy_batching_nexthop = True
     task.neighbor_down_fib_accelerate = True
     task.timers_prefix_peer_timeout = 10
     task.timers_prefix_peer_wait = 30
@@ -65,11 +78,26 @@ def ipv4_neighbors(pb):
     task.add_bgp_neighbor()
 
     task.neighbor_address = '10.3.1.0/25'
-    task.neighbor_inherit_peer = 'TOR'
-    task.neighbor_inherit_peer_session = 'TOR_SESSION'
+    task.neighbor_inherit_peer = 'TOR_VRF'
+    task.neighbor_inherit_peer_session = 'TOR_VRF_SESSION'
     task.neighbor_remote_as = '6201.3'
     task.neighbor_update_source = 'port-channel33'
     task.neighbor_capability_suppress_4_byte_as = True
+    task.add_bgp_neighbor()
+
+    task.vrf = 'FOO_VRF'
+    task.add_vrf()
+
+    # Now we can add neighbors to the global/default vrf, or to 
+    # another non-default vrf.  Always add neighbors that are
+    # intended to live in the global/default vrf last.
+
+    # default vrf neighbors
+    task.neighbor_address = '10.4.4.0/24'
+    task.neighbor_inherit_peer = 'TOR'
+    task.neighbor_inherit_peer_session = 'TOR_SESSION'
+    task.neighbor_remote_as = '6201.3'
+    task.neighbor_update_source = 'Vlan4'
     task.add_bgp_neighbor()
 
     task.state = 'merged'
