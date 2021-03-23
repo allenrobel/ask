@@ -224,8 +224,7 @@ disable_policy_batching_set                 Enable/Disable the batching evaluati
                                                 - Example:
                                                     task.disable_policy_batching_set = True
 
-disable_policy_batching_ipv4_prefix_list    Enable ``True`` or Disable ``False``
-                                            batching evaluation of outbound
+disable_policy_batching_ipv4_prefix_list    Disable batching evaluation of outbound
                                             policy for ipv4 peers in the provided
                                             ip prefix-list::
 
@@ -235,11 +234,9 @@ disable_policy_batching_ipv4_prefix_list    Enable ``True`` or Disable ``False``
                                                 - Example:
                                                     task.disable_policy_batching_ipv4_prefix_list = 'DPB'
 
-disable_policy_batching_ipv6_prefix_list    Enable ``True`` or Disable ``False``
-                                            batching evaluation of outbound
-                                            policy for ipv6 peers in the provided
+disable_policy_batching_ipv6_prefix_list    Disable batching evaluation of outbound
+                                            policy for ipv6 peers in the provided 
                                             ipv6 prefix-list::
-
 
                                                 - Type: str()
                                                 - Valid values:
