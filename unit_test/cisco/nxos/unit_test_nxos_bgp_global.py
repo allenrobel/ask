@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_global.py
 # Status = BETA
-our_version = 102
+our_version = 103
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -51,6 +51,7 @@ def ipv4_neighbors(pb):
     task.timers_prefix_peer_timeout = 10
     task.timers_prefix_peer_wait = 30
 
+    # add a bgp neighbor in the global/default vrf
     task.neighbor_affinity_group_group_id = 200
     task.neighbor_bfd_singlehop = True
     task.neighbor_bfd_set = True
@@ -77,22 +78,36 @@ def ipv4_neighbors(pb):
     task.neighbor_update_source = 'Vlan2'
     task.add_bgp_neighbor()
 
+    # add one bgp neighbor in vrf VRF_1
     task.neighbor_address = '10.3.1.0/25'
-    task.neighbor_inherit_peer = 'TOR_VRF'
-    task.neighbor_inherit_peer_session = 'TOR_VRF_SESSION'
+    task.neighbor_inherit_peer = 'TOR_VRF_1'
+    task.neighbor_inherit_peer_session = 'TOR_SESSION_VRF_1'
     task.neighbor_remote_as = '6201.3'
     task.neighbor_update_source = 'port-channel33'
     task.neighbor_capability_suppress_4_byte_as = True
-    task.add_bgp_neighbor()
-
-    task.vrf = 'FOO_VRF'
+    task.add_vrf_bgp_neighbor()
+    task.vrf = 'VRF_1'
     task.add_vrf()
 
-    # Now we can add neighbors to the global/default vrf, or to 
-    # another non-default vrf.  Always add neighbors that are
-    # intended to live in the global/default vrf last.
+    # add two bgp neighbors in vrf VRF_2
+    task.neighbor_address = '10.5.1.0/25'
+    task.neighbor_inherit_peer = 'TOR_VRF_2'
+    task.neighbor_inherit_peer_session = 'TOR_SESSION_VRF_2'
+    task.neighbor_remote_as = '6501.3'
+    task.neighbor_update_source = 'Ethernet1/5.5'
+    task.add_vrf_bgp_neighbor()
 
-    # default vrf neighbors
+    task.neighbor_address = '10.5.2.0/25'
+    task.neighbor_inherit_peer = 'TOR_VRF_2'
+    task.neighbor_inherit_peer_session = 'TOR_SESSION_VRF_2'
+    task.neighbor_remote_as = '6501.4'
+    task.neighbor_update_source = 'Ethernet1/20'
+    task.add_vrf_bgp_neighbor()
+
+    task.vrf = 'VRF_2'
+    task.add_vrf()
+
+    # add another bgp neighbor into the global/default vrf
     task.neighbor_address = '10.4.4.0/24'
     task.neighbor_inherit_peer = 'TOR'
     task.neighbor_inherit_peer_session = 'TOR_SESSION'

@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -14,7 +14,7 @@ NxosBgpGlobal()
 
 Version
 -------
-102
+103
 
 Status
 ------
@@ -24,6 +24,9 @@ Status
 - This library is in development and not yet complete, nor fully-tested.
 - See TODO below for missing functionality.
 - Initial vrf support is added as of version 102
+- Breaking change to vrf support added as of version 103
+    - task.add_bgp_neighbor() adds neighbor into the global/default vrf
+    - task.add_vrf_bgp_neighbor() adds neighbor into a non-default vrf
 
 TODO
 ----
@@ -52,45 +55,135 @@ NOTES
 
 1.  When ``task.add_vrf()`` is called, the following happens:
 
-    a.  All currently-defined neighbors are added to the vrf and the bgp neighbor list is cleared
-        so that a new set of neighbors can be added either to the global config, or another vrf.
+    a.  All currently-defined neighbors that were added using
+        ``instance.add_vrf_bgp_neighbor()`` are added to the vrf specified
+        with ``instance.vrf`` and the vrf bgp neighbor list is cleared so
+        that a new set of neighbors can be added to another non-default vrf.
 
-    b.  All currently-defined properties that are supported under vrf config are added to the vrf
-        config, and these properties are cleared.
+    b.  All properties that are currently-set and are supported under
+        vrf config are added to the vrf config when add_vrf() is called.
+        These properties are then cleared so that they may be set again
+        (or not) for another vrf, or the default vrf.
 
-    c.  Properties that are not supported under vrf config are NOT cleared.
+    c.  Properties that are currently-set and are not supported under
+        vrf config are not added to the vrf, and are not otherwise 
+        altered/cleared when add_vrf() is called.
 
-2.  Based on the above note, you should first add bgp neighbors to any non-default
-    vrfs.  Then, add bgp neighbors to the default vrf.  For example::
+2.  Based on the above note, below is an example which adds two bgp neighbors
+    into the default vrf, one bgp neighbor into vrf VRF_1, and two bgp neighbors
+    into vrf VRF_2::
 
+        pb = Playbook(log)
         task = NxosBgpGlobal(log)
         task.as_number = '6202.0'
 
-        # Add two bgp neighbors to VRF_1
+        # Add a bgp neighbor to VRF_1
         task.neighbor_address = '10.1.1.1'
-        task.neighbor_remote_as = '6201.1'
-        task.add_bgp_neighbor()
-        task.neighbor_address = '10.2.1.1'
-        task.neighbor_remote_as = '6201.2'
-        task.add_bgp_neighbor()
-        task.vrf = "VRF_1"
+        task.neighbor_remote_as = '6101.1'
+        task.add_vrf_bgp_neighbor()
+        task.vrf = 'VRF_1'
         task.add_vrf()
 
-        # Add one bgp neighbor to VRF_2
-        task.neighbor_address = '10.1.1.1'
-        task.neighbor_remote_as = '6301.1'
+        # Add one bgp neighbor to the global/default vrf
+        task.neighbor_address = '10.2.1.1'
+        task.neighbor_remote_as = '6201.1'
         task.add_bgp_neighbor()
+
+        # Add two bgp neighbors to VRF_2
+        task.neighbor_address = '10.3.1.1'
+        task.neighbor_remote_as = '6301.1'
+        task.add_vrf_bgp_neighbor()
+        task.neighbor_address = '10.3.1.3'
+        task.neighbor_remote_as = '6301.1'
+        task.add_vrf_bgp_neighbor()
         task.vrf = "VRF_2"
         task.add_vrf()
 
-        # Finally, add a bgp neighbor to the global/default vrf
+        # Add another bgp neighbor to the global/default vrf
         task.neighbor_address = '10.1.1.1'
         task.neighbor_remote_as = '6401.1'
         task.add_bgp_neighbor()
 
-        task.task_name = 'bgp neighbors under vrf and in default vrf'
+        # update the task. This performs a final verification
+        # and prepares the task to be added to a playbook
+        task.task_name = 'bgp neighbors under default vrf and non-default vrf'
         task.state = 'merged'
         task.update()
+
+        # add the task to the playbook
+        pb.add_task(task)
+
+        # Append the playbook (more than one playbook, each
+        # with more than one task, can be appended to a
+        # given playbook file)
+        pb.append_playbook()
+
+        # write the playbook
+        pb.file = '/tmp/nxos_bgp_global.yaml'
+        pb.write_playbook()
+
+|
+
+================================    ==============================================
+Method                              Description
+================================    ==============================================
+add_bgp_neighbor()                  Add a bgp neighbor into the default/global vrf, and
+                                    clear all bgp neighbor properties to make way
+                                    for adding the next neighbor::
+
+                                        Example:
+                                            task = NxosBgpGlobal(log)
+                                            task.as_number = '12000.0'
+                                            task.neighbor_address = '10.4.4.0/24'
+                                            task.neighbor_inherit_peer = 'TOR_GLOBAL_VRF'
+                                            task.neighbor_remote_as = '6201.3'
+                                            task.neighbor_update_source = 'Vlan4'
+                                            task.add_bgp_neighbor()
+
+add_vrf_bgp_neighbor()              Add a bgp neighbor into a non-default vrf, and
+                                    clear all bgp neighbor properties to make way
+                                    for adding the next neighbor::
+
+                                        Example:
+                                            task = NxosBgpGlobal(log)
+                                            task.as_number = '12000.0'
+                                            task.neighbor_address = '10.4.4.0/24'
+                                            task.neighbor_inherit_peer = 'TOR_VRF_1'
+                                            task.neighbor_remote_as = '6201.3'
+                                            task.neighbor_update_source = 'Ethernet1/1'
+                                            task.add_vrf_bgp_neighbor()
+                                            task.vrf = 'VRF_1'
+                                            task.add_vrf()
+
+add_vrf()                           Add all currently-set properties, and all bgp 
+                                    neighbors added up to this point with
+                                    ``add_vrf_bgp_neighbor()``, to the current ``vrf``.
+                                    Any properties that are set, but are not supported
+                                    under vrf configuration are not added to the vrf
+                                    and are not cleared::
+
+                                        Example (add one neighbor and one global property
+                                        (bestpath_med_non_deterministic) to vrf VRF_1):
+
+                                            task = NxosBgpGlobal(log)
+                                            # as_number is not supported under vrf config,
+                                            # so is not added to the vrf and is not otherwise
+                                            # altered by add_vrf()
+                                            task.as_number = '12000.0'
+                                            # bestpath_med_non_deterministic is supported
+                                            # under vrf config, so is added to the vrf,
+                                            # and is cleared so that it can later be set
+                                            # for another vrf, or the default vrf.
+                                            task.bestpath_med_non_deterministic = False
+                                            task.neighbor_address = '10.4.4.0/24'
+                                            task.neighbor_inherit_peer = 'TOR_VRF_1'
+                                            task.neighbor_remote_as = '6201.3'
+                                            task.neighbor_update_source = 'Ethernet1/1'
+                                            task.add_vrf_bgp_neighbor()
+                                            task.vrf = 'VRF_1'
+                                            task.add_vrf()
+
+================================    ==============================================
 
 |
 
@@ -1159,7 +1252,8 @@ class NxosBgpGlobal(Task):
         self.class_name = __class__.__name__
 
         self.bgp_neighbor_path_attribute_list = list()
-        self.bgp_neighbors_list  = list()
+        self.bgp_neighbors_list = list()
+        self.bgp_neighbors_list_vrf = list()
         self.vrf_list = list()
 
         # The set of ansible module properties that should be written
@@ -2082,7 +2176,6 @@ class NxosBgpGlobal(Task):
         self.update_bgp_neighbor_capability()
         self.update_bgp_neighbor_graceful_shutdown()
         self.update_bgp_neighbor_inherit()
-        # START HERE 
         self.update_bgp_neighbor_log_neighbor_changes()
         self.update_bgp_neighbor_low_memory()
         self.update_bgp_neighbor_remove_private_as()
@@ -2098,9 +2191,42 @@ class NxosBgpGlobal(Task):
         self.bgp_neighbors_list.append(deepcopy(self.bgp_neighbor_dict))
         self.init_bgp_neighbor()
 
-    def add_vrf_no_support(self):
-        self.task_log.error('exiting. add_vrf() is not yet supported.')
-        exit(1)
+    def add_vrf_bgp_neighbor(self):
+        '''
+        Add a BGP neighbor to self.bgp_neighbors_list_vrf
+
+        Example:
+
+        instance.neighbor_address = '1.1.1.1'
+        instance.neighbor_description = 'ISP_A'
+        instance.neighbor_remote_as = 65001
+        instance.neighbor_bfd_set = True
+        instance.add_vrf_bgp_neighbor()
+        instance.vrf = 'FOO'
+        instance.add_vrf()
+        '''
+        self.verify_bgp_neighbor()
+        self.bgp_neighbor_dict = dict()
+        self.update_bgp_neighbor_affinity_group()
+        self.update_bgp_neighbor_atomic_properties()
+        self.update_bgp_neighbor_bfd()
+        self.update_bgp_neighbor_capability()
+        self.update_bgp_neighbor_graceful_shutdown()
+        self.update_bgp_neighbor_inherit()
+        self.update_bgp_neighbor_log_neighbor_changes()
+        self.update_bgp_neighbor_low_memory()
+        self.update_bgp_neighbor_remove_private_as()
+        self.update_bgp_neighbor_timers()
+        self.update_bgp_neighbor_transport()
+        self.update_bgp_neighbor_ttl_security()
+        self.update_bgp_neighbor_password()
+        if len(self.bgp_neighbor_path_attribute_list) != 0:
+            self.bgp_neighbor_dict['path_attribute'] = deepcopy(self.bgp_neighbor_path_attribute_list)
+        if len(self.bgp_neighbor_dict) == 0:
+            self.task_log.error('exiting. One or more bgp neighbor properties must be set before calling add_vrf_bgp_neighbor()')
+            exit(1)
+        self.bgp_neighbors_list_vrf.append(deepcopy(self.bgp_neighbor_dict))
+        self.init_bgp_neighbor()
 
     def update_vrf_atomic(self):
         '''
@@ -2139,9 +2265,9 @@ class NxosBgpGlobal(Task):
         #self.update_rd()
         self.update_timers()
         self.update_vrf_atomic()
-        if len(self.bgp_neighbors_list) != 0:
-            self.config['neighbors'] = deepcopy(self.bgp_neighbors_list)
-            self.bgp_neighbors_list = list()
+        if len(self.bgp_neighbors_list_vrf) != 0:
+            self.config['neighbors'] = deepcopy(self.bgp_neighbors_list_vrf)
+            self.bgp_neighbors_list_vrf = list()
         if len(self.config) != 0:
             self.vrf_list.append(deepcopy(self.config))
             self.config = dict()
@@ -2366,6 +2492,8 @@ class NxosBgpGlobal(Task):
 
     def verify_nxos_bgp_global_neighbor_update_source(self, x, parameter='neighbor_update_source'):
         if self.is_ethernet_interface(x):
+            return
+        if self.is_ethernet_subinterface(x):
             return
         if self.is_loopback_interface(x):
             return
