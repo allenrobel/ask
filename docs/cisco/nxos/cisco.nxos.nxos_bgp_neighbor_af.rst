@@ -6,6 +6,14 @@ NxosBgpNeighborAf()
    :local:
    :depth: 1
 
+Deprecation
+-----------
+
+- Status: ``DEPRECATED``
+- Alternative: `nxos_bgp_neighbor_address_family <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_address_family.rst>`_
+- 2021-02-24, deprecation date
+- 2023-02-24, removal date (module may be removed after this date)
+
 ScriptKit Synopsis
 ------------------
 - NxosBgpNeighborAf() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_bgp_neighbor_af
@@ -233,13 +241,16 @@ max_prefix_warning              Warn (via syslog) if the number of prefixes rece
                                         - Requires max_prefix_limit to be configured
                                         - Mutually-exclusive with max_prefix_interval
 
-neighbor                        IPv4 or IPv6 address of the neighbor.  May include
-                                a prefixlen for ''prefix-peering'' scenarios::
+neighbor                        IPv4 or IPv6 address of the neighbor.  May 
+                                include a prefixlen for prefix-peering
+                                scenarios::
 
                                     - Type: str()
                                     - Valid values:
-                                        - IPv4 address, with or without prefixlen
-                                        - IPv6 address, with or without prefixlen
+                                        - IPv4 address
+                                        - IPv4 address with prefixlen
+                                        - IPv6 address
+                                        - IPv6 address with prefixlen
                                     - Examples:
                                         task.neighbor = '10.1.1.1'
                                         task.neighbor = '10.1.1.0/24'
@@ -438,3 +449,5 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+
+

@@ -1,5 +1,5 @@
 # NxosBgpNeighborAf() - cisco/nxos/nxos_bgp_neighbor_af.py
-our_version = 113
+our_version = 114
 
 from copy import deepcopy
 import re
@@ -13,6 +13,14 @@ NxosBgpNeighborAf()
 .. contents::
    :local:
    :depth: 1
+
+Deprecation
+-----------
+
+- Status: ``DEPRECATED``
+- Alternative: `nxos_bgp_neighbor_address_family <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_address_family.rst>`_
+- 2021-02-24, deprecation date
+- 2023-02-24, removal date (module may be removed after this date)
 
 ScriptKit Synopsis
 ------------------
