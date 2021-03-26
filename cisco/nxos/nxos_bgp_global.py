@@ -170,11 +170,13 @@ add_vrf()                           Add all currently-set properties, and all bg
                                             # so is not added to the vrf and is not otherwise
                                             # altered by add_vrf()
                                             task.as_number = '12000.0'
+
                                             # bestpath_med_non_deterministic is supported
                                             # under vrf config, so is added to the vrf,
                                             # and is cleared so that it can later be set
                                             # for another vrf, or the default vrf.
                                             task.bestpath_med_non_deterministic = False
+
                                             task.neighbor_address = '10.4.4.0/24'
                                             task.neighbor_inherit_peer = 'TOR_VRF_1'
                                             task.neighbor_remote_as = '6201.3'
