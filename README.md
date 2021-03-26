@@ -63,8 +63,8 @@ Now you should be able to run the unit-test / example scripts.  For example:
 Status | Description
 ------ | -----------
 B      | Beta (under development)
-S      | Supported
 D      | Deprecated
+S      | Supported
 
 Platform    | Status  | Name
 ----------- | ------- | ------------------------------------------------------
