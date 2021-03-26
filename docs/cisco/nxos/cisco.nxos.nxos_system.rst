@@ -55,7 +55,7 @@ domain_search               Configures a list of domain name
 
 hostname                    Configure the device hostname parameter::
 
-                                - Type: str(
+                                - Type: str()
                                 - Valid values:
                                     - domain name
                                     - keyword: default
@@ -139,3 +139,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+
