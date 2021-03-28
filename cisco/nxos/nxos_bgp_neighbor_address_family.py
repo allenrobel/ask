@@ -1,5 +1,5 @@
 # NxosBgpNeighborAddressFamily() - cisco/nxos/nxos_bgp_neighbor_address_family.py
-our_version = 100
+our_version = 101
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -847,6 +847,24 @@ class NxosBgpNeighborAddressFamily(Task):
         self.weight_min = 1
         self.weight_max = 65535
 
+        # Keyed on feature, value is a pointer to the verification
+        # method for the feature
+        self.verification_dispatch_table = dict()
+        self.verification_dispatch_table['maximum_prefix'] = self.verify_maximum_prefix
+
+        self.address_family_property_groups = set()
+        self.address_family_property_groups.add('advertise_map')
+        self.address_family_property_groups.add('allowas_in')
+        self.address_family_property_groups.add('default_originate')
+        self.address_family_property_groups.add('filter_list')
+        self.address_family_property_groups.add('inherit')
+        self.address_family_property_groups.add('maximum_prefix')
+        self.address_family_property_groups.add('next_hop_self')
+        self.address_family_property_groups.add('prefix_list')
+        self.address_family_property_groups.add('route_map')
+        self.address_family_property_groups.add('send_community')
+        self.address_family_property_groups.add('soft_reconfiguration_inbound')
+
         self.init_properties()
 
     def init_properties(self):
@@ -928,7 +946,19 @@ class NxosBgpNeighborAddressFamily(Task):
         if len(d) != 0:
             self.address_family_dict['capability'] = deepcopy(d)
 
-    def update_address_family_dict_items(self, item):
+    def verify_maximum_prefix(self):
+        if self.maximum_prefix_max_prefix_limit == None:
+            if self.maximum_prefix_generate_warning_threshold != None:
+                self.task_log.error('exiting. maximum_prefix_max_prefix_limit must be set if maximum_prefix_generate_warning_threshold is set.')
+                exit(1)
+            if self.maximum_prefix_restart_interval != None:
+                self.task_log.error('exiting. maximum_prefix_max_prefix_limit must be set if maximum_prefix_restart_interval is set.')
+                exit(1)
+            if self.maximum_prefix_warning_only != None:
+                self.task_log.error('exiting. maximum_prefix_max_prefix_limit must be set if maximum_prefix_warning_only is set.')
+            exit(1)
+
+    def update_property_group(self, item):
         '''
         update address family properties whose structure is
         a single-level dictionary
@@ -937,6 +967,8 @@ class NxosBgpNeighborAddressFamily(Task):
         for p in self.address_family_set:
             if not p.startswith(item):
                 continue
+            if item in self.verification_dispatch_table:
+                self.verification_dispatch_table[item]()
             if self.properties[p] != None:
                 mapped_p = self.property_map[p]
                 d[mapped_p] = self.properties[p]
@@ -974,19 +1006,9 @@ class NxosBgpNeighborAddressFamily(Task):
         self.verify_address_family()
         self.address_family_dict = dict()
         self.update_address_family_atomic()
-        self.update_address_family_dict_items('advertise_map')
-        self.update_address_family_dict_items('allowas_in')
         self.update_address_family_capability()
-        self.update_address_family_dict_items('default_originate')
-        self.update_address_family_dict_items('filter_list')
-        self.update_address_family_dict_items('inherit')
-        self.update_address_family_dict_items('maximum_prefix')
-        self.update_address_family_dict_items('next_hop_self')
-        self.update_address_family_dict_items('prefix_list')
-        self.update_address_family_dict_items('route_map')
-        self.update_address_family_dict_items('send_community')
-        self.update_address_family_dict_items('soft_reconfiguration_inbound')
-
+        for pg in self.address_family_property_groups:
+            self.update_property_group(pg)
         if len(self.address_family_dict) == 0:
             self.task_log.error('exiting. One or more address-family properties must be set before calling add_address_family()')
             exit(1)
