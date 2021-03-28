@@ -6,6 +6,10 @@ NxosBfdGlobal()
    :local:
    :depth: 1
 
+Version
+-------
+113
+
 ScriptKit Synopsis
 ------------------
 - NxosBfdGlobal() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_bfd_global
@@ -19,10 +23,6 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_bfd_global.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bfd_global.py>`_
 
-Notes
------
-This class deviates from the Ansible module for certain property
-names to disambiguate them. See the table below for details.
 
 |
 
@@ -230,3 +230,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+

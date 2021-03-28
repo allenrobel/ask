@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bfd_global.py
-our_version = 106
+our_version = 107
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -26,8 +26,10 @@ def add_task_name(task):
 
 def add_task_bfd_general(pb):
     task = NxosBfdGlobal(log)
+    task.echo_interface = 'Loopback3'
     task.echo_rx_interval = 50
     task.slow_timer = 2000
+    task.startup_timer = 10
     task.bfd_interval = 50
     task.bfd_min_rx = 50
     task.bfd_multiplier = 3
@@ -37,6 +39,8 @@ def add_task_bfd_general(pb):
 
 def add_task_bfd_fabricpath(pb):
     task = NxosBfdGlobal(log)
+    task.fabricpath_slow_timer = 2000
+    task.fabricpath_vlan = 4001
     task.bfd_fabricpath_interval = 50
     task.bfd_fabricpath_min_rx = 50
     task.bfd_fabricpath_multiplier = 3
@@ -57,6 +61,8 @@ def add_task_bfd_ipv4(pb):
 
 def add_task_bfd_ipv6(pb):
     task = NxosBfdGlobal(log)
+    task.ipv6_echo_rx_interval = 50
+    task.ipv6_slow_timer = 2000
     task.bfd_ipv6_interval = 50
     task.bfd_ipv6_min_rx = 50
     task.bfd_ipv6_multiplier = 3

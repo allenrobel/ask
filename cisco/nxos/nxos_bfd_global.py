@@ -1,5 +1,5 @@
 # NxosBfdGlobal() - cisco/nxos/nxos_bfd_global.py
-our_version = 112
+our_version = 113
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -10,6 +10,10 @@ NxosBfdGlobal()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+113
 
 ScriptKit Synopsis
 ------------------
@@ -24,10 +28,6 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_bfd_global.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bfd_global.py>`_
 
-Notes
------
-This class deviates from the Ansible module for certain property
-names to disambiguate them. See the table below for details.
 
 |
 
@@ -248,15 +248,15 @@ class NxosBfdGlobal(Task):
 
 
         # interval_properties_set is used to disambiguate properties
-        # in Ansible module nxos_bfd_global which have the same name,
-        # but are not ambiguous in the Ansible module since they appear
-        # as keys in different dictionaries.
+        # which have the same name, but are not ambiguous in the
+        # Ansible module since they appear as keys in different
+        # YAML dictionaries.
         #
         # Specifically, the following keys:
         #
         # tx, min_rx, multiplier
         #
-        # Which appear in the following Ansible dictionaries:
+        # Which appear in the following dictionaries:
         #
         # fabricpath_interval
         # interval
@@ -280,21 +280,24 @@ class NxosBfdGlobal(Task):
         self.interval_properties_set.add('bfd_ipv6_min_rx')
         self.interval_properties_set.add('bfd_ipv6_multiplier')
 
+        # properties that are not part of a dictionary and can be updated
+        # directly.  Used in update()
+        self.atomic_properties = set()
+        self.atomic_properties.add('echo_interface')
+        self.atomic_properties.add('echo_rx_interval')
+        self.atomic_properties.add('fabricpath_slow_timer')
+        self.atomic_properties.add('fabricpath_vlan')
+        self.atomic_properties.add('ipv4_echo_rx_interval')
+        self.atomic_properties.add('ipv4_slow_timer')
+        self.atomic_properties.add('ipv6_echo_rx_interval')
+        self.atomic_properties.add('ipv6_slow_timer')
+        self.atomic_properties.add('slow_timer')
+        self.atomic_properties.add('startup_timer')
+
+        # Complete set of properties
+        # Used in init_properties()
         self.properties_set = set()
-        self.properties_set.add('echo_interface')
-        self.properties_set.add('echo_rx_interval')
-        self.properties_set.add('fabricpath_interval')
-        self.properties_set.add('fabricpath_slow_timer')
-        self.properties_set.add('fabricpath_vlan')
-        self.properties_set.add('interval')
-        self.properties_set.add('ipv4_echo_rx_interval')
-        self.properties_set.add('ipv4_interval')
-        self.properties_set.add('ipv4_slow_timer')
-        self.properties_set.add('ipv6_echo_rx_interval')
-        self.properties_set.add('ipv6_interval')
-        self.properties_set.add('ipv6_slow_timer')
-        self.properties_set.add('slow_timer')
-        self.properties_set.add('startup_timer')
+        self.properties_set.update(self.atomic_properties)
         self.properties_set.update(self.interval_properties_set)
 
         # scriptkit_properties can be used by scripts when
@@ -302,8 +305,10 @@ class NxosBfdGlobal(Task):
         self.scriptkit_properties = set()
         self.scriptkit_properties.update(self.properties_set)
 
-        self.fabricpath_slow_timer_min = 1000  # guessing fabricpath is the same as ipv4
-        self.fabricpath_slow_timer_max = 30000 # fabricpath isn't available on n9k as AFAIK
+        # guessing fabricpath timers are the same as ipv4
+        # fabricpath isn't available on n9k so cannot verify
+        self.fabricpath_slow_timer_min = 1000
+        self.fabricpath_slow_timer_max = 30000
 
         self.ipv4_echo_rx_interval_min = 50
         self.ipv4_echo_rx_interval_max = 999
@@ -318,12 +323,10 @@ class NxosBfdGlobal(Task):
         self.ipv6_slow_timer_max = 30000
 
 
-        # combined into the following dict() in self.final_verification()/self.make_bfd_dict()
-        # self.properties['fabricpath_interval'] = {"tx": bfd_fabricpath_interval, "min_rx": bfd_fabricpath_min_rx, "multiplier": bfd_fabricpath_multiplier}
-        # see properties bfd_fabricpath_interval, bfd_fabricpath_min_rx, and bfd_fabricpath_multiplier
-        self.bfd_fabricpath_interval_min = 50    # guessing fabricpath is the same as ipv4
-        self.bfd_fabricpath_interval_max = 999   # fabricpath isn't available on n9k as AFAIK
-
+        # guessing fabricpath timers are the same as ipv4
+        # fabricpath isn't available on n9k so cannot verify
+        self.bfd_fabricpath_interval_min = 50
+        self.bfd_fabricpath_interval_max = 999
         self.bfd_fabricpath_min_rx_min = 50
         self.bfd_fabricpath_min_rx_max = 999
 
@@ -357,7 +360,6 @@ class NxosBfdGlobal(Task):
         self.bfd_ipv6_multiplier_min = 1
         self.bfd_ipv6_multiplier_max = 50
 
-
         self.echo_rx_interval_min = 50
         self.echo_rx_interval_max = 999
 
@@ -366,8 +368,6 @@ class NxosBfdGlobal(Task):
 
         self.startup_timer_min = 0
         self.startup_timer_max = 30
-
-        self.nxos_bfd_global_valid_echo_interface = ['Loopback', 'deleted']
 
         self.init_properties()
 
@@ -378,50 +378,26 @@ class NxosBfdGlobal(Task):
         self.properties['task_name'] = None
 
     def final_verification(self):
-        self.verify_nxos_bfd_global_bfd_sets(
+        self.verify_bfd_sets(
             self.bfd_interval,
             self.bfd_min_rx,
             self.bfd_multiplier,
             'bfd')
-        self.verify_nxos_bfd_global_bfd_sets(
+        self.verify_bfd_sets(
             self.bfd_ipv4_interval,
             self.bfd_ipv4_min_rx,
             self.bfd_ipv4_multiplier,
             'bfd_ipv4')
-        self.verify_nxos_bfd_global_bfd_sets(
+        self.verify_bfd_sets(
             self.bfd_ipv6_interval,
             self.bfd_ipv6_min_rx,
             self.bfd_ipv6_multiplier,
             'bfd_ipv6')
-        self.verify_nxos_bfd_global_bfd_sets(
+        self.verify_bfd_sets(
             self.bfd_fabricpath_interval,
             self.bfd_fabricpath_min_rx,
             self.bfd_fabricpath_multiplier,
             'bfd_fabricpath')
-
-        if self.bfd_fabricpath_interval != None:
-            self.properties['fabricpath_interval'] = self.make_bfd_dict(
-                self.bfd_fabricpath_interval,
-                self.bfd_fabricpath_min_rx,
-                self.bfd_fabricpath_multiplier)
-
-        if self.bfd_interval != None:
-            self.properties['interval'] = self.make_bfd_dict(
-                self.bfd_interval,
-                self.bfd_min_rx,
-                self.bfd_multiplier)
-
-        if self.bfd_ipv4_interval != None:
-            self.properties['ipv4_interval'] = self.make_bfd_dict(
-                self.bfd_ipv4_interval,
-                self.bfd_ipv4_min_rx,
-                self.bfd_ipv4_multiplier)
-
-        if self.bfd_ipv6_interval != None:
-            self.properties['ipv6_interval'] = self.make_bfd_dict(
-                self.bfd_ipv6_interval,
-                self.bfd_ipv6_min_rx,
-                self.bfd_ipv6_multiplier)
 
     def update(self):
         '''
@@ -431,28 +407,42 @@ class NxosBfdGlobal(Task):
         self.final_verification()
 
         d = dict()
-        for p in self.properties_set:
-            # interval_properties are not added to
-            # the playbook directly. See final_verification()
-            if p in self.interval_properties_set:
-                continue
+        if self.bfd_fabricpath_interval != None:
+            d['fabricpath_interval'] = self.make_bfd_dict(
+                self.bfd_fabricpath_interval,
+                self.bfd_fabricpath_min_rx,
+                self.bfd_fabricpath_multiplier)
+        if self.bfd_interval != None:
+            d['interval'] = self.make_bfd_dict(
+                self.bfd_interval,
+                self.bfd_min_rx,
+                self.bfd_multiplier)
+        if self.bfd_ipv4_interval != None:
+            d['ipv4_interval'] = self.make_bfd_dict(
+                self.bfd_ipv4_interval,
+                self.bfd_ipv4_min_rx,
+                self.bfd_ipv4_multiplier)
+        if self.bfd_ipv6_interval != None:
+            d['ipv6_interval'] = self.make_bfd_dict(
+                self.bfd_ipv6_interval,
+                self.bfd_ipv6_min_rx,
+                self.bfd_ipv6_multiplier)
+
+        for p in self.atomic_properties:
             if self.properties[p] != None:
                 d[p] = self.properties[p]
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
         self.ansible_task[self.ansible_module] = deepcopy(d)
 
-    def verify_nxos_bfd_global_echo_interface(self, x, parameter='echo_interface'):
-        verify_set = self.nxos_bfd_global_valid_echo_interface
-        for item in verify_set:
-            if item in x:
-                return
-        source_class = self.class_name
-        source_method = 'verify_nxos_bfd_global_echo_interface'
-        expectation = ','.join(verify_set)
-        self.fail(source_class, source_method, x, parameter, expectation)
+    def make_bfd_dict(self, interval, min_rx, multiplier):
+        d = dict()
+        d['tx'] = interval
+        d['min_rx'] = min_rx
+        d['multiplier'] = multiplier
+        return d
 
-    def verify_nxos_bfd_global_bfd_sets(self, interval, min_rx, multiplier, feature=None):
+    def verify_bfd_sets(self, interval, min_rx, multiplier, feature=None):
         valid_bfd_features = ['bfd', 'bfd_ipv4', 'bfd_ipv6', 'bfd_fabricpath']
         if feature not in valid_bfd_features:
             self.task_log.error('exiting. feature must be one of {}'.format(','.join(valid_bfd_features)))
@@ -461,6 +451,16 @@ class NxosBfdGlobal(Task):
         if None in bfd_set and len(bfd_set) != 1:
             self.task_log.error('exiting. if any of {0}_interval, {0}_min_rx, {0}_multiplier are None, they all must be None'.format(feature))
             exit(1)
+
+    def verify_nxos_bfd_global_echo_interface(self, x, parameter='echo_interface'):
+        if x == 'deleted':
+            return
+        if self.is_loopback_interface(x):
+            return
+        source_class = self.class_name
+        source_method = 'verify_nxos_bfd_global_echo_interface'
+        expectation = 'Loopback interface, or keyword: deleted'
+        self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_bfd_global_echo_rx_interval(self, x):
         range_min = self.echo_rx_interval_min
@@ -601,13 +601,6 @@ class NxosBfdGlobal(Task):
         source_class = self.class_name
         source_method = 'verify_nxos_bfd_global_bfd_ipv6_slow_timer'
         self.verify_integer_range(x, range_min, range_max, source_class, source_method)
-
-    def make_bfd_dict(self, interval, min_rx, multiplier):
-        d = dict()
-        d['tx'] = interval
-        d['min_rx'] = min_rx
-        d['multiplier'] = multiplier
-        return d
 
     @property
     def echo_interface(self):
