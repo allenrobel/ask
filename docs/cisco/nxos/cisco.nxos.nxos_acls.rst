@@ -2,6 +2,10 @@
 NxosAcls()
 ******************************************
 
+Version
+-------
+108
+
 ScriptKit Synopsis
 ------------------
 NxosAcls() generates Ansible task instances conformant with cisco.nxos.nxos_acls.
@@ -21,6 +25,52 @@ Ansible Module Documentation
 - `nxos_acls <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acls_module.rst>`_
 
 |
+
+============================    ==============================================
+Method                          Description
+============================    ==============================================
+add_ace()                       Add an access control entry (ACE) to a list() of
+                                ipv4 or ipv6 ACEs.  ``afi`` determines which list()
+                                the ACE is added to.::
+
+                                    - Type: function()
+                                    - Example:
+                                        See add_acl()
+
+add_acl()                       Add all currently-set access control entries (ACEs)
+                                to an access control list (ACL)::
+
+                                    - Type: function()
+                                    - Example:
+                                        pb = Playbook(log)
+                                        pb.profile_nxos()
+                                        pb.ansible_password = 'mypassword'
+                                        pb.file = '/tmp/nxos_acls.yaml'
+                                        pb.name = 'nxos_acls play'
+                                        pb.add_host('dc-101')
+                                        task = NxosAcls(log)
+                                        task.remark = 'example ipv4 acl'
+                                        task.sequence = 5
+                                        task.add_ace()
+                                        task.afi = 'ipv4'
+                                        task.grant = 'permit'
+                                        task.protocol = 'ip'
+                                        task.sequence = 10
+                                        task.dscp = 'af31'
+                                        task.destination_address = '1.2.2.2'
+                                        task.destination_wildcard_bits = '0.0.255.255'
+                                        task.source_address = '1.1.1.1'
+                                        task.source_wildcard_bits = '0.0.0.255'
+                                        task.add_ace()
+                                        task.name = 'IPv4_ACL'
+                                        task.add_acl()
+                                        task.state = 'merged'
+                                        task.update()
+                                        pb.add_task(task)
+                                        pb.append_playbook()
+                                        pb.write_playbook()
+
+============================    ==============================================
 
 ============================    ==============================================
 Property (aces)                 Description

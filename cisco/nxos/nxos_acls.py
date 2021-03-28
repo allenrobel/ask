@@ -1,5 +1,5 @@
 # NxosAcls() - cisco/nxos/nxos_acls.py
-our_version = 107
+our_version = 108
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -7,6 +7,10 @@ from ask.common.task import Task
 ******************************************
 NxosAcls()
 ******************************************
+
+Version
+-------
+108
 
 ScriptKit Synopsis
 ------------------
@@ -27,6 +31,52 @@ Ansible Module Documentation
 - `nxos_acls <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acls_module.rst>`_
 
 |
+
+============================    ==============================================
+Method                          Description
+============================    ==============================================
+add_ace()                       Add an access control entry (ACE) to a list() of
+                                ipv4 or ipv6 ACEs.  ``afi`` determines which list()
+                                the ACE is added to.::
+
+                                    - Type: function()
+                                    - Example:
+                                        See add_acl()
+
+add_acl()                       Add all currently-set access control entries (ACEs)
+                                to an access control list (ACL)::
+
+                                    - Type: function()
+                                    - Example:
+                                        pb = Playbook(log)
+                                        pb.profile_nxos()
+                                        pb.ansible_password = 'mypassword'
+                                        pb.file = '/tmp/nxos_acls.yaml'
+                                        pb.name = 'nxos_acls play'
+                                        pb.add_host('dc-101')
+                                        task = NxosAcls(log)
+                                        task.remark = 'example ipv4 acl'
+                                        task.sequence = 5
+                                        task.add_ace()
+                                        task.afi = 'ipv4'
+                                        task.grant = 'permit'
+                                        task.protocol = 'ip'
+                                        task.sequence = 10
+                                        task.dscp = 'af31'
+                                        task.destination_address = '1.2.2.2'
+                                        task.destination_wildcard_bits = '0.0.255.255'
+                                        task.source_address = '1.1.1.1'
+                                        task.source_wildcard_bits = '0.0.0.255'
+                                        task.add_ace()
+                                        task.name = 'IPv4_ACL'
+                                        task.add_acl()
+                                        task.state = 'merged'
+                                        task.update()
+                                        pb.add_task(task)
+                                        pb.append_playbook()
+                                        pb.write_playbook()
+
+============================    ==============================================
 
 ============================    ==============================================
 Property (aces)                 Description
@@ -1198,126 +1248,125 @@ class NxosAcls(Task):
 
     def ace_set_for_remark(self):
         '''
-        We skip sequence and remark since ace_set_for_remark() is used in verify_ace_remark()
-        to verify if mutually-exclusive properties are set.
-
-        Specifically, if remark is set, then no other properties should
-        be set.  Since remark also can take a sequence, we skip both of these.
+        We skip sequence and remark since ace_set_for_remark() is used in
+        verify_ace_remark() to verify if mutually-exclusive properties are
+        set.  Specifically, if remark is set, then no other properties 
+        should be set, except sequence.
         '''
-        is_set = set()
-        for prop in self.properties_ace:
-            if prop == 'remark':
+        s = set()
+        for p in self.properties_ace:
+            if p == 'remark':
                 continue
-            if prop == 'sequence':
+            if p == 'sequence':
                 continue
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        return is_set
+            if self.properties[p] != None:
+                s.add(p)
+        return s
     def ace_set(self):
         '''
         '''
-        is_set = set()
-        for prop in self.properties_ace:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        return is_set
+        s = set()
+        for p in self.properties_ace:
+            if self.properties[p] != None:
+                s.add(p)
+        return s
     def destination_set(self):
-        is_set = set()
-        for prop in self.properties_destination:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        return is_set
+        s = set()
+        for p in self.properties_destination:
+            if self.properties[p] != None:
+                s.add(p)
+        return s
     def icmp_set(self):
-        is_set = set()
-        for prop in self.properties_icmp:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        return is_set
+        s = set()
+        for p in self.properties_icmp:
+            if self.properties[p] != None:
+                s.add(p)
+        return s
     def igmp_set(self):
-        is_set = set()
-        for prop in self.properties_igmp:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        return is_set
+        s = set()
+        for p in self.properties_igmp:
+            if self.properties[p] != None:
+                s.add(p)
+        return s
     def source_set(self):
-        is_set = set()
-        for prop in self.properties_source:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        return is_set
+        s = set()
+        for p in self.properties_source:
+            if self.properties[p] != None:
+                s.add(p)
+        return s
     def tcp_set(self):
-        is_set = set()
-        for prop in self.properties_tcp:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        return is_set
+        s = set()
+        for p in self.properties_tcp:
+            if self.properties[p] != None:
+                s.add(p)
+        return s
 
     def verify_ace_destination_any(self):
-        is_set = set()
-        for prop in ['destination_host', 'destination_prefix', 'destination_address', 'destination_wildcard_bits']:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        if self.destination_any != None and len(is_set) != 0:
+        s = set()
+        for p in ['destination_host', 'destination_prefix', 'destination_address', 'destination_wildcard_bits']:
+            if self.properties[p] != None:
+                s.add(p)
+        if self.destination_any != None and len(s) != 0:
             self.task_log.error('exiting. The following should not be set if instance.destination_any is set.')
-            for prop in is_set:
-                self.task_log.error('   property {}: {}'.format(prop, self.properties[prop]))
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
     def verify_ace_destination_address(self):
-        is_set = set()
-        for prop in ['destination_host', 'destination_prefix']:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        if self.destination_address != None and len(is_set) != 0:
+        s = set()
+        for p in ['destination_host', 'destination_prefix']:
+            if self.properties[p] != None:
+                s.add(p)
+        if self.destination_address != None and len(s) != 0:
             self.task_log.error('exiting. The following should not be set if instance.destination_address is set.')
-            for prop in is_set:
-                self.task_log.error('   property {}: {}'.format(prop, self.properties[prop]))
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
         if self.destination_address != None and self.destination_wildcard_bits == None:
             self.task_log.error('exiting. if instance.destination_address is set instance.destination_wildcard_bits must also be set.')
             exit(1)
     def verify_ace_destination_prefix(self):
-        is_set = set()
-        for prop in ['destination_any', 'destination_host', 'destination_wildcard_bits']:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        if self.destination_prefix != None and len(is_set) != 0:
+        s = set()
+        for p in ['destination_any', 'destination_host', 'destination_wildcard_bits']:
+            if self.properties[p] != None:
+                s.add(p)
+        if self.destination_prefix != None and len(s) != 0:
             self.task_log.error('exiting. The following should not be set if instance.destination_prefix is set.')
-            for prop in is_set:
-                self.task_log.error('   property {}: {}'.format(prop, self.properties[prop]))
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
 
     def verify_ace_source_any(self):
-        is_set = set()
-        for prop in ['source_host', 'source_prefix', 'source_address', 'source_wildcard_bits']:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        if self.source_any != None and len(is_set) != 0:
+        s = set()
+        for p in ['source_host', 'source_prefix', 'source_address', 'source_wildcard_bits']:
+            if self.properties[p] != None:
+                s.add(p)
+        if self.source_any != None and len(s) != 0:
             self.task_log.error('exiting. The following should not be set if instance.source_any is set.')
-            for prop in is_set:
-                self.task_log.error('   property {}: {}'.format(prop, self.properties[prop]))
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
     def verify_ace_source_address(self):
-        is_set = set()
-        for prop in ['source_host', 'source_prefix']:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        if self.source_address != None and len(is_set) != 0:
+        s = set()
+        for p in ['source_host', 'source_prefix']:
+            if self.properties[p] != None:
+                s.add(p)
+        if self.source_address != None and len(s) != 0:
             self.task_log.error('exiting. The following should not be set if instance.source_address is set.')
-            for prop in is_set:
-                self.task_log.error('   property {}: {}'.format(prop, self.properties[prop]))
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
         if self.source_address != None and self.source_wildcard_bits == None:
             self.task_log.error('exiting. if instance.source_address is set instance.source_wildcard_bits must also be set.')
             exit(1)
     def verify_ace_source_prefix(self):
-        is_set = set()
-        for prop in ['source_any', 'source_host', 'source_wildcard_bits']:
-            if self.properties[prop] != None:
-                is_set.add(prop)
-        if self.source_prefix != None and len(is_set) != 0:
+        s = set()
+        for p in ['source_any', 'source_host', 'source_wildcard_bits']:
+            if self.properties[p] != None:
+                s.add(p)
+        if self.source_prefix != None and len(s) != 0:
             self.task_log.error('exiting. The following should not be set if instance.source_prefix is set.')
-            for prop in is_set:
-                self.task_log.error('   property {}: {}'.format(prop, self.properties[prop]))
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
 
     def verify_ace_afi(self):
@@ -1339,20 +1388,23 @@ class NxosAcls(Task):
             self.task_log.error('exiting. instance.grant must be set if instance.remark is not set.')
             exit(1)
     def verify_ace_remark(self):
-        if self.remark != None:
-            is_set = set()
-            is_set.update(self.ace_set_for_remark())
-            is_set.update(self.destination_set())
-            is_set.update(self.icmp_set())
-            is_set.update(self.igmp_set())
-            is_set.update(self.source_set())
-            is_set.update(self.tcp_set())
-            if len(is_set()) != 0:
-                self.task_log.error('exiting. The following should not be set if instance.remark is set.')
-                for prop in is_set:
-                    self.task_log.error('   property {}: {}'.format(prop, self.properties[prop]))
-                exit(1)
-
+        if self.remark == None:
+            return
+        if self.sequence == None:
+            self.task_log.error('exiting. instance.sequence must be set if instance.remark is set.')
+            exit(1)
+        verify_set = set()
+        verify_set.update(self.ace_set_for_remark())
+        verify_set.update(self.destination_set())
+        verify_set.update(self.icmp_set())
+        verify_set.update(self.igmp_set())
+        verify_set.update(self.source_set())
+        verify_set.update(self.tcp_set())
+        if len(verify_set) != 0:
+            self.task_log.error('exiting. The following should not be set if instance.remark is set.')
+            for p in verify_set:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+            exit(1)
     def verify_ace_sequence(self):
         if self.sequence == None:
             self.task_log.error('exiting. instance.sequence must be set before calling instance.add_ace()')
@@ -1383,8 +1435,8 @@ class NxosAcls(Task):
         if verified == False:
             self.task_log.error('exiting. options for only one of icmp, igmp, tcp should be set.')
             self.task_log.error('The following options were set:')
-            for prop in sorted(all_protocol_options):
-                self.task_log.error('   property {}: {}'.format(prop, self.properties[prop]))
+            for p in sorted(all_protocol_options):
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
         if len(self.icmp_set()) != 0 and self.protocol != 'icmp':
             self.task_log.warning('setting instance.protocol = icmp due to icmp options are set')
@@ -1408,11 +1460,12 @@ class NxosAcls(Task):
         self.verify_ace_sequence()
         self.verify_ace_source()
 
-
     def add_ace(self):
         d = dict()
         if self.remark != None:
+            self.verify_ace_remark()
             d['remark'] = self.remark
+            d['sequence'] = self.sequence
             self.aces.append(deepcopy(d))
             self.init_properties_ace()
             return
@@ -1426,28 +1479,28 @@ class NxosAcls(Task):
         protocol_options = dict()
         for p in self.properties_source:
             if self.properties[p] != None:
-                prop = self.get_mapped_property(p)
-                source[prop] = self.properties[p]
+                mapped_p = self.get_mapped_property(p)
+                source[mapped_p] = self.properties[p]
         for p in self.properties_destination:
             if self.properties[p] != None:
-                prop = self.get_mapped_property(p)
-                destination[prop] = self.properties[p]
+                mapped_p = self.get_mapped_property(p)
+                destination[mapped_p] = self.properties[p]
         for p in self.properties_icmp:
             if self.properties[p] != None:
-                prop = self.get_mapped_property(p)
-                icmp[prop] = self.properties[p]
+                mapped_p = self.get_mapped_property(p)
+                icmp[mapped_p] = self.properties[p]
         for p in self.properties_igmp:
             if self.properties[p] != None:
-                prop = self.get_mapped_property(p)
-                igmp[prop] = self.properties[p]
+                mapped_p = self.get_mapped_property(p)
+                igmp[mapped_p] = self.properties[p]
         for p in self.properties_tcp:
             if self.properties[p] != None:
-                prop = self.get_mapped_property(p)
-                tcp[prop] = self.properties[p]
+                mapped_p = self.get_mapped_property(p)
+                tcp[mapped_p] = self.properties[p]
         for p in self.properties_ace:
             if self.properties[p] != None:
-                prop = self.get_mapped_property(p)
-                d[prop] = self.properties[p]
+                mapped_p = self.get_mapped_property(p)
+                d[mapped_p] = self.properties[p]
         if len(source) == 0:
             self.task_log.error('exiting. No source information was set')
             exit(1)
@@ -1464,7 +1517,7 @@ class NxosAcls(Task):
             d['protocol_options'] = dict()
             d['protocol_options']['tcp'] = tcp
         d['destination'] = destination
-        d['source']      = source
+        d['source'] = source
 
         self.aces.append(deepcopy(d))
         self.init_properties_ace()

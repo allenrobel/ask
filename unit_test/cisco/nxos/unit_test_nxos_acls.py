@@ -19,6 +19,10 @@ def playbook():
     pb.add_host(ansible_host)
     return pb
 
+def add_ipv4_remark(task):
+    task.remark = 'example ipv4 access-list'
+    task.sequence = 5
+    task.add_ace()
 def add_ipv4_ace_10(task):
     task.afi = 'ipv4'
     task.grant = 'permit'
@@ -74,6 +78,10 @@ def add_ipv4_ace_50(task):
     task.source_wildcard_bits = '0.0.0.255'
     task.add_ace()
 
+def add_ipv6_remark(task):
+    task.remark = 'example ipv6 access-list'
+    task.sequence = 5
+    task.add_ace()
 def add_ipv6_ace_10(task):
     task.afi = 'ipv6'
     task.grant = 'permit'
@@ -112,6 +120,7 @@ def add_ipv6_ace_40(task):
 pb = playbook()
 task = NxosAcls(log)
 
+add_ipv4_remark(task)
 add_ipv4_ace_10(task)
 add_ipv4_ace_20(task)
 add_ipv4_ace_30(task)
@@ -120,6 +129,7 @@ add_ipv4_ace_50(task)
 task.name = 'IPv4_ACL'
 task.add_acl()
 
+add_ipv6_remark(task)
 add_ipv6_ace_10(task)
 add_ipv6_ace_20(task)
 add_ipv6_ace_30(task)
