@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_global.py
 # Status = BETA
-our_version = 103
+our_version = 104
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -124,6 +124,7 @@ def ipv4_neighbors(pb):
     task.graceful_restart_stalepath_time = 3
     task.isolate_include_local = False
     task.isolate_set = False
+    task.log_neighbor_changes = True
     task.neighbor_down_fib_accelerate = True
     task.nexthop_suppress_default_resolution = True
     task.rd_dual = True

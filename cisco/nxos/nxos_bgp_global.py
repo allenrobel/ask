@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -1613,10 +1613,6 @@ class NxosBgpGlobal(Task):
         self.property_map['vrf_allocate_index'] = 'allocate_index'
         self.property_map['vrf'] = 'vrf'
 
-        self.nxos_bgp_global_valid_log_neighbor_changes = set()
-        self.nxos_bgp_global_valid_log_neighbor_changes.add('no')
-        self.nxos_bgp_global_valid_log_neighbor_changes.add('yes')
-
         self.nxos_bgp_global_valid_state = set()
         self.nxos_bgp_global_valid_state.add('deleted')
         self.nxos_bgp_global_valid_state.add('gathered')
@@ -2822,9 +2818,7 @@ class NxosBgpGlobal(Task):
         parameter = 'log_neighbor_changes'
         if self.set_none(x, parameter):
             return
-        if x not in self.nxos_bgp_global_valid_log_neighbor_changes:
-            _expectation = ','.join(self.nxos_bgp_global_valid_log_neighbor_changes)
-            self.fail(self.class_name, parameter, x, parameter, _expectation)
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property
