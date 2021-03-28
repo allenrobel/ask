@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -14,7 +14,7 @@ NxosBgpGlobal()
 
 Version
 -------
-103
+104
 
 Status
 ------
@@ -1753,7 +1753,55 @@ class NxosBgpGlobal(Task):
         self.nxos_bgp_global_valid_neighbor_peer_type.add('fabric-border-leaf')
         self.nxos_bgp_global_valid_neighbor_peer_type.add('fabric-external')
 
+        # Keyed on feature, value is a pointer to the verification
+        # method for the feature
+        # Used in self.update_property_group()
+        self.verification_dispatch_table = dict()
+        self.verification_dispatch_table['rd'] = self.verify_rd
+
+        # used in self.update_property_group()
+        # These are groups of properties that are structured
+        # into simple single-level dict() with the Ansible
+        # module.
+        self.bgp_global_property_groups = set()
+        self.bgp_global_property_groups.add('affinity_group')
+        self.bgp_global_property_groups.add('confederation')
+        self.bgp_global_property_groups.add('graceful_restart')
+        self.bgp_global_property_groups.add('isolate')
+        self.bgp_global_property_groups.add('neighbor_down')
+        self.bgp_global_property_groups.add('nexthop')
+        self.bgp_global_property_groups.add('rd')
+
+        # Used in add_vrf()
+        self.vrf_property_groups = set()
+        self.vrf_property_groups.add('confederation')
+        self.vrf_property_groups.add('graceful_restart')
+        self.vrf_property_groups.add('neighbor_down')
+
+        self.bgp_neighbor_property_groups = set()
+        self.bgp_neighbor_property_groups.add('neighbor_affinity_group')
+        self.bgp_neighbor_property_groups.add('neighbor_capability')
+        self.bgp_neighbor_property_groups.add('neighbor_inherit')
+        self.bgp_neighbor_property_groups.add('neighbor_log_neighbor_changes')
+        self.bgp_neighbor_property_groups.add('neighbor_low_memory')
+        self.bgp_neighbor_property_groups.add('neighbor_password')
+        self.bgp_neighbor_property_groups.add('neighbor_remove_private_as')
+        self.bgp_neighbor_property_groups.add('neighbor_timers')
+        self.bgp_neighbor_property_groups.add('neighbor_ttl_security')
+        # Used in update_property_group() to map bgp_neighbor_property_groups
+        # keys (see above) to the dictionary names used in the Ansible module.
+        self.property_group_map = dict()
+        self.property_group_map['neighbor_affinity_group'] = 'neighbor_affinity_group'
+        self.property_group_map['neighbor_capability'] = 'capability'
+        self.property_group_map['neighbor_inherit'] = 'inherit'
+        self.property_group_map['neighbor_log_neighbor_changes'] = 'log_neighbor_changes'
+        self.property_group_map['neighbor_low_memory'] = 'low_memory'
+        self.property_group_map['neighbor_password'] = 'password'
+        self.property_group_map['neighbor_remove_private_as'] = 'remove_private_as'
+        self.property_group_map['neighbor_timers'] = 'timers'
+        self.property_group_map['neighbor_ttl_security'] = 'ttl_security'
         self.init_properties()
+
 
     def init_properties(self):
         self.properties = dict()
@@ -1777,11 +1825,6 @@ class NxosBgpGlobal(Task):
             self.task_log.error('exiting. call instance.as_number before calling instance.update()')
             exit(1)
 
-    def update_affinity_group(self):
-        d = dict()
-        if self.affinity_group_group_id != None:
-            d['group_id'] = self.affinity_group_group_id
-            self.config['affinity_group'] = deepcopy(d)
     def update_bestpath(self):
         d = dict()
         as_path = dict()
@@ -1815,15 +1858,6 @@ class NxosBgpGlobal(Task):
         if len(d) != 0:
             self.config['bestpath'] = deepcopy(d)
 
-    def update_confederation(self):
-        d = dict()
-        if self.confederation_identifier != None:
-            d['identifier'] = self.confederation_identifier
-        if self.confederation_peers != None:
-            d['peers'] = self.confederation_peers
-        if len(d) != 0:
-            self.config['confederation'] = deepcopy(d)
-
     def update_disable_policy_batching(self):
         d = dict()
         ipv4 = dict()
@@ -1843,19 +1877,6 @@ class NxosBgpGlobal(Task):
         if len(d) != 0:
             self.config['disable_policy_batching'] = deepcopy(d)
 
-    def update_graceful_restart(self):
-        d = dict()
-        if self.graceful_restart_helper != None:
-            d['helper'] = self.graceful_restart_helper
-        if self.graceful_restart_restart_time != None:
-            d['restart_time'] = self.graceful_restart_restart_time
-        if self.graceful_restart_set != None:
-            d['set'] = self.graceful_restart_set
-        if self.graceful_restart_stalepath_time != None:
-            d['stalepath_time'] = self.graceful_restart_stalepath_time
-        if len(d) != 0:
-            self.config['graceful_restart'] = deepcopy(d)
-
     def update_graceful_shutdown(self):
         d = dict()
         activate = dict()
@@ -1870,42 +1891,10 @@ class NxosBgpGlobal(Task):
         if len(d) != 0:
             self.config['graceful_shutdown'] = deepcopy(d)
 
-    def update_isolate(self):
-        d = dict()
-        if self.isolate_include_local != None:
-            d['include_local'] = self.isolate_include_local
-        if self.isolate_set != None:
-            d['set'] = self.isolate_set
-        if len(d) != 0:
-            self.config['isolate'] = deepcopy(d)
-
-    def update_neighbor_down(self):
-        d = dict()
-        if self.neighbor_down_fib_accelerate != None:
-            d['fib_accelerate'] = self.neighbor_down_fib_accelerate
-        if len(d) != 0:
-            self.config['neighbor_down'] = deepcopy(d)
-
-    def update_nexthop(self):
-        d = dict()
-        if self.nexthop_suppress_default_resolution != None:
-            d['suppress_default_resolution'] = self.nexthop_suppress_default_resolution
-        if len(d) != 0:
-            self.config['nexthop'] = deepcopy(d)
-
     def verify_rd(self):
         if self.rd_id != None and self.rd_dual == None:
             self.task_log.error('exiting. if rd_id is set, rd_dual must also be set')
             exit(1)
-    def update_rd(self):
-        self.verify_rd()
-        d = dict()
-        if self.rd_dual != None:
-            d['dual'] = self.rd_dual
-        if self.rd_id != None:
-            d['id'] = self.rd_id
-        if len(d) != 0:
-            self.config['rd'] = deepcopy(d)
 
     def update_timers(self):
         d = dict()
@@ -1940,6 +1929,32 @@ class NxosBgpGlobal(Task):
                 mapped_p = self.property_map[p]
                 self.config[mapped_p] = self.properties[p]
 
+    def update_property_group(self, pg):
+        '''
+        update groups of properties whose structure is
+        a single-level dictionary
+        '''
+        d = dict()
+        for p in self.properties_set:
+            if not p.startswith(pg):
+                continue
+            if pg in self.verification_dispatch_table:
+                self.verification_dispatch_table[pg]()
+            if self.properties[p] != None:
+                mapped_p = self.property_map[p]
+                d[mapped_p] = self.properties[p]
+        if len(d) != 0:
+            if pg in self.bgp_global_property_groups:
+                self.config[pg] = deepcopy(d)
+            elif pg in self.bgp_neighbor_property_groups:
+                if pg in self.property_group_map:
+                    mapped_pg = self.property_group_map[pg]
+                else:
+                    mapped_pg = pg
+                self.bgp_neighbor_dict[mapped_pg] = deepcopy(d)
+            else:
+                self.task_log.error('unknown property group: {}'.format(property_group))
+
     def update(self):
         '''
         call final_verification()
@@ -1947,16 +1962,11 @@ class NxosBgpGlobal(Task):
         '''
         self.final_verification()
         self.config = dict()
-        self.update_affinity_group()
+        for item in self.bgp_global_property_groups:
+            self.update_property_group(item)
         self.update_bestpath()
-        self.update_confederation()
         self.update_disable_policy_batching()
-        self.update_graceful_restart()
         self.update_graceful_shutdown()
-        self.update_isolate()
-        self.update_neighbor_down()
-        self.update_nexthop()
-        self.update_rd()
         self.update_timers()
         self.update_bgp_global_atomic()
         if len(self.bgp_neighbors_list) != 0:
@@ -2028,13 +2038,6 @@ class NxosBgpGlobal(Task):
             self.task_log.error('tx_interval {}'.format(self.neighbor_bfd_multihop_interval_tx_interval))
             exit(1)
 
-    def update_bgp_neighbor_affinity_group(self):
-        d = dict()
-        if self.neighbor_affinity_group_group_id != None:
-            d['group_id'] = self.neighbor_affinity_group_group_id
-        if len(d) != 0:
-            self.bgp_neighbor_dict['neighbor_affinity_group'] = deepcopy(d)
-
     def update_bgp_neighbor_atomic_properties(self):
         for p in self.bgp_neighbor_atomic_properties:
             if self.properties[p] != None:
@@ -2065,13 +2068,6 @@ class NxosBgpGlobal(Task):
         if len(d) != 0:
             self.bgp_neighbor_dict['bfd'] = deepcopy(d)
 
-    def update_bgp_neighbor_capability(self):
-        d = dict()
-        if self.neighbor_capability_suppress_4_byte_as != None:
-            d['suppress_4_byte_as'] = self.neighbor_capability_suppress_4_byte_as
-        if len(d) != 0:
-            self.bgp_neighbor_dict['capability'] = deepcopy(d)
-
     def update_bgp_neighbor_graceful_shutdown(self):
         d = dict()
         activate = dict()
@@ -2083,51 +2079,6 @@ class NxosBgpGlobal(Task):
             d['activate'] = deepcopy(activate)
         if len(d) != 0:
             self.bgp_neighbor_dict['graceful_shutdown'] = deepcopy(d)
-
-    def update_bgp_neighbor_inherit(self):
-        d = dict()
-        if self.neighbor_inherit_peer != None:
-            d['peer'] = self.neighbor_inherit_peer
-        if self.neighbor_inherit_peer_session != None:
-            d['peer_session'] = self.neighbor_inherit_peer_session
-        if len(d) != 0:
-            self.bgp_neighbor_dict['inherit'] = deepcopy(d)
-
-    def update_bgp_neighbor_log_neighbor_changes(self):
-        d = dict()
-        if self.neighbor_log_neighbor_changes_disable != None:
-            d['disable'] = self.neighbor_log_neighbor_changes_disable
-        if self.neighbor_log_neighbor_changes_set != None:
-            d['set'] = self.neighbor_log_neighbor_changes_set
-        if len(d) != 0:
-            self.bgp_neighbor_dict['log_neighbor_changes'] = deepcopy(d)
-
-    def update_bgp_neighbor_low_memory(self):
-        d = dict()
-        if self.neighbor_low_memory_exempt != None:
-            d['exempt'] = self.neighbor_low_memory_exempt
-        if len(d) != 0:
-            self.bgp_neighbor_dict['low_memory'] = deepcopy(d)
-
-    def update_bgp_neighbor_password(self):
-        d = dict()
-        if self.neighbor_password_encryption != None:
-            d['encryption'] = self.neighbor_password_encryption
-        if self.neighbor_password_key != None:
-            d['key'] = self.neighbor_password_key
-        if len(d) != 0:
-            self.bgp_neighbor_dict['password'] = deepcopy(d)
-
-    def update_bgp_neighbor_remove_private_as(self):
-        d = dict()
-        if self.neighbor_remove_private_as_all != None:
-            d['all'] = self.neighbor_remove_private_as_all
-        if self.neighbor_remove_private_as_replace_as != None:
-            d['replace_as'] = self.neighbor_remove_private_as_replace_as
-        if self.neighbor_remove_private_as_set != None:
-            d['set'] = self.neighbor_remove_private_as_set
-        if len(d) != 0:
-            self.bgp_neighbor_dict['remove_private_as'] = deepcopy(d)
 
     def update_bgp_neighbor_timers(self):
         d = dict()
@@ -2148,13 +2099,6 @@ class NxosBgpGlobal(Task):
         if len(d) != 0:
             self.bgp_neighbor_dict['transport'] = deepcopy(d)
 
-    def update_bgp_neighbor_ttl_security(self):
-        d = dict()
-        if self.neighbor_ttl_security_hops != None:
-            d['hops'] = self.neighbor_ttl_security_hops
-        if len(d) != 0:
-            self.bgp_neighbor_dict['ttl_security'] = deepcopy(d)
-
     def add_bgp_neighbor(self):
         '''
         Add a BGP neighbor to self.bgp_neighbors_list
@@ -2172,19 +2116,12 @@ class NxosBgpGlobal(Task):
         '''
         self.verify_bgp_neighbor()
         self.bgp_neighbor_dict = dict()
-        self.update_bgp_neighbor_affinity_group()
+        for pg in self.bgp_neighbor_property_groups:
+            self.update_property_group(pg)
         self.update_bgp_neighbor_atomic_properties()
         self.update_bgp_neighbor_bfd()
-        self.update_bgp_neighbor_capability()
         self.update_bgp_neighbor_graceful_shutdown()
-        self.update_bgp_neighbor_inherit()
-        self.update_bgp_neighbor_log_neighbor_changes()
-        self.update_bgp_neighbor_low_memory()
-        self.update_bgp_neighbor_remove_private_as()
-        self.update_bgp_neighbor_timers()
         self.update_bgp_neighbor_transport()
-        self.update_bgp_neighbor_ttl_security()
-        self.update_bgp_neighbor_password()
         if len(self.bgp_neighbor_path_attribute_list) != 0:
             self.bgp_neighbor_dict['path_attribute'] = deepcopy(self.bgp_neighbor_path_attribute_list)
         if len(self.bgp_neighbor_dict) == 0:
@@ -2209,19 +2146,12 @@ class NxosBgpGlobal(Task):
         '''
         self.verify_bgp_neighbor()
         self.bgp_neighbor_dict = dict()
-        self.update_bgp_neighbor_affinity_group()
+        for pg in self.bgp_neighbor_property_groups:
+            self.update_property_group(pg)
         self.update_bgp_neighbor_atomic_properties()
         self.update_bgp_neighbor_bfd()
-        self.update_bgp_neighbor_capability()
         self.update_bgp_neighbor_graceful_shutdown()
-        self.update_bgp_neighbor_inherit()
-        self.update_bgp_neighbor_log_neighbor_changes()
-        self.update_bgp_neighbor_low_memory()
-        self.update_bgp_neighbor_remove_private_as()
-        self.update_bgp_neighbor_timers()
         self.update_bgp_neighbor_transport()
-        self.update_bgp_neighbor_ttl_security()
-        self.update_bgp_neighbor_password()
         if len(self.bgp_neighbor_path_attribute_list) != 0:
             self.bgp_neighbor_dict['path_attribute'] = deepcopy(self.bgp_neighbor_path_attribute_list)
         if len(self.bgp_neighbor_dict) == 0:
@@ -2255,16 +2185,10 @@ class NxosBgpGlobal(Task):
         '''
         self.final_verification_vrf()
         self.config = dict()
-        #self.update_affinity_group()
         self.update_bestpath()
-        self.update_confederation()
-        #self.update_disable_policy_batching()
-        self.update_graceful_restart()
+        for pg in self.vrf_property_groups:
+            self.update_property_group(pg)
         self.update_graceful_shutdown()
-        #self.update_isolate()
-        self.update_neighbor_down()
-        #self.update_nexthop()
-        #self.update_rd()
         self.update_timers()
         self.update_vrf_atomic()
         if len(self.bgp_neighbors_list_vrf) != 0:
