@@ -33,9 +33,11 @@ def ipv4_neighbors(pb):
     # Since disable_policy_batching_* is not supported
     # under vrf config, it will not be cleared by
     # task.add_vrf(), and will be added to the global
-    # bgp config when task.update() is called.
+    # bgp config in the default vrf when task.update()
+    # is called.
     task.disable_policy_batching_ipv4_prefix_list = 'IPV4_DPB'
     task.disable_policy_batching_nexthop = True
+
 
     # Since bestpath_* is supported under vrf config, it
     # will be cleared by task.add_vrf() after it has
@@ -106,6 +108,26 @@ def ipv4_neighbors(pb):
 
     task.vrf = 'VRF_2'
     task.add_vrf()
+
+    # If a global property is supported within a vrf, add_vrf()
+    # will add that property under vrf config.  So we need to
+    # add all non-default vrfs before adding global properties
+    # that are intended for the default vrf.
+    # Perhaps a better strategy (at least less confusing and less
+    # prone to error) would be to create separate NxosBgpGlobal()
+    # tasks; one for adding non-default vrf configs, and one for
+    # adding default vrf configs.  
+    task.affinity_group_group_id = 200
+    task.graceful_restart_helper = True
+    task.graceful_restart_restart_time = 5
+    task.graceful_restart_set = True
+    task.graceful_restart_stalepath_time = 3
+    task.isolate_include_local = False
+    task.isolate_set = False
+    task.neighbor_down_fib_accelerate = True
+    task.nexthop_suppress_default_resolution = True
+    task.rd_dual = True
+    task.rd_id = 65023
 
     # add another bgp neighbor into the global/default vrf
     task.neighbor_address = '10.4.4.0/24'
