@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -14,7 +14,7 @@ NxosBgpGlobal()
 
 Version
 -------
-104
+106
 
 Status
 ------
@@ -1928,7 +1928,12 @@ class NxosBgpGlobal(Task):
     def update_property_group(self, pg):
         '''
         update groups of properties whose structure is
-        a single-level dictionary
+        a single-level dictionary.
+        Called from:
+            add_bgp_neighbor()
+            add_vrf_bgp_neighbor()
+            add_vrf()
+            update()
         '''
         d = dict()
         for p in self.properties_set:
@@ -1949,7 +1954,8 @@ class NxosBgpGlobal(Task):
                     mapped_pg = pg
                 self.bgp_neighbor_dict[mapped_pg] = deepcopy(d)
             else:
-                self.task_log.error('unknown property group: {}'.format(property_group))
+                self.task_log.error('exiting. Unknown property group: {}'.format(property_group))
+                exit(1)
 
     def update(self):
         '''
