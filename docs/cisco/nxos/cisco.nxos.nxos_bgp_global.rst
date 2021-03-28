@@ -8,7 +8,7 @@ NxosBgpGlobal()
 
 Version
 -------
-106
+107
 
 Status
 ------

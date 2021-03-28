@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -14,7 +14,7 @@ NxosBgpGlobal()
 
 Version
 -------
-106
+107
 
 Status
 ------
@@ -1954,7 +1954,7 @@ class NxosBgpGlobal(Task):
                     mapped_pg = pg
                 self.bgp_neighbor_dict[mapped_pg] = deepcopy(d)
             else:
-                self.task_log.error('exiting. Unknown property group: {}'.format(property_group))
+                self.task_log.error('exiting. Unknown property group: {}'.format(pg))
                 exit(1)
 
     def update(self):
