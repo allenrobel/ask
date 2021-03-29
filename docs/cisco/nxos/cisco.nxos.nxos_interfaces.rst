@@ -8,7 +8,7 @@ NxosInterfaces()
 
 Version
 -------
-122
+123
 
 ScriptKit Synopsis
 ------------------

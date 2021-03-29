@@ -1,5 +1,5 @@
 # NxosInterfaces() - cisco/nxos/nxos_interfaces.py
-our_version = 122
+our_version = 123
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -13,7 +13,7 @@ NxosInterfaces()
 
 Version
 -------
-122
+123
 
 ScriptKit Synopsis
 ------------------
@@ -335,7 +335,7 @@ class NxosInterfaces(Task):
     def add_interface(self):
         self.verify_interface_properties()
         d = dict()
-        for p in self.properties_set:
+        for p in self.interface_properties:
             if self.properties[p] != None:
                 d[p] = self.properties[p]
         if len(d) == 0:
