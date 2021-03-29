@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_l3_interfaces.py
-our_version = 106
+our_version = 107
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -25,58 +25,50 @@ def add_task_name(task):
     for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
-def dual_stack_interface(pb):
-    task = NxosL3Interfaces(log)
+def dual_stack_interface(task):
     task.name = 'Ethernet1/32'
     task.ipv4_address = '10.1.1.1/24'
-    #task.ipv4_secondary = False
     task.ipv4_tag = 10
-    # call add_task_name() before
-    # calling task.add_ipv4() and task.add_ipv6()
-    # if you want address info to be displayed
-    # as the playbook runs.
-    add_task_name(task)
     task.add_ipv4()
     task.ipv4_address = '10.2.1.1/24'
     task.ipv4_tag = 20
-    #task.ipv4_secondary = False
+    #task.ipv4_secondary = False # negative test
     task.ipv4_secondary = True
-    # You can call add_task_name() multiple times.
-    # Each call is additive.
-    add_task_name(task)
     task.add_ipv4()
     task.ipv6_address = '2001:aaaa::1/64'
     task.ipv6_tag = 10
-    add_task_name(task)
     task.add_ipv6()
     task.ipv6_address = '2001:bbbb::1/64'
     task.ipv6_tag = 20
-    add_task_name(task)
     task.add_ipv6()
-    task.state = 'merged'
-    task.update()
-    pb.add_task(task)
+    task.append_to_task_name('{} dual-stack'.format(task.name))
+    task.add_interface()
 
 def ipv4_interface(pb):
-    task = NxosL3Interfaces(log)
     task.name = 'Ethernet1/33'
     task.ipv4_address = '10.1.2.1/24'
     task.redirects = False
     task.unreachables = False
-    task.state = 'replaced'
-    add_task_name(task)
     task.add_ipv4()
-    task.update()
-    pb.add_task(task)
+    task.append_to_task_name('{} ipv4'.format(task.name))
+    task.add_interface()
 
 def ipv6_interface(pb):
-    task = NxosL3Interfaces(log)
     task.name = 'Ethernet1/34'
     task.ipv6_address = '2001:cccc::1/64'
     task.ipv6_tag = 30
-    task.state = 'replaced'
-    add_task_name(task)
     task.add_ipv6()
+    task.append_to_task_name('{} ipv6'.format(task.name))
+    task.add_interface()
+
+def add_task_deleted(pb):
+    task = NxosL3Interfaces(log)
+    task.append_to_task_name('clear L3 interface config')
+    for port in [32,33,34]:
+        task.name = 'Ethernet1/{}'.format(port)
+        task.append_to_task_name(task.name)
+        task.add_interface()
+    task.state = 'deleted'
     task.update()
     pb.add_task(task)
 
@@ -96,10 +88,17 @@ def add_task_parsed(pb):
     pb.add_task(task)
 
 pb = playbook()
+add_task_deleted(pb)
 
-dual_stack_interface(pb)
-ipv4_interface(pb)
-ipv6_interface(pb)
+task = NxosL3Interfaces(log)
+task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+dual_stack_interface(task)
+ipv4_interface(task)
+ipv6_interface(task)
+task.state = 'merged'
+task.update()
+pb.add_task(task)
+
 #add_task_parsed(pb)
 
 pb.append_playbook()

@@ -6,6 +6,10 @@ NxosL3Interfaces()
    :local:
    :depth: 1
 
+Version
+-------
+110
+
 ScriptKit Synopsis
 ------------------
 - NxosL3Interfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_l3_interfaces
@@ -25,25 +29,48 @@ ScriptKit Example
 ================================    ==============================================
 User Methods                        Description
 ================================    ==============================================
-add_ipv4()                          Append ivp4 properties to the ipv4
-                                    attributes list and reset the properties
-                                    to None::
+add_interface()                         Add an interface to the configuration::
 
-                                        - Example:
-
-                                            pb = Playbook(log_instance)
-                                            task = NxosL3Interfaces(log_instance)
-                                            task.name = 'Ethernet1/49'
-                                            task.ipv4_address = '10.1.1.1/24'
-                                            task.ipv4_tag = 10
-                                            task.add_ipv4()
-                                            task.ipv4_address = '10.2.1.1/24'
-                                            task.ipv4_tag = 20
-                                            task.ipv4_secondary = 'yes'
-                                            task.add_ipv4()
-                                            task.state = 'merged'
-                                            task.update()
-                                            pb.add_task(task)
+                                            - Type: function()
+                                            - Example:
+                                                #!/usr/bin/env python3
+                                                # Ethernet1/1 - ipv4 interface with secondary
+                                                # Vlan3 - dual-stack interface
+                                                from ask.cisco.nxos.nxos_l3_interfaces import NxosL3Interfaces
+                                                from ask.common.log import Log
+                                                from ask.common.playbook import Playbook
+                                                log_level_console = 'INFO'
+                                                log_level_file = 'DEBUG'
+                                                log = Log('my_log', log_level_console, log_level_file)
+                                                pb = Playbook(log)
+                                                pb.profile_nxos()
+                                                pb.ansible_password = 'mypassword'
+                                                pb.name = 'Example nxos_l3_interfaces'
+                                                pb.add_host('dc-101')
+                                                pb.file = '/tmp/nxos_l3_interfaces.yaml'
+                                                task = NxosL3Interfaces(log)
+                                                task.name = 'Ethernet1/1'
+                                                task.ipv4_address = '10.1.1.1/24'
+                                                task.ipv4_tag = 10
+                                                task.add_ipv4()
+                                                task.ipv4_address = '10.2.1.1/24'
+                                                task.ipv4_tag = 20
+                                                task.ipv4_secondary = True
+                                                task.add_ipv4()
+                                                task.add_interface()
+                                                task.name = 'Vlan3'
+                                                task.ipv4_address = '10.3.1.1/24'
+                                                task.ipv4_tag = 10
+                                                task.add_ipv4()
+                                                task.ipv6_address = '2001:cccc::1/64'
+                                                task.ipv6_tag = 10
+                                                task.add_ipv6()
+                                                task.add_interface()
+                                                task.state = 'merged'
+                                                task.update()
+                                                pb.add_task(task)
+                                                pb.append_playbook()
+                                                pb.write_playbook()
 
                                         - Resulting playbook task:
 
@@ -54,7 +81,48 @@ add_ipv4()                          Append ivp4 properties to the ipv4
                                                         -   address: 10.1.1.1/24
                                                             tag: 10
                                                         -   address: 10.2.1.1/24
-                                                            secondary: 'yes'
+                                                            secondary: true
+                                                            tag: 20
+                                                        name: Ethernet1/1
+                                                    -   ipv4:
+                                                        -   address: 10.3.1.1/24
+                                                            tag: 10
+                                                        ipv6:
+                                                        -   address: 2001:cccc::1/64
+                                                            tag: 10
+                                                        name: Vlan3
+                                                    state: merged
+
+add_ipv4()                          Append ivp4 properties to the ipv4
+                                    attributes list and reset the properties
+                                    to None::
+
+                                        - Type: function()
+                                        - Example (see add_interface() for full example):
+
+                                            task = NxosL3Interfaces(log)
+                                            task.name = 'Ethernet1/49'
+                                            task.ipv4_address = '10.1.1.1/24'
+                                            task.ipv4_tag = 10
+                                            task.add_ipv4()
+                                            task.ipv4_address = '10.2.1.1/24'
+                                            task.ipv4_tag = 20
+                                            task.ipv4_secondary = True
+                                            task.add_ipv4()
+                                            task.add_interface()
+                                            task.state = 'merged'
+                                            task.update()
+
+                                        - Resulting playbook task:
+
+                                            tasks:
+                                            -   cisco.nxos.nxos_l3_interfaces:
+                                                    config:
+                                                    -   ipv4:
+                                                        -   address: 10.1.1.1/24
+                                                            tag: 10
+                                                        -   address: 10.2.1.1/24
+                                                            secondary: true
                                                             tag: 20
                                                         name: Ethernet1/49
                                                     state: merged
@@ -63,10 +131,9 @@ add_ipv6()                          Append ivp6 properties to ipv6
                                     attributes list and reset the properties
                                     to None::
 
-                                        - Example:
+                                        - Type: function()
+                                        - Example (see add_interface() for full example):
 
-                                            pb = Playbook(log_instance)
-                                            task = NxosL3Interfaces(log_instance)
                                             task.name = 'Ethernet1/49'
                                             task.ipv6_address = '2001:aaaa::1/64'
                                             task.ipv6_tag = 10
@@ -74,19 +141,22 @@ add_ipv6()                          Append ivp6 properties to ipv6
                                             task.ipv6_address = '2001:bbbb::1/64'
                                             task.ipv6_tag = 20
                                             task.add_ipv6()
+                                            task.add_interface()
                                             task.state = 'merged'
                                             task.update()
-                                            pb.add_task(task)
 
                                         - Resulting playbook task:
-                                            config:
-                                            -   ipv6:
-                                                -   address: 2001:aaaa::1/64
-                                                    tag: 10
-                                                -   address: 2001:bbbb::1/64
-                                                    tag: 20
-                                                name: Ethernet1/49
-                                            state: merged
+
+                                            tasks:
+                                            -   cisco.nxos.nxos_l3_interfaces:
+                                                    config:
+                                                    -   ipv6:
+                                                        -   address: 2001:aaaa::1/64
+                                                            tag: 10
+                                                        -   address: 2001:bbbb::1/64
+                                                            tag: 20
+                                                        name: Ethernet1/49
+                                                    state: merged
 
 ================================    ==============================================
 
@@ -120,7 +190,9 @@ ipv4_address                        ipv4 interface address::
 ipv4_secondary                      ipv4_address is a secondary address::
 
                                         - Type: bool()
-                                        - Valid values: False, True
+                                        - Valid values:
+                                            - False
+                                            - True
                                         - Example:
                                             task.ipv4_secondary = True
 
@@ -145,7 +217,9 @@ ipv6_tag                            URIB route tag value for local/direct ipv6 r
 redirects                           Enables/disables ipv4 redirects::
 
                                         - Type: bool()
-                                        - Valid values: False, True
+                                        - Valid values:
+                                            - False
+                                            - True
                                         - Example:
                                             task.redirects = False
 
@@ -187,7 +261,9 @@ task_name                           Name of the task. Ansible will display this
 unreachables                        Enables/disables ip ICMP unreachables::
 
                                         - Type: bool()
-                                        - Valid values: False, True
+                                        - Valid values:
+                                            - False
+                                            - True
                                         - Example:
                                             task.unreachables = True
                                         
@@ -199,3 +275,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+
