@@ -6,6 +6,10 @@ NxosInterfaces()
    :local:
    :depth: 1
 
+Version
+-------
+122
+
 ScriptKit Synopsis
 ------------------
 - NxosInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_interfaces
@@ -19,6 +23,46 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_interfaces.py>`_
 
+
+|
+
+====================================    ==============================================
+Method                                  Description
+====================================    ==============================================
+add_interface()                         Add an interface to the configuration::
+
+                                            - Type: function()
+                                            - Example:
+                                                #!/usr/bin/env python3
+                                                # Configure one ethernet and one SVI interface
+                                                from ask.cisco.nxos.nxos_interfaces import NxosInterfaces
+                                                from ask.common.log import Log
+                                                from ask.common.playbook import Playbook
+                                                log_level_console = 'INFO'
+                                                log_level_file = 'DEBUG'
+                                                log = Log('my_log', log_level_console, log_level_file)
+                                                pb = Playbook(log)
+                                                pb.profile_nxos()
+                                                pb.ansible_password = 'mypassword'
+                                                pb.name = 'Example nxos_interfaces'
+                                                pb.add_host('dc-101')
+                                                pb.file = '/tmp/nxos_interfaces.yaml'
+                                                task = NxosInterfaces(log)
+                                                task.name = 'Ethernet1/1'
+                                                task.enabled = True
+                                                task.mode = 'layer3'
+                                                task.mtu = 9216
+                                                task.add_interface()
+                                                task.name = 'Vlan2'
+                                                task.enabled = True
+                                                task.add_interface()
+                                                task.state = 'merged'
+                                                task.update()
+                                                pb.add_task(task)
+                                                pb.append_playbook()
+                                                pb.write_playbook()
+
+====================================    ==============================================
 
 |
 
@@ -161,3 +205,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+

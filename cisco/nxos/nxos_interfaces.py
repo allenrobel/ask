@@ -1,5 +1,5 @@
 # NxosInterfaces() - cisco/nxos/nxos_interfaces.py
-our_version = 121
+our_version = 122
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -10,6 +10,10 @@ NxosInterfaces()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+122
 
 ScriptKit Synopsis
 ------------------
@@ -24,6 +28,46 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_interfaces.py>`_
 
+
+|
+
+====================================    ==============================================
+Method                                  Description
+====================================    ==============================================
+add_interface()                         Add an interface to the configuration::
+
+                                            - Type: function()
+                                            - Example:
+                                                #!/usr/bin/env python3
+                                                # Configure one ethernet and one SVI interface
+                                                from ask.cisco.nxos.nxos_interfaces import NxosInterfaces
+                                                from ask.common.log import Log
+                                                from ask.common.playbook import Playbook
+                                                log_level_console = 'INFO'
+                                                log_level_file = 'DEBUG'
+                                                log = Log('my_log', log_level_console, log_level_file)
+                                                pb = Playbook(log)
+                                                pb.profile_nxos()
+                                                pb.ansible_password = 'mypassword'
+                                                pb.name = 'Example nxos_interfaces'
+                                                pb.add_host('dc-101')
+                                                pb.file = '/tmp/nxos_interfaces.yaml'
+                                                task = NxosInterfaces(log)
+                                                task.name = 'Ethernet1/1'
+                                                task.enabled = True
+                                                task.mode = 'layer3'
+                                                task.mtu = 9216
+                                                task.add_interface()
+                                                task.name = 'Vlan2'
+                                                task.enabled = True
+                                                task.add_interface()
+                                                task.state = 'merged'
+                                                task.update()
+                                                pb.add_task(task)
+                                                pb.append_playbook()
+                                                pb.write_playbook()
+
+====================================    ==============================================
 
 |
 
@@ -176,22 +220,27 @@ class NxosInterfaces(Task):
         self.lib_version = our_version
         self.class_name = __class__.__name__
 
+        self.interface_list = list()
+
+        self.interface_properties = set()
+        self.interface_properties.add('description')
+        self.interface_properties.add('duplex')
+        self.interface_properties.add('enabled')
+        self.interface_properties.add('fabric_forwarding_anycast_gateway')
+        self.interface_properties.add('ip_forward')
+        self.interface_properties.add('mode')
+        self.interface_properties.add('mtu')
+        self.interface_properties.add('name')
+        self.interface_properties.add('speed')
+
         self.properties_set = set()
-        self.properties_set.add('description')
-        self.properties_set.add('duplex')
-        self.properties_set.add('enabled')
-        self.properties_set.add('fabric_forwarding_anycast_gateway')
-        self.properties_set.add('ip_forward')
-        self.properties_set.add('mode')
-        self.properties_set.add('mtu')
-        self.properties_set.add('name')
-        self.properties_set.add('speed')
+        self.properties_set.update(self.interface_properties)
+        self.properties_set.add('state')
 
         # scriptkit_properties can be used by scripts when
         # setting task_name. See Task().append_to_task_name()
         self.scriptkit_properties = set()
         self.scriptkit_properties.update(self.properties_set)
-        self.scriptkit_properties.add('state')
 
         self.nxos_interfaces_valid_duplex = set()
         self.nxos_interfaces_valid_duplex.add('full')
@@ -241,22 +290,12 @@ class NxosInterfaces(Task):
             self.verify_nxos_interfaces_mtu(self.mtu, 'mtu')
 
     def final_verification(self):
-        if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
-            exit(1)
-        if self.mode == 'layer2' and self.ip_forward == 'enable':
-            self.task_log.error('exiting. mode is layer2 and ip_forward is enable.  Either set mode to layer3 or set ip_forward to either None or no')
-            exit(1)
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
-        if self.duplex != None and self.speed == None:
-            self.task_log.error('exiting. If duplex is set, speed must also be set.')
+        if len(self.interface_list) == 0:
+            self.task_log.error('exiting. call instance.add_interface() at least once before calling instance.update()')
             exit(1)
-        if self.fabric_forwarding_anycast_gateway != None and not self.is_vlan_interface(self.name):
-            self.task_log.error('exiting. If fabric_forwarding_anycast_gateway is set, name must be an SVI.')
-            exit(1)
-        self.final_verification_mtu()
 
     def update(self):
         '''
@@ -265,40 +304,71 @@ class NxosInterfaces(Task):
         '''
         self.final_verification()
 
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = dict()
+        self.ansible_task[self.ansible_module]['state'] = self.state
+        self.ansible_task[self.ansible_module]['config'] = deepcopy(self.interface_list)
+        if self.task_name != None:
+            self.ansible_task['name'] = self.task_name
+
+    def verify_interface_properties(self):
+        if self.name == None:
+            self.task_log.error('exiting. call instance.name before calling instance.add_interface()')
+            exit(1)
+        if self.mode == 'layer2' and self.ip_forward == 'enable':
+            self.task_log.error('exiting. mode is layer2 and ip_forward is enabled.  Either set mode to layer3 or set ip_forward to either None or no')
+            exit(1)
+        if self.duplex != None and self.speed == None:
+            self.task_log.error('exiting. If duplex is set, speed must also be set.')
+            exit(1)
+        if self.fabric_forwarding_anycast_gateway != None and not self.is_vlan_interface(self.name):
+            self.task_log.error('exiting. If fabric_forwarding_anycast_gateway is set, name must be an SVI.')
+            exit(1)
+        self.final_verification_mtu()
+        if self.speed != None and not self.is_ethernet_interface(self.name):
+            self.task_log.error('exiting. If instance.speed is set, instance.name must be an ethernet interface.')
+            exit(1)
+
+    def init_interface_properties(self):
+        for p in self.interface_properties:
+            self.properties[p] = None
+    def add_interface(self):
+        self.verify_interface_properties()
         d = dict()
         for p in self.properties_set:
             if self.properties[p] != None:
                 d[p] = self.properties[p]
-        self.ansible_task = dict()
-        self.ansible_task[self.ansible_module] = dict()
-        self.ansible_task[self.ansible_module]['state'] = self.state
-        self.ansible_task[self.ansible_module]['config'] = list()
-        self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
-        if self.task_name != None:
-            self.ansible_task['name'] = self.task_name
+        if len(d) == 0:
+            self.task_log.error('exiting. Set at least instance.name before calling task.add_interface().')
+            exit(1)
+        self.interface_list.append(deepcopy(d))
+        self.init_interface_properties()
 
     def verify_nxos_interfaces_state(self, x, parameter='state'):
-        if x in self.nxos_interfaces_valid_state:
+        verify_set = self.nxos_interfaces_valid_state
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_interfaces_state'
-        expectation = ','.join(self.nxos_interfaces_valid_state)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_interfaces_duplex(self, x, parameter='duplex'):
-        if x in self.nxos_interfaces_valid_duplex:
+        verify_set = self.nxos_interfaces_valid_duplex
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_interfaces_duplex'
-        expectation = ','.join(self.nxos_interfaces_valid_duplex)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_interfaces_mode(self, x, parameter='mode'):
-        if x in self.nxos_interfaces_valid_mode:
+        verify_set = self.nxos_interfaces_valid_mode
+        if x in verify_set:
             return
         source_class = self.class_name
         source_method = 'verify_nxos_interfaces_mode'
-        expectation = ','.join(self.nxos_interfaces_valid_mode)
+        expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
     def verify_nxos_interfaces_mtu(self, x, parameter='verify_nxos_interfaces_mtu'):
