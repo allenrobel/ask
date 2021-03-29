@@ -1,5 +1,5 @@
 # NxosBgpAf() - cisco/nxos/nxos_bgp_af.py
-our_version = 115
+our_version = 116
 
 from copy import deepcopy
 import re
@@ -12,6 +12,10 @@ NxosBgpAf()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+116
 
 ScriptKit Synopsis
 ------------------
@@ -443,6 +447,7 @@ class NxosBgpAf(Task):
         self.properties_set.add('networks')
         self.properties_set.add('next_hop_route_map')
         self.properties_set.add('redistribute')
+        self.properties_set.add('retain_route_target')
         self.properties_set.add('safi')
         self.properties_set.add('suppress_inactive')
         self.properties_set.add('table_map')
@@ -487,7 +492,7 @@ class NxosBgpAf(Task):
         '''
         The ansible nxos_bgp_af module (perhaps incorrectly),
         tests for mutual-exclusivity even if values for the
-        properties in self.dampening_set set to 'default'.
+        properties in self.dampening_set are set to 'default'.
         If the ansible module ever corrects this (assuming it
         is not correct), we can change the if statement below
         to:
@@ -882,6 +887,16 @@ class NxosBgpAf(Task):
         if self.set_none(x, parameter):
             return
         self.verify_list_of_list(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def retain_route_target(self):
+        return self.properties['retain_route_target']
+    @retain_route_target.setter
+    def retain_route_target(self, x):
+        parameter = 'retain_route_target'
+        if self.set_none(x, parameter):
+            return
         self.properties[parameter] = x
 
     @property

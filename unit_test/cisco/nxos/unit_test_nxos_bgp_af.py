@@ -112,6 +112,18 @@ def maximum_paths(pb, asn, afi, safi, vrf):
     task.update()
     pb.add_task(task)
 
+def retain_route_target(pb, asn, afi, safi, vrf):
+    task = NxosBgpAf(log)
+    task.asn = asn
+    task.afi = afi
+    task.safi = safi
+    task.vrf = vrf
+    task.retain_route_target = 'all'
+    task.state = 'present'
+    task.task_name = add_task_name(task)
+    task.update()
+    pb.add_task(task)
+
 pb = playbook()
 
 asn = '2301.0'
@@ -123,12 +135,14 @@ networks(pb, asn, afi, safi, vrf)
 maximum_paths(pb, asn, afi, safi, vrf)
 dampening_default(pb, asn, afi, safi, vrf)
 dampening_non_default(pb, asn, afi, safi, vrf)
+retain_route_target(pb, asn, afi, safi, vrf)
 afi = 'ipv6'
 additional_paths_install(pb, asn, afi, safi, vrf)
 networks(pb, asn, afi, safi, vrf)
 maximum_paths(pb, asn, afi, safi, vrf)
 dampening_default(pb, asn, afi, safi, vrf)
 dampening_non_default(pb, asn, afi, safi, vrf)
+retain_route_target(pb, asn, afi, safi, vrf)
 
 pb.append_playbook()
 pb.write_playbook()

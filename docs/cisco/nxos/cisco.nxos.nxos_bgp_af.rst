@@ -6,6 +6,10 @@ NxosBgpAf()
    :local:
    :depth: 1
 
+Version
+-------
+116
+
 ScriptKit Synopsis
 ------------------
 - NxosBgpAf() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_bgp_af
@@ -372,3 +376,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+
