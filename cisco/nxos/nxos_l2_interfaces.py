@@ -1,5 +1,5 @@
 # NxosL2Interfaces() - cisco/nxos/nxos_l2_interfaces.py
-our_version = 110
+our_version = 111
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -10,6 +10,10 @@ NxosL2Interfaces()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+111
 
 ScriptKit Synopsis
 ------------------
@@ -24,6 +28,47 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_l2_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_l2_interfaces.py>`_
 
+
+|
+
+====================================    ==============================================
+Method                                  Description
+====================================    ==============================================
+add_interface()                         Add an interface to the configuration::
+
+                                            - Type: function()
+                                            - Example:
+                                                #!/usr/bin/env python3
+                                                # Configure one access and one trunk interface
+                                                from ask.cisco.nxos.nxos_l2_interfaces import NxosL2Interfaces
+                                                from ask.common.log import Log
+                                                from ask.common.playbook import Playbook
+                                                log_level_console = 'INFO'
+                                                log_level_file = 'DEBUG'
+                                                log = Log('my_log', log_level_console, log_level_file)
+                                                pb = Playbook(log)
+                                                pb.profile_nxos()
+                                                pb.ansible_password = 'mypassword'
+                                                pb.name = 'Example nxos_l2_interfaces'
+                                                pb.add_host('dc-101')
+                                                pb.file = '/tmp/nxos_l2_interfaces.yaml'
+                                                task = NxosL2Interfaces(log)
+                                                task.name = 'Ethernet1/1'
+                                                task.mode = 'access'
+                                                task.vlan = 11
+                                                task.add_interface()
+                                                task.name = 'Ethernet1/10'
+                                                task.mode = 'trunk'
+                                                task.native_vlan = 10
+                                                task.allowed_vlans = '11,12,13'
+                                                task.add_interface()
+                                                task.state = 'merged'
+                                                task.update()
+                                                pb.add_task(task)
+                                                pb.append_playbook()
+                                                pb.write_playbook()
+
+====================================    ==============================================
 
 |
 
@@ -123,20 +168,25 @@ class NxosL2Interfaces(Task):
         self.lib_version = our_version
         self.class_name = __class__.__name__
 
+        self.interface_list = list()
+
+        self.interface_properties = set()
+        self.interface_properties.add('allowed_vlans')
+        self.interface_properties.add('mode')
+        self.interface_properties.add('native_vlan')
+        self.interface_properties.add('vlan')
+        self.interface_properties.add('name')
+
         self.properties_set = set()
-        self.properties_set.add('allowed_vlans')
-        self.properties_set.add('mode')
-        self.properties_set.add('native_vlan')
+        self.properties_set.update(self.interface_properties)
         self.properties_set.add('register')
         self.properties_set.add('running_config')
-        self.properties_set.add('vlan')
-        self.properties_set.add('name')
+        self.properties_set.add('state')
 
         # scriptkit_properties can be used by scripts when
         # setting task_name. See Task().append_to_task_name()
         self.scriptkit_properties = set()
         self.scriptkit_properties.update(self.properties_set)
-        self.scriptkit_properties.add('state')
 
         self.nxos_l2_interfaces_valid_mode = set()
         self.nxos_l2_interfaces_valid_mode.add('access')
@@ -165,20 +215,18 @@ class NxosL2Interfaces(Task):
         self.properties = dict()
         for p in self.properties_set:
             self.properties[p] = None
-        self.properties['state'] = None
         self.properties['task_name'] = None
 
     def final_verification(self):
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
-        if self.name == None and self.running_config == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
-            exit(1)
         if self.running_config != None and self.state != 'parsed':
             self.task_log.error('exiting. if running_config is set, state must be set to parsed')
             exit(1)
-
+        if len(self.interface_list) == 0 and self.running_config == None:
+            self.task_log.error('exiting. call instance.add_interface() at least once before calling instance.update()')
+            exit(1)
 
     def update(self):
         '''
@@ -187,22 +235,10 @@ class NxosL2Interfaces(Task):
         '''
         self.final_verification()
 
-        d = dict()
-        if self.mode != None:
-            d['mode'] = self.mode
-        d['name'] = self.name
-        access = self.add_access()
-        trunk = self.add_trunk()
-        if access != False:
-            d['access'] = access
-        if trunk != False:
-            d['trunk'] = trunk
-
         self.ansible_task = dict()
         self.ansible_task[self.ansible_module] = dict()
         if self.running_config == None:
-            self.ansible_task[self.ansible_module]['config'] = list()
-            self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
+            self.ansible_task[self.ansible_module]['config'] = self.interface_list
         self.ansible_task[self.ansible_module]['state'] = self.state
         if self.running_config != None:
             self.ansible_task[self.ansible_module]['running_config'] = self.make_running_config()
@@ -213,6 +249,31 @@ class NxosL2Interfaces(Task):
 
     def make_running_config(self):
         return r'{{' +  " lookup(" + r'"file"' + ',' + r'"' + self.running_config + r'"' + ')' + r' }}'
+
+    def verify_interface_properties(self):
+        if self.name == None:
+            self.task_log.error('exiting. call instance.name before calling instance.add_interface()')
+            exit(1)
+    def init_interface_properties(self):
+        for p in self.interface_properties:
+            self.properties[p] = None
+    def add_interface(self):
+        self.verify_interface_properties()
+        d = dict()
+        if self.mode != None:
+            d['mode'] = self.mode
+        d['name'] = self.name
+        access = self.add_access()
+        trunk = self.add_trunk()
+        if access != False:
+            d['access'] = access
+        if trunk != False:
+            d['trunk'] = trunk
+        if len(d) == 0:
+            self.task_log.error('exiting. Set at least instance.name before calling task.add_interface().')
+            exit(1)
+        self.interface_list.append(deepcopy(d))
+        self.init_interface_properties()
 
     def verify_nxos_l2_interfaces_native_vlan(self, x, parameter='native_vlan'):
         source_class = self.class_name

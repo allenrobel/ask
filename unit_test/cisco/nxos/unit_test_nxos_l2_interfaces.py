@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_l2_interfaces.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -25,30 +25,30 @@ def add_task_name(task):
     for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
-def add_task_access_interface(pb):
-    task = NxosL2Interfaces(log)
-    task.name = 'Ethernet1/11'
-    task.mode = 'access'
-    task.vlan = 11
-    task.state = 'merged'
-    add_task_name(task)
-    task.update()
-    pb.add_task(task)
+def add_access_interfaces(task):
+    for port in range(1,6):
+        task.name = 'Ethernet1/{}'.format(port)
+        task.mode = 'access'
+        task.vlan = port + 220
+        task.append_to_task_name('[{} : {}]'.format(task.name, task.vlan))
+        task.add_interface()
 
-def add_task_trunk_interface(pb):
-    task = NxosL2Interfaces(log)
-    task.name = 'Ethernet1/10'
-    task.mode = 'trunk'
-    task.native_vlan = 10
-    task.allowed_vlans = '11,12,13'
-    task.state = 'merged'
-    add_task_name(task)
-    task.update()
-    pb.add_task(task)
+def add_trunk_interfaces(task):
+    allowed_vlan_base = 100
+    for port in range(10,16):
+        task.name = 'Ethernet1/{}'.format(port)
+        task.mode = 'trunk'
+        task.native_vlan = 10
+        allowed_vlans = [str(x) for x in range(allowed_vlan_base, allowed_vlan_base+4)]
+        task.allowed_vlans = ','.join(allowed_vlans)
+        task.append_to_task_name('[{} : {}]'.format(task.name, task.allowed_vlans))
+        task.add_interface()
+        allowed_vlan_base += 4
 
 def add_task_deleted(pb):
     task = NxosL2Interfaces(log)
     task.name = 'Vlan10'
+    task.add_interface()
     task.state = 'deleted'
     add_task_name(task)
     task.update()
@@ -71,8 +71,12 @@ def add_task_parsed(pb):
 
 
 pb = playbook()
-add_task_access_interface(pb)
-add_task_trunk_interface(pb)
+task = NxosL2Interfaces(log)
+add_access_interfaces(task)
+add_trunk_interfaces(task)
+task.state = 'merged'
+task.update()
+pb.add_task(task)
 add_task_deleted(pb)
 add_task_parsed(pb)
 pb.append_playbook()
