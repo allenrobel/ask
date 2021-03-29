@@ -92,45 +92,42 @@ def add_general_parameters(task):
     task.passive_interface = False
     #task.priority = 10
 
-def add_ospf_interface(pb):
+def configure_ospf(pb):
     task = NxosOspfInterfaces(log)
-    task.task_name = '{} {}'.format(ansible_host, ansible_module)
-    add_general_parameters(task)
-    add_timers(task)
-    add_afi_ipv4(task)
-    task.add_address_family()
-
-    add_afi_ipv6(task)
-    task.add_address_family()
-
-    #task.instance = 1
-    task.name = 'Ethernet1/7'
+    task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
+    task.append_to_task_name('Configure OSPF interface:')
+    for port in range(1,6):
+        task.name = 'Ethernet1/{}'.format(port)
+        add_general_parameters(task)
+        add_timers(task)
+        add_afi_ipv4(task)
+        task.add_address_family()
+        add_afi_ipv6(task)
+        task.add_address_family()
+        #task.instance = 1
+        task.append_to_task_name(task.name)
+        task.add_interface()
     task.state = 'merged'
-    # Since add_process() and add_address_family()
-    # reset properties to None, and add_task_name()
-    # skips null properties, this will not include
-    # all property values in the task name.
-    add_task_name(task)
     task.update()
     pb.add_task(task)
 
-def task_nxos_ospf_interfaces_shutdown(pb):
-        task = NxosOspfInterfaces(log)
-        task.name = 'Ethernet1/8'
+def shutdown_ospf_process(pb):
+    task = NxosOspfInterfaces(log)
+    task.append_to_task_name('OSPF shutdown: ')
+    for port in range(6,11):
+        task.name = 'Ethernet1/{}'.format(port)
         task.afi = 'ipv4'
         task.shutdown = True
-        # We call add_task_name() prior to task.add_address_family() since 
-        # task.add_address_family() calls init_address_family() which
-        # initializes afi to None.
-        add_task_name(task)
         task.add_address_family()
-        task.state = 'merged'
-        task.update()
-        pb.add_task(task)
+        task.append_to_task_name(task.name)
+        task.add_interface()
+    task.state = 'merged'
+    task.update()
+    pb.add_task(task)
 
 pb = playbook()
-add_ospf_interface(pb)
-task_nxos_ospf_interfaces_shutdown(pb)
+configure_ospf(pb)
+shutdown_ospf_process(pb)
 pb.append_playbook()
 pb.write_playbook()
 log.info('wrote {}'.format(pb.file))

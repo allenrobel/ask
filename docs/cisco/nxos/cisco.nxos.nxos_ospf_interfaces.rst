@@ -27,6 +27,118 @@ Caveats
 
 |
 
+============================    ==============================================
+Method                          Description
+============================    ==============================================
+add_interface()                 Add an interface to the configuration::
+
+                                    - Type: function()
+                                    - Example:
+                                        #!/usr/bin/env python3
+                                        # Configure OSPF ipv4 and ipv6 afi on 5 interfaces
+                                        from ask.cisco.nxos.nxos_ospf_interfaces import NxosOspfInterfaces
+                                        from ask.common.log import Log
+                                        from ask.common.playbook import Playbook
+                                        log_level_console = 'INFO'
+                                        log_level_file = 'DEBUG'
+                                        log = Log('my_log', log_level_console, log_level_file)
+                                        pb = Playbook(log)
+                                        pb.profile_nxos()
+                                        pb.ansible_password = 'mypassword'
+                                        pb.name = 'Example nxos_ospf_interfaces'
+                                        pb.add_host('dc-101')
+                                        pb.file = '/tmp/nxos_ospf_interfaces.yaml'
+                                        task = NxosOspfInterfaces(log)
+                                        task.append_to_task_name('OSPF enable:')
+                                        for port in range(1,6):
+                                            task.name = 'Ethernet1/{}'.format(port)
+                                            # ospf general interface properties
+                                            task.mtu_ignore = False
+                                            task.network = 'point-to-point'
+                                            task.passive_interface = False
+
+                                            # ospf ipv4 afi
+                                            task.afi = 'ipv4'
+                                            task.cost = 100
+                                            task.process_area_id = 0
+                                            task.process_id = 1
+                                            task.add_process()
+                                            task.add_address_family()
+
+                                            # ospf ipv6 afi 
+                                            # Requires 'feature ospfv3' to be enabled
+                                            task.afi = 'ipv6'
+                                            task.cost = 100
+                                            task.process_area_id = 0
+                                            task.process_id = 1
+                                            task.add_process()
+                                            task.add_address_family()
+
+                                            task.append_to_task_name(task.name)
+                                            task.add_interface()
+                                        task.state = 'merged'
+                                        task.update()
+                                        pb.add_task(task)
+                                        pb.append_playbook()
+                                        pb.write_playbook()
+
+                                    - Resulting task (all but two interfaces removed)
+
+                                        tasks:
+                                        -   cisco.nxos.nxos_ospf_interfaces:
+                                                config:
+                                                -   address_family:
+                                                    -   afi: ipv4
+                                                        cost: 100
+                                                        mtu_ignore: false
+                                                        network: point-to-point
+                                                        passive_interface: false
+                                                        processes:
+                                                        -   area:
+                                                                area_id: 0
+                                                            process_id: '1'
+                                                    -   afi: ipv6
+                                                        cost: 100
+                                                        processes:
+                                                        -   area:
+                                                                area_id: 0
+                                                            process_id: '1'
+                                                    name: Ethernet1/1
+                                                -   address_family:
+                                                    -   afi: ipv4
+                                                        cost: 100
+                                                        mtu_ignore: false
+                                                        network: point-to-point
+                                                        passive_interface: false
+                                                        processes:
+                                                        -   area:
+                                                                area_id: 0
+                                                            process_id: '1'
+                                                    -   afi: ipv6
+                                                        cost: 100
+                                                        processes:
+                                                        -   area:
+                                                                area_id: 0
+                                                            process_id: '1'
+                                                    name: Ethernet1/2
+                                                state: merged
+                                            name: '[cisco.nxos.nxos_ospf_interfaces : v.106], OSPF enable:, Ethernet1/1,
+                                                Ethernet1/2, Ethernet1/3, Ethernet1/4, Ethernet1/5'
+
+add_process()                   Add an ospf process to an interface::
+
+                                    - Type: function()
+                                    - Example: See add_interface()
+
+add_address_family()            Add an ospf afi (ipv4 or ipv6) to an interface::
+
+                                    - Type: function()
+                                    - Example: See add_interface()
+
+============================    ==============================================
+
+|
+
 ======================================  ==================================================
 Module Properties                       Description
 ======================================  ==================================================
@@ -383,3 +495,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+
