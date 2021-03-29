@@ -29,7 +29,7 @@ ScriptKit Example
 - `unit_test/cisco/nxos/unit_test_nxos_hsrp_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_hsrp_interfaces.py>`_
 
 ================================    ==============================================
-Property                            Description
+Method                              Description
 ================================    ==============================================
 add_interface()                         Add an interface to the configuration::
 
