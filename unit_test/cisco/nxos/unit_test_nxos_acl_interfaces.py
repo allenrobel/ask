@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_acl_interfaces.py
-our_version = 106
+our_version = 107
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -24,35 +24,49 @@ def add_task_name(task):
     for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
-def ipv4_interface_acl(pb):
-    task = NxosAclInterfaces(log)
-    task.name = 'Ethernet1/36'
-    task.acl_name = 'IPv4_ACL'
+def ipv4_access_group(task):
+    task.acl_name = 'IPv4_ACL_IN'
+    task.append_to_task_name(task.acl_name)
+    task.acl_port = False
+    task.acl_direction = 'in'
+    task.add_acl()
+    task.acl_name = 'IPv4_ACL_OUT'
+    task.append_to_task_name(task.acl_name)
+    task.acl_port = False
+    task.acl_direction = 'out'
+    task.add_acl()
     task.afi = 'ipv4'
-    task.acl_port = False
-    task.acl_direction = 'in'
-    task.state = 'merged'
-    add_task_name(task)
-    task.commit()
-    pb.add_task(task)
+    task.add_access_group()
 
-def ipv6_interface_acl(pb):
-    task = NxosAclInterfaces(log)
-    task.name = 'Ethernet1/36'
-    task.acl_name = 'IPv6_ACL'
-    task.afi = 'ipv6'
+def ipv6_access_group(task):
+    task.acl_name = 'IPv6_ACL_IN'
+    task.append_to_task_name(task.acl_name)
     task.acl_port = False
     task.acl_direction = 'in'
-    task.state = 'merged'
-    add_task_name(task)
-    task.commit()
-    pb.add_task(task)
+    task.add_acl()
+    task.acl_name = 'IPv6_ACL_OUT'
+    task.append_to_task_name(task.acl_name)
+    task.acl_port = False
+    task.acl_direction = 'out'
+    task.add_acl()
+    task.afi = 'ipv6'
+    task.add_access_group()
+
+def config_acl_interfaces(task):
+    for port in [3,4]:
+        ipv4_access_group(task)
+        ipv6_access_group(task)
+        task.name = 'Ethernet1/{}'.format(port)
+        task.append_to_task_name(task.name)
+        task.add_interface()
+
+task = NxosAclInterfaces(log)
+config_acl_interfaces(task)
+task.state = 'merged'
+task.commit()
 
 pb = playbook()
-
-ipv4_interface_acl(pb)
-ipv6_interface_acl(pb)
-
+pb.add_task(task)
 pb.append_playbook()
 pb.write_playbook()
 log.info('wrote playbook {}'.format(pb.file))

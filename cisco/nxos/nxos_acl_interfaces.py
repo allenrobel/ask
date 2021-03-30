@@ -1,5 +1,5 @@
 # NxosAclInterfaces() - cisco/nxos/nxos_acl_interfaces.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -9,7 +9,7 @@ NxosAclInterfaces()
 
 Version
 -------
-106
+107
 
 ScriptKit Synopsis
 ------------------
@@ -26,29 +26,104 @@ Ansible Module Documentation
 
 |
 
-========================    ============================================
-Method                      Description
-========================    ============================================
-commit()                    Perform final verification and commit the 
-                            current task::
-                                - Type: function()
-                                - Alias: update()
-                                - Example:
-                                    # see ScriptKit Example above for
-                                    # full script
-                                    pb = Playbook(log)
-                                    task = NxosAclInterfaces(log)
-                                    task.name = 'Ethernet1/36'
-                                    task.acl_name = 'IPv4_ACL'
-                                    task.afi = 'ipv4'
-                                    task.acl_port = False
-                                    task.acl_direction = 'in'
-                                    task.state = 'merged'
-                                    add_task_name(task)
-                                    task.commit()
-                                    pb.add_task(task)
+====================    ============================================
+Method                  Description
+====================    ============================================
+add_access_group()      Add access_group configuration to the list
+                        of access-groups to apply to ``name`` when
+                        ``add_interface()`` is called.  access-group
+                        configuration consists of ``afi`` and the
+                        list of ACLs built by calling ``add_acl()``::
 
-========================    ============================================
+                            - Type: function()
+                            - Example:
+                                See commit() in this table for a short example
+                                See ScriptKit Example above for a full script
+
+add_acl()               Add ACL configuration to the list of ACLs
+                        to apply to access-group when ``add_access_group()``
+                        is called.  ACL configuration consists of ``acl_name``,
+                        ``acl_direction`` and, optionally, ``acl_port``::
+
+                            - Type: function()
+                            - Example:
+                                See commit() in this table for a short example
+                                See ScriptKit Example above for a full script
+
+add_interface()         Add interface configuration to the list of interfaces
+                        to apply when ``commit()`` is called.  Interface 
+                        configuration consists of ``name``::
+
+                            - Type: function()
+                            - Example:
+                                See commit() in this table for a short example
+                                See ScriptKit Example above for a full script
+
+commit()                Perform final verification and commit the current task::
+                            - Type: function()
+                            - Alias: update()
+                            - Example (See also: ScriptKit Example above):
+                                #!/usr/bin/env python3
+                                # Configure an ipv4 access-group with two ACLs on interface Eth1/3
+                                from ask.cisco.nxos.nxos_acl_interfaces import NxosAclInterfaces
+                                from ask.common.log import Log
+                                from ask.common.playbook import Playbook
+
+                                log_level_console = 'INFO'
+                                log_level_file = 'DEBUG'
+                                log = Log('my_log', log_level_console, log_level_file)
+
+                                pb = Playbook(log)
+                                pb.profile_nxos()
+                                pb.ansible_password = 'mypassword'
+                                pb.name = 'Example nxos_acl_interfaces'
+                                pb.add_host('dc-101')
+                                pb.file = '/tmp/nxos_acl_interfaces.yaml'
+
+                                task = NxosAclInterfaces(log)
+                                task.acl_name = 'IPv4_ACL_IN'
+                                task.acl_port = False
+                                task.acl_direction = 'in'
+                                task.add_acl()
+                                task.acl_name = 'IPv4_ACL_OUT'
+                                task.acl_port = False
+                                task.acl_direction = 'out'
+                                task.add_acl()
+                                task.afi = 'ipv4'
+                                task.add_access_group()
+                                task.name = 'Ethernet1/3'
+                                task.add_interface()
+                                task.state = 'merged'
+                                task.commit()
+
+                                pb.add_task(task)
+                                pb.append_playbook()
+                                pb.write_playbook()
+
+                            - Resulting task (full playbook not shown):
+
+                                tasks:
+                                -   cisco.nxos.nxos_acl_interfaces:
+                                        config:
+                                        -   access_groups:
+                                            -   acls:
+                                                -   direction: in
+                                                    name: IPv4_ACL_IN
+                                                    port: false
+                                                -   direction: out
+                                                    name: IPv4_ACL_OUT
+                                                    port: false
+                                                afi: ipv4
+                                            name: Ethernet1/3
+                                        state: merged
+
+                            - Resulting config on remote device:
+
+                                interface Ethernet1/3
+                                  ip access-group IPv4_ACL_IN in
+                                  ip access-group IPv4_ACL_OUT out
+
+====================    ============================================
 
 |
 
@@ -139,10 +214,10 @@ class NxosAclInterfaces(Task):
         super().__init__(ansible_module, task_log)
         self.lib_version = our_version
         self.class_name = __class__.__name__
-        self.ansible_task = dict()
-        self.ansible_task[self.ansible_module] = dict()
-        self.ansible_task[self.ansible_module]['state'] = None
-        self.ansible_task[self.ansible_module]['config'] = list()
+
+        self.acl_list = list()
+        self.access_group_list = list()
+        self.interface_list = list()
 
         self.nxos_acl_interfaces_valid_afi = set()
         self.nxos_acl_interfaces_valid_afi.add('ipv4')
@@ -161,6 +236,17 @@ class NxosAclInterfaces(Task):
         self.nxos_acl_interfaces_valid_state.add('replaced')
         self.nxos_acl_interfaces_valid_state.add('parsed')
 
+        self.interface_properties = set()
+        self.interface_properties.add('name')
+
+        self.access_group_properties = set()
+        self.access_group_properties.add('afi')
+
+        self.acl_properties = set()
+        self.acl_properties.add('acl_direction')
+        self.acl_properties.add('acl_name')
+        self.acl_properties.add('acl_port')
+
         self.properties_set = set()
         self.properties_set.add('acl_direction')
         self.properties_set.add('acl_name')
@@ -174,6 +260,13 @@ class NxosAclInterfaces(Task):
         self.scriptkit_properties = set()
         self.scriptkit_properties.update(self.properties_set)
 
+        self.property_map = dict()
+        self.property_map['acl_direction'] = 'direction'
+        self.property_map['acl_name'] = 'name'
+        self.property_map['acl_port'] = 'port'
+        self.property_map['afi'] = 'afi'
+        self.property_map['name'] = 'name'
+
         self.init_properties()
 
     def init_properties(self):
@@ -184,19 +277,10 @@ class NxosAclInterfaces(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
-        if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
-            exit(1)
-        if self.acl_name == None:
-            self.task_log.error('exiting. call instance.acl_name before calling instance.update()')
-            exit(1)
-        if self.acl_direction == None:
-            self.task_log.error('exiting. call instance.direction before calling instance.update()')
-            exit(1)
-        if self.afi == None:
-            self.task_log.error('exiting. call instance.afi before calling instance.update().')
+        if len(self.interface_list) == 0:
+            self.task_log.error('exiting. call instance.add_interface() at least once before calling instance.commit()')
             exit(1)
 
     def commit(self):
@@ -208,24 +292,70 @@ class NxosAclInterfaces(Task):
         '''
         self.final_verification()
 
-        acl = dict()
-        acl['direction'] = self.acl_direction
-        acl['name'] = self.acl_name
-        acl['port'] = self.acl_port
-        access_group = dict()
-        access_group['afi'] = self.afi
-        access_group['acls'] = list()
-        access_group['acls'].append(deepcopy(acl))
-
-        d = dict()
-        d['name'] = self.name
-        d['access_groups'] = list()
-        d['access_groups'].append(deepcopy(access_group))
-
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = dict()
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
-        self.ansible_task[self.ansible_module]['config'].append(deepcopy(d))
+        self.ansible_task[self.ansible_module]['config'] = deepcopy(self.interface_list)
         self.ansible_task[self.ansible_module]['state'] = self.state
+
+    def init_interface(self):
+        for p in self.interface_properties:
+            self.properties[p] = None
+        self.access_group_list = list()
+    def verify_interface(self):
+        if self.name == None:
+            self.task_log.error('exiting. Set instance.name before calling instance.add_interface()')
+            exit(1)
+        if len(self.access_group_list) == 0:
+            self.task_log.error('exiting. Call instance.add_access_group() at least once before calling instance.add_interface()')
+            exit(1)
+    def add_interface(self):
+        self.verify_interface()
+        d = dict()
+        d['name'] = self.name
+        d['access_groups'] = deepcopy(self.access_group_list)
+        self.interface_list.append(deepcopy(d))
+        self.init_interface()
+
+    def init_access_group(self):
+        for p in self.access_group_properties:
+            self.properties[p] = None
+        self.acl_list = list()
+    def verify_access_group(self):
+        if self.afi == None:
+            self.task_log.error('exiting. Set instance.afi before calling instance.add_access_group()')
+            exit(1)
+        if len(self.acl_list) == 0:
+            self.task_log.error('exiting. Call instance.add_acl() at least once before calling instance.add_access_group()')
+            exit(1)
+    def add_access_group(self):
+        self.verify_access_group()
+        d = dict()
+        d['afi'] = self.afi
+        d['acls'] = deepcopy(self.acl_list)
+        self.access_group_list.append(deepcopy(d))
+        self.init_access_group()
+
+    def init_acl(self):
+        for p in self.acl_properties:
+            self.properties[p] = None
+    def verify_acl(self):
+        if self.acl_name == None:
+            self.task_log.error('exiting. Set instance.acl_name before calling instance.add_acl()')
+            exit(1)
+        if self.acl_direction == None:
+            self.task_log.error('exiting. call instance.acl_direction before calling instance.add_acl()')
+            exit(1)
+    def add_acl(self):
+        self.verify_acl()
+        d = dict()
+        for p in self.acl_properties:
+            if self.properties[p] != None:
+                mapped_p = self.property_map[p]
+                d[mapped_p] = self.properties[p]
+        self.acl_list.append(deepcopy(d))
+        self.init_acl()
 
     def nxos_acl_interfaces_verify_afi(self, x, parameter='afi'):
         verify_set = self.nxos_acl_interfaces_valid_afi
