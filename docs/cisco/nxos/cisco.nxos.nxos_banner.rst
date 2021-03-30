@@ -6,6 +6,10 @@ NxosBanner()
    :local:
    :depth: 1
 
+Version
+-------
+107
+
 ScriptKit Synopsis
 ------------------
 - NxosBanner() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_banner
@@ -19,6 +23,28 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_banner.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_banner.py>`_
 
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosBanner(log)
+                                    task.banner = 'motd'
+                                    task.text = 'system going down in 1 hour'
+                                    task.state = 'present'
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -44,11 +70,11 @@ text                            The banner text that should be present in the
                                     - Type: str()
                                     - Example:
                                         task.text = 'message of the day'
-                                    - Requires: task.state = 'present'
+                                    - Requires:
+                                        task.state = 'present'
                                     - Notes:
-                                        1. Ampersand '@' cannot be used within
-                                           text, since this is the delimiter
-                                           character.
+                                        1.  '@' cannot be used within text, since
+                                            this is the delimiter character.
 
 state                           Controls whether banner should be configured
                                 on the remote device::
@@ -75,3 +101,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+

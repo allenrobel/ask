@@ -1,5 +1,5 @@
 # NxosBfdGlobal() - cisco/nxos/nxos_bfd_global.py
-our_version = 113
+our_version = 114
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -13,7 +13,7 @@ NxosBfdGlobal()
 
 Version
 -------
-113
+114
 
 ScriptKit Synopsis
 ------------------
@@ -28,6 +28,32 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_bfd_global.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bfd_global.py>`_
 
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosBfdGlobal(log)
+                                    task.echo_interface = 'Loopback3'
+                                    task.echo_rx_interval = 50
+                                    task.slow_timer = 2000
+                                    task.startup_timer = 10
+                                    task.bfd_interval = 50
+                                    task.bfd_min_rx = 50
+                                    task.bfd_multiplier = 3
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -399,6 +425,8 @@ class NxosBfdGlobal(Task):
             self.bfd_fabricpath_multiplier,
             'bfd_fabricpath')
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

@@ -6,6 +6,10 @@ NxosBgpNeighborAf()
    :local:
    :depth: 1
 
+Version
+-------
+115
+
 Deprecation
 -----------
 
@@ -27,6 +31,66 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor_af.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor_af.py>`_
 
+
+|
+
+========================    ==============================================
+Method                      Description
+========================    ==============================================
+commit()                    Perform final verification and prepare the task
+                            to be added to a playbook::
+
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    See also: ScriptKit Example link above.
+
+                                    #!/usr/bin/env python3
+                                    # Configure ipv4 unicast address-family for one neighbor
+                                    from ask.cisco.nxos.nxos_bgp_neighbor_af import NxosBgpNeighborAf
+                                    from ask.common.log import Log
+                                    from ask.common.playbook import Playbook
+
+                                    log_level_console = 'INFO'
+                                    log_level_file = 'DEBUG'
+                                    log = Log('my_log', log_level_console, log_level_file)
+
+                                    pb = Playbook(log)
+                                    pb.profile_nxos()
+                                    pb.ansible_password = 'mypassword'
+                                    pb.name = 'Example nxos_bgp_neighbor_af'
+                                    pb.add_host('dc-101')
+                                    pb.file = '/tmp/nxos_bgp_neighbor_af.yaml'
+
+                                    task = NxosBgpNeighborAf(log)
+                                    task.additional_paths_receive = 'inherit'
+                                    task.afi = 'ipv4'
+                                    task.asn = '2301.0'
+                                    task.neighbor = '10.1.1.1'
+                                    task.safi = 'unicast'
+                                    task.state = 'present'
+                                    task.vrf = 'default'
+                                    task.task_name = 'example task'
+                                    task.commit()
+
+                                    pb.add_task(task)
+                                    pb.append_playbook()
+                                    pb.write_playbook()
+
+                                - Resulting task:
+                                    hosts: dc-101
+                                    name: Example nxos_bgp_neighbor_af
+                                    tasks:
+                                    -   cisco.nxos.nxos_bgp_neighbor_af:
+                                            additional_paths_receive: inherit
+                                            afi: ipv4
+                                            asn: '2301.0'
+                                            neighbor: 10.1.1.1
+                                            safi: unicast
+                                            state: present
+                                        name: example task
+
+========================    ==============================================
 
 |
 

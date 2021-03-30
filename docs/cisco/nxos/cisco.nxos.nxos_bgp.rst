@@ -6,6 +6,10 @@ NxosBgp()
    :local:
    :depth: 1
 
+Version
+-------
+119
+
 Deprecation
 -----------
 
@@ -27,6 +31,68 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_bgp.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bgp.py>`_
 
+
+|
+
+========================    ==============================================
+Method                      Description
+========================    ==============================================
+commit()                    Perform final verification and prepare the task
+                            to be added to a playbook::
+
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    See also: ScriptKit Example link above
+
+                                    #!/usr/bin/env python3
+                                    # Configure bgp global items
+                                    from ask.cisco.nxos.nxos_bgp import NxosBgp
+                                    from ask.common.log import Log
+                                    from ask.common.playbook import Playbook
+
+                                    log_level_console = 'INFO'
+                                    log_level_file = 'DEBUG'
+                                    log = Log('my_log', log_level_console, log_level_file)
+
+                                    pb = Playbook(log)
+                                    pb.profile_nxos()
+                                    pb.ansible_password = 'mypassword'
+                                    pb.name = 'Example nxos_bgp'
+                                    pb.add_host('dc-101')
+                                    pb.file = '/tmp/nxos_bgp.yaml'
+
+                                    task = NxosBgp(log)
+                                    task.asn = '65000.0'
+                                    task.router_id = '10.239.0.0'
+                                    task.timer_bgp_keepalive = 1
+                                    task.timer_bgp_hold = 3
+                                    task.event_history_detail = 'size_medium'
+
+                                    task.state = 'present'
+                                    task.vrf = 'default'
+                                    task.task_name = 'example task'
+                                    task.commit()
+
+                                    pb.add_task(task)
+                                    pb.append_playbook()
+                                    pb.write_playbook()
+
+                                - Resulting task:
+                                    hosts: dc-101
+                                    name: Example nxos_bgp
+                                    tasks:
+                                    -   cisco.nxos.nxos_bgp:
+                                            asn: '65000.0'
+                                            event_history_detail: size_medium
+                                            router_id: 10.239.0.0
+                                            state: present
+                                            timer_bgp_hold: 3
+                                            timer_bgp_keepalive: 1
+                                            vrf: default
+                                        name: example task
+
+========================    ==============================================
 
 |
 
@@ -160,9 +226,9 @@ disable_policy_batching             Enable/Disable the batching evaluation of
                                         - Valid values: False, True
                                         - Example:
                                             task.disable_policy_batching = True
+
 ================================    ==============================================
 
-|
 
 ========================================    =========================================
 Property                                    Description
@@ -189,6 +255,7 @@ disable_policy_batching_ipv6_prefix_list    Enable ``True`` or Disable ``False``
                                                     - An ipv6 prefix-list name
                                                 - Example:
                                                     task.disable_policy_batching_ipv6_prefix_list = 'DPB'
+
 ========================================    =========================================
 
 |
@@ -485,3 +552,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+

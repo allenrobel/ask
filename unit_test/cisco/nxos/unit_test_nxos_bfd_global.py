@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bfd_global.py
-our_version = 107
+our_version = 108
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -34,7 +34,7 @@ def add_task_bfd_general(pb):
     task.bfd_min_rx = 50
     task.bfd_multiplier = 3
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_bfd_fabricpath(pb):
@@ -45,7 +45,7 @@ def add_task_bfd_fabricpath(pb):
     task.bfd_fabricpath_min_rx = 50
     task.bfd_fabricpath_multiplier = 3
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_bfd_ipv4(pb):
@@ -56,7 +56,7 @@ def add_task_bfd_ipv4(pb):
     task.bfd_ipv4_min_rx = 50
     task.bfd_ipv4_multiplier = 3
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_bfd_ipv6(pb):
@@ -67,7 +67,7 @@ def add_task_bfd_ipv6(pb):
     task.bfd_ipv6_min_rx = 50
     task.bfd_ipv6_multiplier = 3
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

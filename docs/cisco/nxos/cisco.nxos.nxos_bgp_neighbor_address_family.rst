@@ -8,7 +8,7 @@ NxosBgpNeighborAddressFamily()
 
 Version
 -------
-100
+102
 
 Status
 ------
@@ -102,11 +102,11 @@ NOTES
         task.neighbor_address = '10.1.1.1'
         task.add_bgp_neighbor()
 
-        # update the task. This performs a final verification
+        # Commit the task. This performs a final verification
         # and prepares the task to be added to a playbook
         task.task_name = 'bgp neighbor AFs under default vrf and non-default vrf'
         task.state = 'merged'
-        task.update()
+        task.commit()
 
         # add the task to the playbook
         pb.add_task(task)
@@ -122,69 +122,78 @@ NOTES
 
 |
 
-========================================    ==============================================
-Method                                      Description
-========================================    ==============================================
-add_address_family()                        Add an address-family to the address-family
-                                            list.::
+========================    ==============================================
+Method                      Description
+========================    ==============================================
+add_address_family()        Add an address-family to the address-family
+                            list.::
 
-                                                Example:
-                                                    task = NxosBgpNeighborAddressFamily(log)
-                                                    task.as_number = '12000.0'
-                                                    task.afi = 'ipv4'
-                                                    task.safi = 'unicast'
-                                                    task.add_address_family()
-                                                    task.afi = 'ipv6'
-                                                    task.safi = 'unicast'
-                                                    task.add_address_family()
+                                Example:
+                                    task = NxosBgpNeighborAddressFamily(log)
+                                    task.as_number = '12000.0'
+                                    task.afi = 'ipv4'
+                                    task.safi = 'unicast'
+                                    task.add_address_family()
+                                    task.afi = 'ipv6'
+                                    task.safi = 'unicast'
+                                    task.add_address_family()
 
-add_bgp_neighbor()                          Add a bgp neighbor, along with the currrent
-                                            address-family list, to the default/global vrf::
+add_bgp_neighbor()          Add a bgp neighbor, along with the currrent
+                            address-family list, to the default/global vrf::
 
-                                                Example:
-                                                    task = NxosBgpNeighborAddressFamily(log)
-                                                    task.as_number = '12000.0'
-                                                    task.afi = 'ipv4'
-                                                    task.safi = 'multicast'
-                                                    task.add_address_family()
-                                                    task.neighbor_address = '10.4.4.0/24'
-                                                    task.add_bgp_neighbor()
+                                Example:
+                                    task = NxosBgpNeighborAddressFamily(log)
+                                    task.as_number = '12000.0'
+                                    task.afi = 'ipv4'
+                                    task.safi = 'multicast'
+                                    task.add_address_family()
+                                    task.neighbor_address = '10.4.4.0/24'
+                                    task.add_bgp_neighbor()
 
-add_vrf_bgp_neighbor()                      Add a bgp neighbor, along with the currrent
-                                            address-family list, to a non-default vrf::
+add_vrf_bgp_neighbor()      Add a bgp neighbor, along with the currrent
+                            address-family list, to a non-default vrf::
 
-                                                Example:
-                                                    task = NxosBgpNeighborAddressFamily(log)
-                                                    task.as_number = '12000.0'
-                                                    task.afi = 'ipv4'
-                                                    task.safi = 'multicast'
-                                                    task.add_address_family()
-                                                    task.neighbor_address = '10.4.4.0/24'
-                                                    task.add_vrf_bgp_neighbor()
-                                                    task.vrf = 'MY_VRF'
-                                                    task.add_vrf()
+                                Example:
+                                    task = NxosBgpNeighborAddressFamily(log)
+                                    task.as_number = '12000.0'
+                                    task.afi = 'ipv4'
+                                    task.safi = 'multicast'
+                                    task.add_address_family()
+                                    task.neighbor_address = '10.4.4.0/24'
+                                    task.add_vrf_bgp_neighbor()
+                                    task.vrf = 'MY_VRF'
+                                    task.add_vrf()
 
-add_vrf()                                   Add all bgp neighbors onfigured up to this
-                                            point with ``add_vrf_bgp_neighbor()``,
-                                            to the current ``vrf``.::
+add_vrf()                   Add all bgp neighbors onfigured up to this
+                            point with ``add_vrf_bgp_neighbor()``,
+                            to the current ``vrf``.::
 
-                                                Example (add one neighbor with one
-                                                address family to vrf VRF_1):
+                                Example (add one neighbor with one
+                                address family to vrf VRF_1):
 
-                                                    task = NxosBgpNeighborAddressFamily(log)
-                                                    task.as_number = '12000.0'
-                                                    task.afi = 'ipv4'
-                                                    task.safi = 'unicast'
-                                                    task.next_hop_self_all_routes = True
-                                                    task.next_hop_self_set = True
-                                                    task.as_override = True
-                                                    task.add_address_family()
-                                                    task.neighbor_address = '10.4.4.0/24'
-                                                    task.add_vrf_bgp_neighbor()
-                                                    task.vrf = 'VRF_1'
-                                                    task.add_vrf()
+                                    task = NxosBgpNeighborAddressFamily(log)
+                                    task.as_number = '12000.0'
+                                    task.afi = 'ipv4'
+                                    task.safi = 'unicast'
+                                    task.next_hop_self_all_routes = True
+                                    task.next_hop_self_set = True
+                                    task.as_override = True
+                                    task.add_address_family()
+                                    task.neighbor_address = '10.4.4.0/24'
+                                    task.add_vrf_bgp_neighbor()
+                                    task.vrf = 'VRF_1'
+                                    task.add_vrf()
 
-========================================    ==============================================
+commit()                    Perform final verification and prepare the task
+                            to be added to a playbook::
+
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    See NOTE 2 above, or
+                                    See ScriptKit Example link above
+
+========================    ==============================================
 
 |
 

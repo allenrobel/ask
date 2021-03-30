@@ -1,5 +1,5 @@
 # NxosBgpNeighbor() - cisco/nxos/nxos_bgp_neighbor.py
-our_version = 113
+our_version = 114
 # Deprecation: Ansible module nxos_bgp_neighbor is DEPRECATED
 # Deprecated on: 2021.01.27
 # Removed after: 2023-01-27
@@ -16,6 +16,10 @@ NxosBgpNeighbor()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+114
 
 Deprecation
 -----------
@@ -41,6 +45,61 @@ ScriptKit Example
 TODO
 ----
 20210223: if local_as is set, verify that asn and remote_as are different (i.e. eBGP with neighbor)
+
+|
+
+========================    ==============================================
+Method                      Description
+========================    ==============================================
+commit()                    Perform final verification and prepare the task
+                            to be added to a playbook::
+
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    See also: ScriptKit Example link above
+
+                                    #!/usr/bin/env python3
+                                    # Configure one ipv4 bgp neighbor
+                                    from ask.cisco.nxos.nxos_bgp_neighbor import NxosBgpNeighbor
+                                    from ask.common.log import Log
+                                    from ask.common.playbook import Playbook
+
+                                    log_level_console = 'INFO'
+                                    log_level_file = 'DEBUG'
+                                    log = Log('my_log', log_level_console, log_level_file)
+
+                                    pb = Playbook(log)
+                                    pb.profile_nxos()
+                                    pb.ansible_password = 'mypassword'
+                                    pb.name = 'Example nxos_bgp_neighbor'
+                                    pb.add_host('dc-101')
+                                    pb.file = '/tmp/nxos_bgp_neighbor.yaml'
+
+                                    task = NxosBgpNeighbor(log)
+                                    task.asn = '12000.0'
+                                    task.neighbor = '10.1.1.1'
+                                    task.remote_as = '6201.0'
+                                    task.state = 'present'
+                                    task.task_name = 'example task'
+                                    task.commit()
+
+                                    pb.add_task(task)
+                                    pb.append_playbook()
+                                    pb.write_playbook()
+
+                                - Resulting task:
+                                    hosts: dc-101
+                                    name: Example nxos_bgp_neighbor
+                                    tasks:
+                                    -   cisco.nxos.nxos_bgp_neighbor:
+                                            asn: '12000.0'
+                                            neighbor: 10.1.1.1
+                                            remote_as: '6201.0'
+                                            state: present
+                                        name: example task
+
+========================    ==============================================
 
 |
 
@@ -444,6 +503,8 @@ class NxosBgpNeighbor(Task):
             exit(1)
         self.final_verification_nxos_bgp_neighbor_maximum_peers()
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

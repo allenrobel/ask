@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_af.py
-our_version = 106
+our_version = 107
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -33,7 +33,7 @@ def additional_paths_install(pb, asn, afi, safi, vrf):
     task.additional_paths_install = True
     task.state = 'present'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def dampening_default(pb, asn, afi, safi, vrf):
@@ -51,7 +51,7 @@ def dampening_default(pb, asn, afi, safi, vrf):
     # task.dampening_state = True
     task.state = 'present'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def dampening_non_default(pb, asn, afi, safi, vrf):
@@ -69,7 +69,7 @@ def dampening_non_default(pb, asn, afi, safi, vrf):
     # task.dampening_state = True
     task.state = 'present'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def networks(pb, asn, afi, safi, vrf):
@@ -96,7 +96,7 @@ def networks(pb, asn, afi, safi, vrf):
     task.vrf = vrf
     task.state = 'present'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def maximum_paths(pb, asn, afi, safi, vrf):
@@ -109,7 +109,7 @@ def maximum_paths(pb, asn, afi, safi, vrf):
     task.maximum_paths_ibgp = 16
     task.state = 'present'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def retain_route_target(pb, asn, afi, safi, vrf):
@@ -121,7 +121,7 @@ def retain_route_target(pb, asn, afi, safi, vrf):
     task.retain_route_target = 'all'
     task.state = 'present'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

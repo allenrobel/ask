@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_global.py
 # Status = BETA
-our_version = 104
+our_version = 105
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -33,7 +33,7 @@ def ipv4_neighbors(pb):
     # Since disable_policy_batching_* is not supported
     # under vrf config, it will not be cleared by
     # task.add_vrf(), and will be added to the global
-    # bgp config in the default vrf when task.update()
+    # bgp config in the default vrf when task.commit()
     # is called.
     task.disable_policy_batching_ipv4_prefix_list = 'IPV4_DPB'
     task.disable_policy_batching_nexthop = True
@@ -140,7 +140,7 @@ def ipv4_neighbors(pb):
 
     task.state = 'merged'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def ipv6_neighbors(pb):
@@ -158,7 +158,7 @@ def ipv6_neighbors(pb):
     task.state = 'merged'
     task.vrf = 'default'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 

@@ -1,5 +1,5 @@
 # NxosBanner() - cisco/nxos/nxos_banner.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -10,6 +10,10 @@ NxosBanner()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+107
 
 ScriptKit Synopsis
 ------------------
@@ -24,6 +28,28 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_banner.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_banner.py>`_
 
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosBanner(log)
+                                    task.banner = 'motd'
+                                    task.text = 'system going down in 1 hour'
+                                    task.state = 'present'
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -49,11 +75,11 @@ text                            The banner text that should be present in the
                                     - Type: str()
                                     - Example:
                                         task.text = 'message of the day'
-                                    - Requires: task.state = 'present'
+                                    - Requires:
+                                        task.state = 'present'
                                     - Notes:
-                                        1. Ampersand '@' cannot be used within
-                                           text, since this is the delimiter
-                                           character.
+                                        1.  '@' cannot be used within text, since
+                                            this is the delimiter character.
 
 state                           Controls whether banner should be configured
                                 on the remote device::
@@ -89,10 +115,6 @@ class NxosBanner(Task):
         super().__init__(ansible_module, task_log)
         self.lib_version = our_version
         self.class_name = __class__.__name__
-        self.ansible_task = dict()
-        self.ansible_task[self.ansible_module] = dict()
-        self.ansible_task[self.ansible_module]['state'] = None
-        self.ansible_task[self.ansible_module]['config'] = list()
 
         self.nxos_banner_valid_banner = set()
         self.nxos_banner_valid_banner.add('exec')
@@ -106,7 +128,6 @@ class NxosBanner(Task):
         self.properties_set.add('banner')
         self.properties_set.add('text')
         self.properties_set.add('state')
-        self.properties_set.add('banner')
 
         # scriptkit_properties can be used by scripts when
         # setting task_name. See Task().append_to_task_name()
@@ -123,10 +144,10 @@ class NxosBanner(Task):
 
     def final_verification(self):
         if self.banner == None:
-            self.task_log.error('exiting. call instance.banner before calling instance.update()')
+            self.task_log.error('exiting. call instance.banner before calling instance.commit()')
             exit(1)
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.state == 'absent' and self.text != None:
             self.task_log.error('exiting. instance.text must not be set if instance.state == absent.')
@@ -135,21 +156,23 @@ class NxosBanner(Task):
             self.task_log.error('exiting. instance.text must be set if instance.state == present.')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()
-        populate and append dict() to self.ansible_task[self.ansible_module]['config']
+        update self.ansible_task
         '''
         self.final_verification()
 
         d = dict()
-        d['banner'] = self.banner
-        d['state'] = self.state
-        if self.text != None:
-            d['text'] = self.text
+        for p in self.properties_set:
+            if self.properties[p] != None:
+                d[p] = self.properties[p]
+        self.ansible_task = dict()
+        self.ansible_task[self.ansible_module] = deepcopy(d)
         if self.task_name != None:
             self.ansible_task['name'] = self.task_name
-        self.ansible_task[self.ansible_module] = deepcopy(d)
 
     def nxos_banner_verify_banner(self, x, parameter='afi'):
         verify_set = self.nxos_banner_valid_banner

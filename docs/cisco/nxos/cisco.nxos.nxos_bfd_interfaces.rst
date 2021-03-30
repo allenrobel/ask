@@ -6,6 +6,10 @@ NxosBfdInterfaces()
    :local:
    :depth: 1
 
+Version
+-------
+105
+
 ScriptKit Synopsis
 ------------------
 - NxosBfdInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_bfd_interfaces
@@ -19,6 +23,39 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_bfd_interfaces.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bfd_interfaces.py>`_
 
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+add_interface()             Apply all currently-set interface properties
+                            and append the interface ``name`` to the
+                            configuration::
+
+                                - Type: function()
+                                - Example:
+                                    See commit()
+
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosBfdInterfaces(log)
+                                    for port in [5,6,7,8]:
+                                        task.name = 'Ethernet1/{}'.format(port)
+                                        task.bfd = 'enable'
+                                        task.add_interface()
+                                    task.state = 'merged'
+                                    task.task_name = 'enable bfd on Eth1/5-8'
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -77,3 +114,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+

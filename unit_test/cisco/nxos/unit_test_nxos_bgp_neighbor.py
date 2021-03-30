@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor.py
-our_version = 103
+our_version = 104
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -33,7 +33,7 @@ def ipv4_neighbor(pb):
     task.state = 'present'
     task.vrf = 'default'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def ipv4_neighbor_prefix_peer(pb):
@@ -46,7 +46,7 @@ def ipv4_neighbor_prefix_peer(pb):
     task.state = 'present'
     task.vrf = 'default'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def ipv4_neighbor_and_local_as(pb):
@@ -58,7 +58,7 @@ def ipv4_neighbor_and_local_as(pb):
     task.state = 'present'
     task.vrf = 'default'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def ipv4_neighbor_peer_type(pb):
@@ -71,7 +71,7 @@ def ipv4_neighbor_peer_type(pb):
     task.state = 'present'
     task.vrf = 'default'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def ipv6_neighbor(pb):
@@ -82,7 +82,7 @@ def ipv6_neighbor(pb):
     task.state = 'present'
     task.vrf = 'default'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def ipv6_neighbor_prefix_peer(pb):
@@ -95,7 +95,7 @@ def ipv6_neighbor_prefix_peer(pb):
     task.state = 'present'
     task.vrf = 'default'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

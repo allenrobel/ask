@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor_af.py
-our_version = 106
+our_version = 107
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -34,7 +34,7 @@ def add_task_nxos_bgp_neighbor_af_ipv4(pb):
     task.state = 'present'
     task.vrf = 'default'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_nxos_bgp_neighbor_af_ipv6(pb):
@@ -46,7 +46,7 @@ def add_task_nxos_bgp_neighbor_af_ipv6(pb):
     task.state = 'present'
     task.vrf = 'default'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

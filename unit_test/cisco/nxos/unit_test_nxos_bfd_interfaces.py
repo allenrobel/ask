@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bfd_interfaces.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -23,7 +23,7 @@ def delete_bfd_from_all_interfaces(pb):
     task = NxosBfdInterfaces(log)
     task.state = 'deleted'
     task.task_name = '{}: delete_bfd_from_all_interfaces'.format(ansible_module)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def delete_bfd_from_some_interfaces(pb):
@@ -33,7 +33,7 @@ def delete_bfd_from_some_interfaces(pb):
         task.add_interface()
     task.state = 'deleted'
     task.task_name = '{}: delete_bfd_from_some_interfaces'.format(ansible_module)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def enable_bfd_on_some_interfaces(pb):
@@ -44,7 +44,7 @@ def enable_bfd_on_some_interfaces(pb):
         task.add_interface()
     task.state = 'merged'
     task.task_name = '{}: enable_bfd_on_some_interfaces'.format(ansible_module)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def enable_bfd_echo_on_one_interface(pb):
@@ -54,7 +54,7 @@ def enable_bfd_echo_on_one_interface(pb):
     task.add_interface()
     task.state = 'merged'
     task.task_name = '{}: enable_bfd_echo_on_one_interface'.format(ansible_module)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp.py
-our_version = 104
+our_version = 105
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -31,7 +31,7 @@ def add_task_bgp_general(pb):
     task.state = 'present'
     task.vrf = 'default'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_bgp_timer(pb):
@@ -48,7 +48,7 @@ def add_task_bgp_timer(pb):
     task.timer_bgp_hold = 'default'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_bgp_event_history(pb):
@@ -61,7 +61,7 @@ def add_task_bgp_event_history(pb):
     task.state = 'present'
     task.vrf = 'default'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

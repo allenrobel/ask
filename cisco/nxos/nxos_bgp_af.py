@@ -1,5 +1,5 @@
 # NxosBgpAf() - cisco/nxos/nxos_bgp_af.py
-our_version = 116
+our_version = 117
 
 from copy import deepcopy
 import re
@@ -15,7 +15,7 @@ NxosBgpAf()
 
 Version
 -------
-116
+117
 
 ScriptKit Synopsis
 ------------------
@@ -30,6 +30,39 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_bgp_af.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_bgp_af.py>`_
 
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for full script
+                                    networks_list = list()
+                                    networks_list.append(['10.239.0.0/32',
+                                                           'ORIGINATE_TOR_LOOPBACK'])
+                                    networks_list.append(['15.224.0.0/25',
+                                                           'ORIGINATE_TOR_SUBNETS'])
+                                    networks_list.append(['15.224.0.128/25',
+                                                          'ORIGINATE_TOR_SUBNETS'])
+                                    pb = Playbook(log)
+                                    task = NxosBgpAf(log)
+                                    task.asn = '2301.0'
+                                    task.afi = 'ipv4'
+                                    task.safi = 'unicast'
+                                    task.maximum_paths = 16
+                                    task.maximum_paths_ibgp = 16
+                                    task.networks = networks_list
+                                    task.vrf = 'default'
+                                    task.state = 'present'
+                                    task.task_name = 'example task'
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -526,6 +559,8 @@ class NxosBgpAf(Task):
         self.final_verification_dampening_state()
         self.final_verification_dampening_reuse_vs_suppress()
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

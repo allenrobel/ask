@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor_address_family.py
 # Status = BETA
-our_version = 100
+our_version = 101
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -89,7 +89,7 @@ def add_task(pb):
 
     task.state = 'merged'
     task.task_name = add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 
@@ -98,4 +98,4 @@ add_task(pb)
 
 pb.append_playbook()
 pb.write_playbook()
-print('wrote {}'.format(pb.file))
+log.info('wrote {}'.format(pb.file))
