@@ -74,7 +74,8 @@ commit()                    Perform final verification and commit the
                             current task::
                                 - Type: function()
                                 - Alias: update()
-                                - Example - see add_vlan()
+                                - Example:
+                                    see add_vlan()
 
 ========================    ============================================
 
