@@ -20,6 +20,18 @@ def playbook():
     return pb
 
 def add_task_name(task):
+    '''
+    add_task_name() can be used to add all currently-set properties
+    and their values to the task name.  If a user-accessible property
+    key is passed to task.append_to_task_name(), the key AND its
+    value are appended to the task name.  All ScriptKit libraries
+    include the property task.scriptkit_properties, which is a
+    python set() containing all user-accessible property keys
+    supported by the library.
+
+    We are not using add_task_name() in this script, but leave
+    it here as an example should you want to leverage it.
+    '''
     task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
     for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
