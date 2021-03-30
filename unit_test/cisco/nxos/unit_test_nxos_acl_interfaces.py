@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_acl_interfaces.py
-our_version = 107
+our_version = 108
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -8,7 +8,9 @@ from ask.cisco.nxos.nxos_acl_interfaces import NxosAclInterfaces
 
 ansible_module = 'nxos_acl_interfaces'
 ansible_host = 'dc-101' # must be in ansible inventory
-log = Log('unit_test_{}'.format(ansible_module), 'INFO', 'DEBUG')
+log_level_console = 'INFO'
+log_level_file = 'DEBUG'
+log = Log('unit_test_{}'.format(ansible_module), log_level_console, log_level_file)
 
 def playbook():
     pb = Playbook(log)
