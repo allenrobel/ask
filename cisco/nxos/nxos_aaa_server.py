@@ -1,11 +1,15 @@
 # NxosAaaServer() - cisco/nxos/nxos_aaa_server.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
 ******************************************
 NxosAaaServer() 
 ******************************************
+
+Version
+-------
+106
 
 ScriptKit Synopsis
 ------------------
@@ -19,6 +23,33 @@ ScriptKit Example
 Ansible Module Documentation
 ----------------------------
 - `nxos_aaa_server <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_module.rst>`_
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosAaaServer(log)
+                                    task.deadtime = 10
+                                    task.directed_request = 'enabled'
+                                    task.directed_request = None
+                                    task.encrypt_type = 0
+                                    task.global_key = 'foobar'
+                                    task.server_timeout = 40
+                                    task.server_type = 'tacacs'
+                                    task.state = 'present'
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -167,6 +198,8 @@ class NxosAaaServer(Task):
         if self.task_name == None:
             self.task_name = 'nxos_aaa_server: server_type {}'.format(self.server_type)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

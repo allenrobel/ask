@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_acl_interfaces.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -33,7 +33,7 @@ def ipv4_interface_acl(pb):
     task.acl_direction = 'in'
     task.state = 'merged'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def ipv6_interface_acl(pb):
@@ -45,7 +45,7 @@ def ipv6_interface_acl(pb):
     task.acl_direction = 'in'
     task.state = 'merged'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

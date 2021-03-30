@@ -2,6 +2,10 @@
 NxosAclInterfaces()
 ******************************************
 
+Version
+-------
+106
+
 ScriptKit Synopsis
 ------------------
 NxosAclInterfaces() generates Ansible task instances conformant with cisco.nxos.nxos_acl_interfaces.
@@ -14,6 +18,32 @@ ScriptKit Example
 Ansible Module Documentation
 ----------------------------
 - `nxos_acl_interfaces <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_acl_interfaces_module.rst>`_
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosAclInterfaces(log)
+                                    task.name = 'Ethernet1/36'
+                                    task.acl_name = 'IPv4_ACL'
+                                    task.afi = 'ipv4'
+                                    task.acl_port = False
+                                    task.acl_direction = 'in'
+                                    task.state = 'merged'
+                                    add_task_name(task)
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -95,3 +125,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+

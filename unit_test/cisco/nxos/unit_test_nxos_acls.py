@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_acls.py
-our_version = 106
+our_version = 107
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -138,7 +138,7 @@ task.name = 'IPv6_ACL'
 task.add_acl()
 
 task.state = 'merged'
-task.update()
+task.commit()
 pb.add_task(task)
 pb.append_playbook()
 pb.write_playbook()

@@ -2,6 +2,10 @@
 NxosAaaServer() 
 ******************************************
 
+Version
+-------
+106
+
 ScriptKit Synopsis
 ------------------
 NxosAaaServer() generates Ansible task instances conformant with cisco.nxos.nxos_aaa_server.
@@ -14,6 +18,33 @@ ScriptKit Example
 Ansible Module Documentation
 ----------------------------
 - `nxos_aaa_server <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_module.rst>`_
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosAaaServer(log)
+                                    task.deadtime = 10
+                                    task.directed_request = 'enabled'
+                                    task.directed_request = None
+                                    task.encrypt_type = 0
+                                    task.global_key = 'foobar'
+                                    task.server_timeout = 40
+                                    task.server_type = 'tacacs'
+                                    task.state = 'present'
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -97,3 +128,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+
