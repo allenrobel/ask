@@ -60,6 +60,7 @@ add_interface()         Add interface configuration to the list of interfaces
                                 See ScriptKit Example above for a full script
 
 commit()                Perform final verification and commit the current task::
+
                             - Type: function()
                             - Alias: update()
                             - Example (See also: ScriptKit Example above):
