@@ -2,6 +2,10 @@
 NxosAaaServerHost() 
 ******************************************
 
+Version
+-------
+107
+
 ScriptKit Synopsis
 ------------------
 NxosAaaServerHost() generates Ansible task instances conformant with cisco.nxos.nxos_aaa_server_host.
@@ -14,6 +18,31 @@ ScriptKit Example
 Ansible Module Documentation
 ----------------------------
 - `nxos_aaa_server_host <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_host_module.rst>`_
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosAaaServerHost(log)
+                                    task.address = '172.29.167.250'
+                                    task.encrypt_type = 0
+                                    task.host_timeout = 10
+                                    task.key = 'foobar'
+                                    task.server_type = 'tacacs'
+                                    task.state = 'present'
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -117,3 +146,4 @@ Authors
 ~~~~~~~
 
 - Allen Robel (@PacketCalc)
+

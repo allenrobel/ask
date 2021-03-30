@@ -1,11 +1,15 @@
 # NxosAaaServerHost() - cisco/nxos/nxos_aaa_server_host.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
 ******************************************
 NxosAaaServerHost() 
 ******************************************
+
+Version
+-------
+107
 
 ScriptKit Synopsis
 ------------------
@@ -19,6 +23,31 @@ ScriptKit Example
 Ansible Module Documentation
 ----------------------------
 - `nxos_aaa_server_host <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_aaa_server_host_module.rst>`_
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    # see ScriptKit Example above for
+                                    # full script
+                                    pb = Playbook(log)
+                                    task = NxosAaaServerHost(log)
+                                    task.address = '172.29.167.250'
+                                    task.encrypt_type = 0
+                                    task.host_timeout = 10
+                                    task.key = 'foobar'
+                                    task.server_type = 'tacacs'
+                                    task.state = 'present'
+                                    task.commit()
+                                    pb.add_task(task)
+
+========================    ============================================
 
 |
 
@@ -192,6 +221,8 @@ class NxosAaaServerHost(Task):
         if self.task_name == None:
             self.task_name = 'nxos_aaa_server_host: address {}, server_type {}'.format(self.address, self.server_type)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()
