@@ -29,7 +29,7 @@ ScriptKit Example
 Method                      Description
 ========================    ============================================
 commit()                    Perform final verification and commit the 
-                            current task::
+                            current task.
 
                                 - Type: function()
                                 - Alias: update()
