@@ -30,11 +30,13 @@ Method                      Description
 ========================    ============================================
 commit()                    Perform final verification and commit the 
                             current task::
+
                                 - Type: function()
                                 - Alias: update()
                                 - Example:
                                     See also: ScriptKit Example above 
 
+                                    ```python
                                     #!/usr/bin/env python3
                                     # configure evpn vni
                                     from ask.common.playbook import Playbook
@@ -65,9 +67,11 @@ commit()                    Perform final verification and commit the
                                     pb.append_playbook()
                                     pb.write_playbook()
                                     log.info('wrote {}'.format(pb.file))
+                                    ```
 
                                 - Resulting tasks:
 
+                                    ```yaml
                                     hosts: dc-101
                                     name: nxos_evpn_vni example
                                     tasks:
@@ -81,6 +85,7 @@ commit()                    Perform final verification and commit the
                                             state: present
                                             vni: '10302'
                                         name: configure vni 10302
+                                    ```
 
                                 - Resulting config:
 
