@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_ans_task_nxos_command.py
-our_version = 104
+our_version = 105
 
 from ask.ansible.register_save import RegisterSave
 from ask.common.playbook import Playbook
@@ -30,7 +30,7 @@ def save_result(pb, filename):
     task.var = 'output.stdout[0]'
     task.filename = filename # full path to file e.g. /tmp/my_result.json
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def show(pb, command):
@@ -40,7 +40,7 @@ def show(pb, command):
     task.commands = commands
     task.register = 'output'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def show_json(pb, command):
@@ -49,7 +49,7 @@ def show_json(pb, command):
     task.output = 'json'
     task.register = 'output'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def guestshell_destroy(pb):
@@ -59,7 +59,7 @@ def guestshell_destroy(pb):
     task.answer = 'y'
     task.register = 'output'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

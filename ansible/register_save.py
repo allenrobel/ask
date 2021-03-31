@@ -1,5 +1,5 @@
 # RegisterSave() - ansible/register_save.py
-our_version = 104
+our_version = 105
 from ask.common.task import Task
 '''
 Name: register_save.py
@@ -8,10 +8,10 @@ Description:
 
 RegisterSave() generates Ansible Playbook task, using module 'local_action',
 to save a previously-set register to a file.  RegisterSave() can be fed to
-AnsPlaybook().add_task()
+Playbook().add_task()
 
 Example usage:
-    unit_test/cisco/nxos/unit_test_ans_task_nxos_command.py
+    unit_test/cisco/nxos/unit_test_nxos_command.py
 '''
 
 class RegisterSave(Task):
@@ -46,6 +46,8 @@ class RegisterSave(Task):
             self.task_log.error('exiting. call instance.filename before calling update()')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         '''

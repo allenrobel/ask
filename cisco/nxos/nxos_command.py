@@ -1,5 +1,5 @@
 # NxosCommand() - cisco/nxos/nxos_command.py
-our_version = 105
+our_version = 106
 
 from copy import deepcopy
 from ask.common.task import Task
@@ -12,6 +12,10 @@ NxosCommand()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+106
 
 ScriptKit Synopsis
 ------------------
@@ -26,6 +30,76 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_command.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_command.py>`_
 
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    See also: ScriptKit Example above 
+
+                                    #!/usr/bin/env python3
+                                    # Save the output of show version as json
+                                    from ask.ansible.register_save import RegisterSave
+                                    from ask.common.playbook import Playbook
+                                    from ask.common.log import Log
+                                    from ask.cisco.nxos.nxos_command import NxosCommand
+
+                                    log_level_console = 'INFO'
+                                    log_level_file = 'DEBUG'
+                                    log = Log('my_log', log_level_console, log_level_file)
+
+                                    pb = Playbook(log)
+                                    pb.profile_nxos()
+                                    pb.ansible_password = 'mypassword'
+                                    pb.name = 'Example nxos_command'
+                                    pb.add_host('dc-101')
+                                    pb.file = '/tmp/nxos_command.yaml'
+
+                                    task = NxosCommand(log)
+                                    task.command = 'show version'
+                                    task.output = 'json'
+                                    task.register = 'output'
+                                    task.task_name = 'collect output'
+                                    task.commit()
+                                    pb.add_task(task)
+
+                                    task = RegisterSave(log)
+                                    task.var = 'output.stdout[0]'
+                                    task.filename = '/tmp/show_version.json'
+                                    task.task_name = 'save output'
+                                    task.commit()
+                                    pb.add_task(task)
+
+                                    pb.append_playbook()
+                                    pb.write_playbook()
+                                    log.info('wrote {}'.format(pb.file))
+
+                                - Resulting tasks:
+
+                                    hosts: dc-101
+                                    name: Example nxos_command
+                                    tasks:
+                                    -   cisco.nxos.nxos_command:
+                                            commands:
+                                            -   command: show version
+                                                output: json
+                                            interval: 1
+                                            match: all
+                                            retries: 10
+                                        name: collect output
+                                        register: output
+                                    -   local_action: copy content="{{ output.stdout[0] }}" dest="/tmp/show_version.json"
+                                        name: save output
+                                        vars:
+                                            ansible_connection: local
+
+========================    ============================================
 
 |
 
@@ -215,6 +289,8 @@ class NxosCommand(Task):
         if self.retries == None:
             self.retries = 10
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()
