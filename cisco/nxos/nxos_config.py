@@ -1,5 +1,5 @@
 # NxosConfig() - cisco/nxos/nxos_config.py
-our_version = 115
+our_version = 116
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -12,6 +12,10 @@ NxosConfig()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+116
 
 ScriptKit Synopsis
 ------------------
@@ -26,6 +30,89 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_config.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_config.py>`_
 
+
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    See also: ScriptKit Example above 
+
+                                    #!/usr/bin/env python3
+                                    # Configure an access-list
+                                    from ask.common.playbook import Playbook
+                                    from ask.common.log import Log
+                                    from ask.cisco.nxos.nxos_config import NxosConfig
+
+                                    log_level_console = 'INFO'
+                                    log_level_file = 'DEBUG'
+                                    log = Log('my_log', log_level_console, log_level_file)
+
+                                    pb = Playbook(log)
+                                    pb.profile_nxos()
+                                    pb.ansible_password = 'mypassword'
+                                    pb.name = 'Configure access-list'
+                                    pb.add_host('dc-101')
+                                    pb.file = '/tmp/nxos_config.yaml'
+
+                                    task = NxosConfig(log)
+                                    cfg = list()
+                                    cfg.append('10 permit ip 192.0.2.1/32 any log')
+                                    cfg.append('20 permit ip 192.0.2.2/32 any log')
+                                    cfg.append('30 permit ip 192.0.2.3/32 any log')
+                                    cfg.append('40 permit ip 192.0.2.4/32 any log')
+                                    cfg.append('50 permit ip 192.0.2.5/32 any log')
+                                    parents = list()
+                                    parents.append('ip access-list test')
+                                    before = list()
+                                    before.append('no ip access-list test')
+
+                                    task.lines = cfg
+                                    task.parents = parents
+                                    task.before = before
+                                    task.match = 'exact'
+                                    task.task_name = 'config access-list test'
+                                    task.commit()
+
+                                    pb.add_task(task)
+                                    pb.append_playbook()
+                                    pb.write_playbook()
+                                    log.info('wrote {}'.format(pb.file))
+
+                                - Resulting tasks:
+
+                                    hosts: dc-101
+                                    name: Configure access-list
+                                    tasks:
+                                    -   cisco.nxos.nxos_config:
+                                            before:
+                                            - no ip access-list test
+                                            lines:
+                                            - 10 permit ip 192.0.2.1/32 any log
+                                            - 20 permit ip 192.0.2.2/32 any log
+                                            - 30 permit ip 192.0.2.3/32 any log
+                                            - 40 permit ip 192.0.2.4/32 any log
+                                            - 50 permit ip 192.0.2.5/32 any log
+                                            match: exact
+                                            parents:
+                                            - ip access-list test
+                                        name: config access-list test
+
+                                - Resulting config:
+
+                                        ip access-list test
+                                          10 permit ip 192.0.2.1/32 any log 
+                                          20 permit ip 192.0.2.2/32 any log 
+                                          30 permit ip 192.0.2.3/32 any log 
+                                          40 permit ip 192.0.2.4/32 any log 
+                                          50 permit ip 192.0.2.5/32 any log 
+
+========================    ============================================
 
 |
 
@@ -397,6 +484,8 @@ class NxosConfig(Task):
                 result = False
         return result
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

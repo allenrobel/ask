@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_config.py
-our_version = 107
+our_version = 108
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -32,14 +32,14 @@ def save_when(pb):
     task.lines = cfg
     task.save_when = 'modified'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def diff_against_startup(pb):
     task = NxosConfig(log)
     task.diff_against = 'startup'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def match(pb):
@@ -60,7 +60,7 @@ def match(pb):
     task.before = before
     task.match = 'exact'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def replace_block(pb):
@@ -80,7 +80,7 @@ def replace_block(pb):
     task.before = before
     task.replace = 'block'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def replace_config(pb):
@@ -88,7 +88,7 @@ def replace_config(pb):
     task.replace_src = 'bootflash:/config.txt'
     task.replace = 'config'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def parents(pb):
@@ -102,7 +102,7 @@ def parents(pb):
     task.parents = parents
 
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()
