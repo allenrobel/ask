@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_evpn_global.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -28,7 +28,7 @@ def test_positive():
     task = NxosEvpnGlobal(log)
     task.nv_overlay_evpn = True
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def test_negative():
@@ -36,7 +36,7 @@ def test_negative():
     task.task_name = '{}: test_negative'.format(ansible_module)
     try:
         log.info('START ignore these errors')
-        task.update()
+        task.commit()
         pb.add_task(task)
     except:
         log.info('END ignore these errors')

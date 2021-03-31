@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_evpn_vni.py
-our_version = 103
+our_version = 104
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -30,7 +30,7 @@ def add_task_evpn_global(pb):
     task = NxosEvpnGlobal(log)
     task.nv_overlay_evpn = True
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_evpn_vni_rd_digits_format(pb):
@@ -41,7 +41,7 @@ def add_task_evpn_vni_rd_digits_format(pb):
     task.route_target_export = 'auto'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_evpn_vni_rd_ip_format(pb):
     task = NxosEvpnVni(log)
@@ -51,7 +51,7 @@ def add_task_evpn_vni_rd_ip_format(pb):
     task.route_target_export = ['65122:13']
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

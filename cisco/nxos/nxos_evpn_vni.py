@@ -1,5 +1,5 @@
 # NxosEvpnVni() - cisco/nxos/nxos_evpn_vni.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -10,6 +10,10 @@ NxosEvpnVni()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+104
 
 ScriptKit Synopsis
 ------------------
@@ -24,6 +28,75 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_evpn_vni.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_evpn_vni.py>`_
 
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task::
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    See also: ScriptKit Example above 
+
+                                    #!/usr/bin/env python3
+                                    # configure evpn vni
+                                    from ask.common.playbook import Playbook
+                                    from ask.common.log import Log
+                                    from ask.cisco.nxos.nxos_evpn_vni import NxosEvpnVni
+
+                                    log_level_console = 'INFO'
+                                    log_level_file = 'DEBUG'
+                                    log = Log('my_log', log_level_console, log_level_file)
+
+                                    pb = Playbook(log)
+                                    pb.profile_nxos()
+                                    pb.ansible_password = 'mypassword'
+                                    pb.name = 'nxos_evpn_vni example'
+                                    pb.add_host('dc-101')
+                                    pb.file = '/tmp/nxos_evpn_vni.yaml'
+
+                                    task = NxosEvpnVni(log)
+                                    task.vni = 10302
+                                    task.route_distinguisher = '1.2.3.4:302'
+                                    task.route_target_import = ['1.2.3.4:304', '56220:1']
+                                    task.route_target_export = ['65122:13']
+                                    task.state = 'present'
+                                    task.task_name = 'configure vni {}'.format(task.vni)
+                                    task.commit()
+
+                                    pb.add_task(task)
+                                    pb.append_playbook()
+                                    pb.write_playbook()
+                                    log.info('wrote {}'.format(pb.file))
+
+                                - Resulting tasks:
+
+                                    hosts: dc-101
+                                    name: nxos_evpn_vni example
+                                    tasks:
+                                    -   cisco.nxos.nxos_evpn_vni:
+                                            route_distinguisher: 1.2.3.4:302
+                                            route_target_export:
+                                            - '65122:13'
+                                            route_target_import:
+                                            - 1.2.3.4:304
+                                            - '56220:1'
+                                            state: present
+                                            vni: '10302'
+                                        name: configure vni 10302
+
+                                - Resulting config:
+
+                                    evpn
+                                      vni 10302 l2
+                                        rd 1.2.3.4:302
+                                        route-target import 1.2.3.4:304
+                                        route-target import 56220:1
+                                        route-target export 65122:13
+
+========================    ============================================
 
 |
 
@@ -196,6 +269,8 @@ class NxosEvpnVni(Task):
             self.task_log.error('exiting. instance.vni must be set before calling instance.update()')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         verify mandatory module-specific parameters are set
