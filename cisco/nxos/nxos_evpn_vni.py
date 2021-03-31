@@ -34,11 +34,12 @@ ScriptKit Example
 Method                      Description
 ========================    ============================================
 commit()                    Perform final verification and commit the 
-                            current task::
+                            current task.::
+
                                 - Type: function()
                                 - Alias: update()
                                 - Example:
-                                    See also: ScriptKit Example above 
+                                    See also: ScriptKit Example above
 
                                     #!/usr/bin/env python3
                                     # configure evpn vni
