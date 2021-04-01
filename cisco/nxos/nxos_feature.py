@@ -1,5 +1,5 @@
 # NxosFeature() - cisco/nxos/nxos_feature.py
-our_version = 108
+our_version = 109
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -10,6 +10,10 @@ NxosFeature()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+109
 
 ScriptKit Synopsis
 ------------------
@@ -24,6 +28,62 @@ ScriptKit Example
 -----------------
 - `unit_test/cisco/nxos/unit_test_nxos_feature.py <https://github.com/allenrobel/ask/blob/main/unit_test/cisco/nxos/unit_test_nxos_feature.py>`_
 
+|
+
+========================    ============================================
+Method                      Description
+========================    ============================================
+commit()                    Perform final verification and commit the 
+                            current task.::
+
+                                - Type: function()
+                                - Alias: update()
+                                - Example:
+                                    See also: ScriptKit Example above
+
+                                    #!/usr/bin/env python3
+                                    # enable feature bgp
+                                    from ask.common.playbook import Playbook
+                                    from ask.common.log import Log
+                                    from ask.cisco.nxos.nxos_feature import NxosFeature
+
+                                    log_level_console = 'INFO'
+                                    log_level_file = 'DEBUG'
+                                    log = Log('my_log', log_level_console, log_level_file)
+
+                                    pb = Playbook(log)
+                                    pb.profile_nxos()
+                                    pb.ansible_password = 'mypassword'
+                                    pb.name = 'nxos_feature example'
+                                    pb.add_host('dc-101')
+                                    pb.file = '/tmp/nxos_feature.yaml'
+
+                                    task = NxosFeature(log)
+                                    task.feature = 'bgp'
+                                    task.state = 'enabled'
+                                    task.task_name = 'configure feature {}'.format(task.feature)
+                                    task.commit()
+
+                                    pb.add_task(task)
+                                    pb.append_playbook()
+                                    pb.write_playbook()
+                                    log.info('wrote {}'.format(pb.file))
+
+                                - Resulting tasks:
+
+                                    hosts: dc-101
+                                    name: nxos_feature example
+                                    tasks:
+                                    -   cisco.nxos.nxos_feature:
+                                            feature: bgp
+                                            state: enabled
+                                        name: configure feature bgp
+
+                                - Resulting config:
+
+                                    feature bgp
+
+========================    ============================================
 
 |
 
@@ -100,6 +160,8 @@ class NxosFeature(Task):
             self.task_log.error('exiting. call instance.state before calling instance.update()')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

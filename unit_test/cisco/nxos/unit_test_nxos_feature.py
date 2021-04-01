@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_feature.py
-our_version = 105
+our_version = 106
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -29,14 +29,14 @@ def enable_feature(pb, feature):
     task.feature = feature
     task.state = 'enabled'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def disable_feature(pb, feature):
     task = NxosFeature(log)
     task.feature = feature
     task.state = 'disabled'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()
