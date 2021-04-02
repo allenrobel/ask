@@ -341,6 +341,8 @@ class NxosLldpGlobal(Task):
         if self.running_config != None:
             self.running_config_verification()
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

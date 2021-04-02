@@ -33,7 +33,7 @@ def mk_vrf_interface(interfaces, vrf, pb):
         task.vrf = vrf
         task.state = 'present'
         add_task_name(task)
-        task.update()
+        task.commit()
         pb.add_task(task)
 
 pb = playbook()

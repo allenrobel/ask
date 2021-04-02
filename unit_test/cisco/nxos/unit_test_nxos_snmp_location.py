@@ -29,7 +29,7 @@ def add_task(pb):
     task.location = 'DC_004:Pod_035:Rack_142'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

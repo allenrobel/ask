@@ -33,7 +33,7 @@ def add_task(pb):
     task.state = 'present'
     task.trusted_key = True
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

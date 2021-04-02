@@ -43,7 +43,7 @@ def add_task(pb):
     vnis = [10010, 10020]
 
     for vlan_id,mapped_vni in zip(vlans, vnis):
-        task.enabled = Trues val
+        task.enabled = True
         task.mapped_vni = mapped_vni
         task.vlan_state = 'active'
         task.vlan_id = vlan_id

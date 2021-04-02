@@ -31,7 +31,7 @@ def add_task_pim_rp_address_group_list(pb):
     task.rp_address = '2.2.2.2'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_pim_rp_address_prefix_list(pb):
@@ -41,7 +41,7 @@ def add_task_pim_rp_address_prefix_list(pb):
     task.rp_address = '3.3.3.3'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_pim_rp_address_route_map(pb):
@@ -51,7 +51,7 @@ def add_task_pim_rp_address_route_map(pb):
     task.rp_address = '4.4.4.4'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_pim_rp_address_bidir(pb):
@@ -61,7 +61,7 @@ def add_task_pim_rp_address_bidir(pb):
     task.rp_address = '5.5.5.5'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

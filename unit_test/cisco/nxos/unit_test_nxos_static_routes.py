@@ -57,7 +57,7 @@ def add_ipv4_next_hops_vrf(pb):
     task.add_next_hop()
     task.state = 'merged'
 
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_ipv4_next_hops_no_vrf(task):
@@ -90,7 +90,7 @@ def add_next_hops_no_vrf(pb):
     add_ipv6_next_hops_no_vrf(task)
     add_task_name(task)
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

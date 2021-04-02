@@ -34,7 +34,7 @@ def hsrp_interface_bfd_enable_task(pb):
         task.append_to_task_name(task.name)
         task.add_interface()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def hsrp_interface_bfd_disable_task(pb):
@@ -47,7 +47,7 @@ def hsrp_interface_bfd_disable_task(pb):
         task.append_to_task_name(task.name)
         task.add_interface()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

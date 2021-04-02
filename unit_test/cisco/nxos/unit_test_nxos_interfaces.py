@@ -47,7 +47,7 @@ task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
 add_ethernet_interfaces(task)
 add_svi_interfaces(task)
 task.state = 'merged'
-task.update()
+task.commit()
 pb.add_task(task)
 pb.append_playbook()
 pb.write_playbook()

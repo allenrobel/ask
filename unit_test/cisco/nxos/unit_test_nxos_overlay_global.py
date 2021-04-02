@@ -29,7 +29,7 @@ def add_task(pb):
     task.anycast_gateway_mac = '0000.1aaa.bbbb'
     #task.anycast_gateway_mac = 'default'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

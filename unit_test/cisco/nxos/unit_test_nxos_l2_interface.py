@@ -31,7 +31,7 @@ def add_task_access_interface(pb):
     task.access_vlan = 10
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_trunk_interface(pb):
@@ -42,7 +42,7 @@ def add_task_trunk_interface(pb):
     task.trunk_vlans = '3,30-31'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

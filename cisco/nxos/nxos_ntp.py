@@ -184,6 +184,8 @@ class NxosNtp(Task):
         if self.vrf_name == None:
             self.vrf_name = 'management'
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

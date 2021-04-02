@@ -69,7 +69,7 @@ def add_task_deleted(pb):
         task.append_to_task_name(task.name)
         task.add_interface()
     task.state = 'deleted'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_parsed(pb):
@@ -78,13 +78,13 @@ def add_task_parsed(pb):
     task.state = 'parsed'
     task.register = 'parsed'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
     task = RegisterSave(log)
     task.filename = '/tmp/parsed_output.txt'
     task.var = 'parsed'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()
@@ -96,7 +96,7 @@ dual_stack_interface(task)
 ipv4_interface(task)
 ipv6_interface(task)
 task.state = 'merged'
-task.update()
+task.commit()
 pb.add_task(task)
 
 #add_task_parsed(pb)

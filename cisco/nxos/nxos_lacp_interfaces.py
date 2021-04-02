@@ -365,6 +365,8 @@ class NxosLacpInterfaces(Task):
         self.config.append(deepcopy(d))
         self.init_properties()
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

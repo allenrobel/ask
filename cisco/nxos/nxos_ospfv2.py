@@ -976,6 +976,8 @@ class NxosOspfV2(Task):
         if self.running_config != None:
             self.running_config_verification()
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         update verifies that mandatory module-specific parameters are set

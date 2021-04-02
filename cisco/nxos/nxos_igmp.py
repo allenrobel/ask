@@ -123,6 +123,8 @@ class NxosIgmp(Task):
         if self.state == None:
             self.state = 'present'
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

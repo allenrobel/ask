@@ -317,6 +317,8 @@ class NxosInterface(Task):
             self.task_log.info('mtu not valid for {}. Changing mtu to None.'.format(self.name))
             self.properties['mtu'] = None
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         '''

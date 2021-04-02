@@ -199,6 +199,8 @@ class NxosSystem(Task):
         self.task_log.error('Set at least one property, or set state = "absent"')
         exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

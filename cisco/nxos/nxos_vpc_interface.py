@@ -130,6 +130,8 @@ class NxosVpcInterface(Task):
             self.task_log.error('exiting. instance.peer_link ({}) and instance.vpc ({}) are mutually exclusive. Unset one or the other.'.format(self.peer_link, self.vpc))
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

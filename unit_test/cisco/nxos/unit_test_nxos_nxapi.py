@@ -44,7 +44,7 @@ def add_task(pb):
     task.tlsv1_1 = True
     task.tlsv1_2 = True
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

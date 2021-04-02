@@ -36,7 +36,7 @@ def add_task(pb):
     task.role_priority = 65535
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

@@ -33,14 +33,14 @@ def add_task(pb):
     task.state = 'present'
     task.v3_report_supp = True
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_disable_snooping(pb):
     task = NxosIgmpSnooping(log)
     task.snooping = False
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_link_local_grp_supp(pb):
     task = NxosIgmpSnooping(log)
@@ -49,7 +49,7 @@ def add_task_link_local_grp_supp(pb):
     task.snooping = True
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_report_supp(pb):
     task = NxosIgmpSnooping(log)
@@ -57,7 +57,7 @@ def add_task_report_supp(pb):
     task.snooping = True
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_enable_snooping_non_defaults(pb):
     task = NxosIgmpSnooping(log)
@@ -68,7 +68,7 @@ def add_task_enable_snooping_non_defaults(pb):
     task.state = 'present'
     task.v3_report_supp = True
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

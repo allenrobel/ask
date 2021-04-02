@@ -35,7 +35,7 @@ def add_task(pb):
     task.vlan_id = 2001
     task.vlan_state = 'active'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_aggregate_task(pb):
@@ -62,7 +62,7 @@ def add_aggregate_task(pb):
     task.add_vlan()
 
     task.task_name = 'aggregate vlans'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

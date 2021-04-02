@@ -214,6 +214,8 @@ class NxosSnmpHost(Task):
         if self.task_name == None:
             self.task_name = 'NxosSnmpHost {}'.format(self.snmp_host)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

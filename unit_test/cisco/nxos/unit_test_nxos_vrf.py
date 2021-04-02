@@ -35,7 +35,7 @@ def add_task(pb):
     task.state = 'present'
     task.vni = 20001
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_aggregate_task(pb):
@@ -62,7 +62,7 @@ def add_aggregate_task(pb):
 
     task.purge = True
     task.task_name = 'aggregate vrfs'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

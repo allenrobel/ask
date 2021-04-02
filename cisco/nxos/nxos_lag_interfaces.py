@@ -230,6 +230,8 @@ class NxosLagInterfaces(Task):
                 self.task_log.error('exiting. call instance.add_lag() at least once before calling self.update()')
                 exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

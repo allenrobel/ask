@@ -293,6 +293,8 @@ class NxosLogging(Task):
             self.task_log.error('exiting. instance.facility_level is set, but one of instance.facility or instance.facility_link_status or instance.remote_server is not set')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

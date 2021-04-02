@@ -42,7 +42,7 @@ def task_tlv_set_0_member(pb):
     task.state = 'merged'
     add_task_name(task)
     task.add_interface()
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_tlv_set_1_member(pb):
@@ -54,7 +54,7 @@ def task_tlv_set_1_member(pb):
     task.state = 'merged'
     add_task_name(task)
     task.add_interface()
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_tlv_set_2_member(pb):
@@ -67,7 +67,7 @@ def task_tlv_set_2_member(pb):
     task.state = 'merged'
     add_task_name(task)
     task.add_interface()
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_state_parsed(pb):
@@ -76,14 +76,14 @@ def add_task_state_parsed(pb):
     task.state = 'parsed'
     task.register = 'parsed'
     task.task_name = 'test state parsed'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
     task = RegisterSave(log)
     task.filename = '/tmp/parsed_output.txt'
     task.var = 'parsed'
     task.task_name = 'save register'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

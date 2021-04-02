@@ -377,6 +377,8 @@ class NxosL3Interfaces(Task):
                     self.task_log.error('ipv6_attribute properties: ipv6_address, ipv6_tag')
                     exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

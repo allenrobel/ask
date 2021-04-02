@@ -214,6 +214,8 @@ class NxosHsrp(Task):
         self.verify_nxos_hsrp_group(self.group, 'group')
 
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

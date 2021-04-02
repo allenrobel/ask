@@ -124,6 +124,8 @@ class NxosPim(Task):
             self.task_log.error('exiting. instance.ssm_range is mandatory. call instance.ssm_range before calling instance.update()')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

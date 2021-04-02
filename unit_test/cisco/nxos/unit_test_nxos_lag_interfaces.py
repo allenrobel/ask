@@ -51,7 +51,7 @@ def add_task_state_merged(pb):
     task.add_lag()
 
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_state_parsed(pb):
@@ -60,14 +60,14 @@ def add_task_state_parsed(pb):
     task.state = 'parsed'
     task.register = 'parsed'
     task.task_name = 'test state parsed'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
     task = RegisterSave(log)
     task.filename = '/tmp/parsed_output.txt'
     task.var = 'parsed'
     task.task_name = 'save register'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

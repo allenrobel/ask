@@ -30,7 +30,7 @@ def add_task_vpc_peer_link(pb):
     task.portchannel = 1
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_vpc_port_channel(pb):
     task = NxosVpcInterface(log)
@@ -38,7 +38,7 @@ def add_task_vpc_port_channel(pb):
     task.vpc = 10
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

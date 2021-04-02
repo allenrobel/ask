@@ -31,7 +31,7 @@ def fabric_forwarding_anycast_gateway(pb):
     task.mtu = 9216
     task.fabric_forwarding_anycast_gateway = True
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def layer2(pb):
@@ -46,7 +46,7 @@ def layer2(pb):
     task.neighbor_host = 'test_hostname1'
     task.neighbor_port = 'Ethernet1/2'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def layer3(pb):
@@ -60,7 +60,7 @@ def layer3(pb):
     task.state = 'present'
     task.neighbor_host = 'test_hostname2'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

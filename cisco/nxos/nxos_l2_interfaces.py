@@ -228,6 +228,8 @@ class NxosL2Interfaces(Task):
             self.task_log.error('exiting. call instance.add_interface() at least once before calling instance.update()')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

@@ -28,7 +28,7 @@ def hostname(pb):
     task.hostname = 'dc-101'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def domain_lookup(pb):
@@ -36,7 +36,7 @@ def domain_lookup(pb):
     task.domain_lookup = True
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def domain_name(pb):
@@ -44,7 +44,7 @@ def domain_name(pb):
     task.domain_name = 'dc-101.foo.com'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def domain_search(pb):
@@ -52,7 +52,7 @@ def domain_search(pb):
     task.domain_search = ['foo.com', 'bar.com']
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def name_servers_list(pb):
@@ -60,7 +60,7 @@ def name_servers_list(pb):
     task.name_servers = ['1.2.3.4', '5.6.7.8']
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def name_servers_dict(pb):
@@ -71,7 +71,7 @@ def name_servers_dict(pb):
                         ]
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def system_mtu(pb):
@@ -79,7 +79,7 @@ def system_mtu(pb):
     task.system_mtu = 9216
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

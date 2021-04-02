@@ -45,7 +45,7 @@ def add_task_single_lacp_interface(pb):
     add_task_name(task)
     task.add_interface()
     task.state = 'replaced'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_multiple_lacp_interfaces(pb):
@@ -75,7 +75,7 @@ def add_task_multiple_lacp_interfaces(pb):
 
     task.state = 'merged'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_parsed(pb):
@@ -84,14 +84,14 @@ def add_task_parsed(pb):
     task.state = 'parsed'
     task.register = 'parsed'
     task.task_name = 'test state parsed'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
     task = RegisterSave(log)
     task.filename = '/tmp/parsed_output.txt'
     task.var = 'parsed'
     task.task_name = 'save register'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

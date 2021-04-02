@@ -33,7 +33,7 @@ def add_task_global(pb):
     task.timer = 4
     task.state = 'merged'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_tlv_select(pb):
@@ -42,7 +42,7 @@ def add_task_tlv_select(pb):
     task.power_management = False
     task.state = 'merged'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_tlv_select_management_address(pb):
@@ -51,7 +51,7 @@ def add_task_tlv_select_management_address(pb):
     task.management_address_v6 = False
     task.state = 'merged'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_tlv_select_port(pb):
@@ -60,7 +60,7 @@ def add_task_tlv_select_port(pb):
     task.port_vlan = False
     task.state = 'merged'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_tlv_select_system(pb):
@@ -70,7 +70,7 @@ def add_task_tlv_select_system(pb):
     task.system_name = False
     task.state = 'merged'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_state_parsed(pb):
@@ -80,7 +80,7 @@ def add_task_state_parsed(pb):
     task.register = 'parsed'
     task.task_name = 'test state parsed'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
     task = RegisterSave(log)
@@ -88,7 +88,7 @@ def add_task_state_parsed(pb):
     task.var = 'parsed'
     task.task_name = 'save register'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

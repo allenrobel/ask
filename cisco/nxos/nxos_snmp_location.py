@@ -99,6 +99,8 @@ class NxosSnmpLocation(Task):
             self.task_log.error('exiting. Set instance.state before calling instance.update()')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

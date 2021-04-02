@@ -31,7 +31,7 @@ def add_task(pb):
     task.state = 'present'
     task.stratum = 10
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

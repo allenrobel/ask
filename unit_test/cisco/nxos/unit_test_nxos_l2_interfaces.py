@@ -51,7 +51,7 @@ def add_task_deleted(pb):
     task.add_interface()
     task.state = 'deleted'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_parsed(pb):
@@ -60,13 +60,13 @@ def add_task_parsed(pb):
     task.state = 'parsed'
     task.register = 'parsed'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
     task = RegisterSave(log)
     task.filename = '/tmp/parsed_output.txt'
     task.var = 'parsed'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 
@@ -75,7 +75,7 @@ task = NxosL2Interfaces(log)
 add_access_interfaces(task)
 add_trunk_interfaces(task)
 task.state = 'merged'
-task.update()
+task.commit()
 pb.add_task(task)
 add_task_deleted(pb)
 add_task_parsed(pb)

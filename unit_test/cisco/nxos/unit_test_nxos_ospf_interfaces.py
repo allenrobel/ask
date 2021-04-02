@@ -108,7 +108,7 @@ def configure_ospf(pb):
         task.append_to_task_name(task.name)
         task.add_interface()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def shutdown_ospf_process(pb):
@@ -122,7 +122,7 @@ def shutdown_ospf_process(pb):
         task.append_to_task_name(task.name)
         task.add_interface()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

@@ -29,7 +29,7 @@ def add_task_logging_event_link_enable(pb):
     task.event = 'link-enable'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_facility_link_status(pb):
     task = NxosLogging(log)
@@ -37,7 +37,7 @@ def add_task_logging_facility_link_status(pb):
     task.facility_link_status = 'link-up-notif'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_facility_bgp(pb):
     task = NxosLogging(log)
@@ -46,7 +46,7 @@ def add_task_logging_facility_bgp(pb):
     task.remove_server = '1.2.3.4'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_facility_ospf(pb):
     task = NxosLogging(log)
@@ -55,7 +55,7 @@ def add_task_logging_facility_ospf(pb):
     task.remove_server = '1.2.3.4'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_logfile(pb):
     task = NxosLogging(log)
@@ -65,7 +65,7 @@ def add_task_logging_logfile(pb):
     task.name = 'mylog'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_server_ipv4(pb):
     task = NxosLogging(log)
@@ -76,7 +76,7 @@ def add_task_logging_server_ipv4(pb):
     task.facility = 'local0'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_server_ipv6(pb):
     task = NxosLogging(log)
@@ -86,7 +86,7 @@ def add_task_logging_server_ipv6(pb):
     task.use_vrf = 'management'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_server_domain_name(pb):
     task = NxosLogging(log)
@@ -96,7 +96,7 @@ def add_task_logging_server_domain_name(pb):
     task.use_vrf = 'management'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_monitor(pb):
     task = NxosLogging(log)
@@ -104,14 +104,14 @@ def add_task_logging_monitor(pb):
     task.dest_level = 0
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_timestamp(pb):
     task = NxosLogging(log)
     task.timestamp = '0'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_interface(pb):
     task = NxosLogging(log)
@@ -119,28 +119,28 @@ def add_task_logging_interface(pb):
     task.use_vrf = 'management'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_interface_message(pb):
     task = NxosLogging(log)
     task.interface_message = 'add-interface-description'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_timestamp(pb):
     task = NxosLogging(log)
     task.timestamp = 'microseconds'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 def add_task_logging_purge(pb):
     task = NxosLogging(log)
     task.purge = False
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

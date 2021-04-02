@@ -49,7 +49,7 @@ def add_task(pb):
     task.source_interface_hold_down_time = 380
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

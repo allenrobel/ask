@@ -29,7 +29,7 @@ def add_task(pb):
     task.ospf = '1'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

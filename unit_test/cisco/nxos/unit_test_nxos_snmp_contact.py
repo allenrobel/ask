@@ -29,7 +29,7 @@ def add_task(pb):
     task.contact = 'janedoe@thisisnotadomainanyonewouldwant.com'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

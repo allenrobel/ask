@@ -44,7 +44,7 @@ def add_task(pb):
     task.state = 'present'
     task.vni = 11932
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

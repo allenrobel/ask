@@ -65,6 +65,8 @@ class NxosL3Interface(Task):
             self.task_log.error('exiting. at least one of [ipv4, ipv6] must be set.')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

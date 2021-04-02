@@ -64,7 +64,7 @@ def task_nxos_ospfv2_vrf_example(pb):
     # Now, add the process, which also adds the VRFs
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_auto_cost(pb):
@@ -75,7 +75,7 @@ def task_nxos_ospfv2_processes_auto_cost(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_auto_cost_vrf(pb):
@@ -88,7 +88,7 @@ def task_nxos_ospfv2_processes_auto_cost_vrf(pb):
     task.add_vrf()
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_default_metric(pb):
@@ -98,7 +98,7 @@ def task_nxos_ospfv2_processes_default_metric(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_default_information_originate(pb):
@@ -110,7 +110,7 @@ def task_nxos_ospfv2_processes_default_information_originate(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_distance(pb):
@@ -120,7 +120,7 @@ def task_nxos_ospfv2_processes_distance(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_flush_routes(pb):
@@ -130,7 +130,7 @@ def task_nxos_ospfv2_processes_flush_routes(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_isolate(pb):
@@ -140,7 +140,7 @@ def task_nxos_ospfv2_processes_isolate(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_log_adjacency_changes(pb):
@@ -151,7 +151,7 @@ def task_nxos_ospfv2_processes_log_adjacency_changes(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_max_lsa(pb):
@@ -166,7 +166,7 @@ def task_nxos_ospfv2_processes_max_lsa(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_max_metric(pb):
@@ -189,7 +189,7 @@ def task_nxos_ospfv2_processes_max_metric(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_maximum_paths(pb):
@@ -199,7 +199,7 @@ def task_nxos_ospfv2_processes_maximum_paths(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_mpls_traffic_eng(pb):
@@ -211,7 +211,7 @@ def task_nxos_ospfv2_processes_mpls_traffic_eng(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_name_lookup(pb):
@@ -221,7 +221,7 @@ def task_nxos_ospfv2_processes_name_lookup(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_passive_interface(pb):
@@ -231,7 +231,7 @@ def task_nxos_ospfv2_processes_passive_interface(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_redistribute(pb):
@@ -252,7 +252,7 @@ def task_nxos_ospfv2_processes_redistribute(pb):
 
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_rfc1583compatibility(pb):
@@ -262,7 +262,7 @@ def task_nxos_ospfv2_processes_rfc1583compatibility(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_router_id(pb):
@@ -272,7 +272,7 @@ def task_nxos_ospfv2_processes_router_id(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_shutdown(pb):
@@ -282,7 +282,7 @@ def task_nxos_ospfv2_processes_shutdown(pb):
     task.task_name = add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_summary_address(pb):
@@ -307,7 +307,7 @@ def task_nxos_ospfv2_processes_summary_address(pb):
     task.process_id = 3
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_table_map(pb):
@@ -318,7 +318,7 @@ def task_nxos_ospfv2_processes_table_map(pb):
     add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_timers_lsa(pb):
@@ -329,7 +329,7 @@ def task_nxos_ospfv2_processes_timers_lsa(pb):
     add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_timers_throttle_lsa(pb):
@@ -341,7 +341,7 @@ def task_nxos_ospfv2_processes_timers_throttle_lsa(pb):
     add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_timers_throttle_spf(pb):
@@ -353,7 +353,7 @@ def task_nxos_ospfv2_processes_timers_throttle_spf(pb):
     add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 
@@ -366,7 +366,7 @@ def task_nxos_ospfv2_authentication(pb):
     task.add_area()
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_areas_ranges(pb):
@@ -390,7 +390,7 @@ def task_nxos_ospfv2_areas_ranges(pb):
     task.add_area()
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 
@@ -409,7 +409,7 @@ def task_nxos_ospfv2_areas_nssa(pb):
     task.add_area()
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_areas_filter_list(pb):
@@ -422,7 +422,7 @@ def task_nxos_ospfv2_areas_filter_list(pb):
     task.process_id = 100
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_areas_authentication(pb):
@@ -435,7 +435,7 @@ def task_nxos_ospfv2_areas_authentication(pb):
     task.process_id = 0
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_areas_authentication_vrf(pb):
@@ -450,7 +450,7 @@ def task_nxos_ospfv2_areas_authentication_vrf(pb):
     task.process_id = 0
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_areas_stub(pb):
@@ -463,7 +463,7 @@ def task_nxos_ospfv2_areas_stub(pb):
     task.process_id = 0
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_areas_default_cost(pb):
@@ -475,7 +475,7 @@ def task_nxos_ospfv2_areas_default_cost(pb):
     task.process_id = 0
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_bfd(pb):
@@ -485,7 +485,7 @@ def task_nxos_ospfv2_processes_bfd(pb):
     add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def task_nxos_ospfv2_processes_graceful_restart(pb):
@@ -497,7 +497,7 @@ def task_nxos_ospfv2_processes_graceful_restart(pb):
     add_task_name(task)
     task.add_process()
     task.state = 'merged'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_state_parsed(pb):
@@ -506,14 +506,14 @@ def add_task_state_parsed(pb):
     task.state = 'parsed'
     task.register = 'parsed'
     task.task_name = 'test state parsed'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
     task = RegisterSave(log)
     task.filename = '/tmp/parsed_output.json'
     task.var = 'parsed'
     task.task_name = 'save register'
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

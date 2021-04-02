@@ -276,6 +276,8 @@ class NxosPimInterface(Task):
             self.task_log.error('exiting. instance.neighbor_type must be set if instance.neighbor_policy is set')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

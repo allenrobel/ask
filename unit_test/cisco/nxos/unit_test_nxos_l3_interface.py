@@ -30,7 +30,7 @@ def add_task_interface_dual_stack(pb):
     task.ipv6 = '2001:aaaa::1/64'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_interface_ipv4(pb):
@@ -39,7 +39,7 @@ def add_task_interface_ipv4(pb):
     task.ipv4 = '10.2.1.1/24'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_interface_ipv6(pb):
@@ -48,7 +48,7 @@ def add_task_interface_ipv6(pb):
     task.ipv6 = '2003:cccc::3/64'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

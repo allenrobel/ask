@@ -35,7 +35,7 @@ def add_task_pim_interface_base(pb):
     task.sparse = True
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_pim_interface_jp_policy(pb):
@@ -47,7 +47,7 @@ def add_task_pim_interface_jp_policy(pb):
     task.interface = 'Ethernet1/49'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def add_task_pim_interface_neighbor_policy(pb):
@@ -57,7 +57,7 @@ def add_task_pim_interface_neighbor_policy(pb):
     task.interface = 'Ethernet1/49'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()

@@ -100,6 +100,8 @@ class NxosSnmpContact(Task):
         if self.task_name == None:
             self.task_name = 'NxosSnmpContact {}'.format(self.contact)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

@@ -31,7 +31,7 @@ def hsrp_priority_default(pb):
     task.interface = 'Vlan101'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def hsrp_version_1_group(pb):
@@ -43,7 +43,7 @@ def hsrp_version_1_group(pb):
     task.interface = 'Vlan102'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 def hsrp_version_2_group(pb):
@@ -55,7 +55,7 @@ def hsrp_version_2_group(pb):
     task.interface = 'Vlan103'
     task.state = 'present'
     add_task_name(task)
-    task.update()
+    task.commit()
     pb.add_task(task)
 
 pb = playbook()
