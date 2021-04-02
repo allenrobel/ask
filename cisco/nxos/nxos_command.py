@@ -269,7 +269,7 @@ class NxosCommand(Task):
 
     def final_verification(self):
         if self.commands == None and self.command == None:
-            self.task_log.error('exiting. instance.commands or instance.command must be set before calling instance.update()')
+            self.task_log.error('exiting. instance.commands or instance.command must be set before calling instance.commit()')
             exit(1)
         if self.commands != None and self.command != None:
             self.task_log.error('exiting. instance.commands and instance.command cannot both be set')
@@ -280,7 +280,7 @@ class NxosCommand(Task):
         if self.command != None and self.output == None:
             self.output = 'text'
         if self.register == None:
-            self.task_log.error('exiting. instance.register must be set before calling instance.update()')
+            self.task_log.error('exiting. instance.register must be set before calling instance.commit()')
             exit(1)
         if self.interval == None:
             self.interval = 1

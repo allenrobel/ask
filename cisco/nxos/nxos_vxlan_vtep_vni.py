@@ -193,13 +193,13 @@ class NxosVxlanVtepVni(Task):
         '''
         '''
         if self.interface == None:
-            self.task_log.error('exiting. call instance.interface before calling instance.update()')
+            self.task_log.error('exiting. call instance.interface before calling instance.commit()')
             exit(1)
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.vni == None:
-            self.task_log.error('exiting. call instance.vni before calling instance.update()')
+            self.task_log.error('exiting. call instance.vni before calling instance.commit()')
             exit(1)
 
     def commit(self):

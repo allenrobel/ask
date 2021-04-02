@@ -80,7 +80,7 @@ class NxosReboot(Task):
 
     def final_verification(self):
         if self.confirm == None:
-            self.task_log.error('exiting. set instance.confirm prior to calling instance.update()')
+            self.task_log.error('exiting. set instance.confirm prior to calling instance.commit()')
             exit(11)
 
     def commit(self):

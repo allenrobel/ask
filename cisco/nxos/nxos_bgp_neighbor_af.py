@@ -617,10 +617,10 @@ class NxosBgpNeighborAf(Task):
 
     def final_verification(self):
         if self.afi == None:
-            self.task_log.error('exiting. call instance.afi before calling instance.update()')
+            self.task_log.error('exiting. call instance.afi before calling instance.commit()')
             exit(1)
         if self.safi == None:
-            self.task_log.error('exiting. call instance.safi before calling instance.update()')
+            self.task_log.error('exiting. call instance.safi before calling instance.commit()')
             exit(1)
         if self.allowas_in != None and self.allowas_in_max != None:
             self.task_log.error('exiting. allowas_in is mutually-exclusive with allowas_in_max')

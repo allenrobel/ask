@@ -150,10 +150,10 @@ class NxosPimRpAddress(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.rp_address == None:
-            self.task_log.error('exiting. instance.rp_address must be set prior to calling instance.update()')
+            self.task_log.error('exiting. instance.rp_address must be set prior to calling instance.commit()')
             exit(1)
         if self.group_list != None and self.route_map != None:
             self.task_log.error('exiting. instance.group_list and instance_route_map are mutually-exclusive')

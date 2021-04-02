@@ -1323,7 +1323,7 @@ class NxosBgpGlobal(Task):
         self.vrf_list = list()
 
         # The set of ansible module properties that should be written
-        # when the user calls instance.update().
+        # when the user calls instance.commit().
         # TODO: VERIFY these are written to the ansible_task
         self.ansible_module_set = set()
         self.ansible_module_set.add('state')
@@ -1331,7 +1331,7 @@ class NxosBgpGlobal(Task):
 
         # The set of atomic -- not members of a dict() -- 
         # bgp global (non-neighbor, non-vrf) properties.
-        # Written when the user calls instance.update().
+        # Written when the user calls instance.commit().
         # These will be written to the top-level of
         # self.config
         self.bgp_global_atomic_properties = set()
@@ -1879,10 +1879,10 @@ class NxosBgpGlobal(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.as_number == None:
-            self.task_log.error('exiting. call instance.as_number before calling instance.update()')
+            self.task_log.error('exiting. call instance.as_number before calling instance.commit()')
             exit(1)
 
     def update_bestpath(self):

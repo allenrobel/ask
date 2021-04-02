@@ -82,7 +82,7 @@ class NxosL2Interface(Task):
 
     def final_verification(self):
         if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
+            self.task_log.error('exiting. call instance.name before calling instance.commit()')
             exit(1)
 
     def commit(self):

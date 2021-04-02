@@ -203,13 +203,13 @@ class NxosHsrp(Task):
         final verification across the properties that the user has or hasn't set
         '''
         if self.group == None:
-            self.task_log.error('exiting. call instance.group before calling instance.update()')
+            self.task_log.error('exiting. call instance.group before calling instance.commit()')
             exit(1)
         if self.interface == None:
-            self.task_log.error('exiting. call instance.interface before calling instance.update()')
+            self.task_log.error('exiting. call instance.interface before calling instance.commit()')
             exit(1)
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         self.verify_nxos_hsrp_group(self.group, 'group')
 

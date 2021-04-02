@@ -124,7 +124,7 @@ class NxosVpcInterface(Task):
 
     def final_verification(self):
         if self.portchannel == None:
-            self.task_log.error('exiting. call instance.portchannel before calling instance.update()')
+            self.task_log.error('exiting. call instance.portchannel before calling instance.commit()')
             exit(1)
         if self.peer_link != None and self.vpc != None:
             self.task_log.error('exiting. instance.peer_link ({}) and instance.vpc ({}) are mutually exclusive. Unset one or the other.'.format(self.peer_link, self.vpc))

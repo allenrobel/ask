@@ -642,7 +642,7 @@ class NxosBgpNeighborAddressFamily(Task):
         self.vrf_list = list()
 
         # The set of ansible module properties that should be written
-        # when the user calls instance.update().
+        # when the user calls instance.commit().
         self.ansible_module_set = set()
         self.ansible_module_set.add('state')
         self.ansible_module_set.add('running_config')
@@ -727,7 +727,7 @@ class NxosBgpNeighborAddressFamily(Task):
 
         # The set of atomic -- not members of a dict() --
         # properties that should be written when 
-        # the caller calls instance.update()
+        # the caller calls instance.commit()
         self.config_atomic = set()
         self.config_atomic.add('as_number')
 
@@ -895,10 +895,10 @@ class NxosBgpNeighborAddressFamily(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.as_number == None:
-            self.task_log.error('exiting. call instance.as_number before calling instance.update()')
+            self.task_log.error('exiting. call instance.as_number before calling instance.commit()')
             exit(1)
 
     def update_config_atomic(self):

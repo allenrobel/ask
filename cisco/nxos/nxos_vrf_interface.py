@@ -108,13 +108,13 @@ class NxosVrfInterface(Task):
 
     def final_verification(self):
         if self.interface == None:
-            self.task_log.error('exiting. call instance.interface before calling instance.update()')
+            self.task_log.error('exiting. call instance.interface before calling instance.commit()')
             exit(1)
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.vrf == None:
-            self.task_log.error('exiting. call instance.vrf before calling instance.update()')
+            self.task_log.error('exiting. call instance.vrf before calling instance.commit()')
             exit(1)
 
     def commit(self):

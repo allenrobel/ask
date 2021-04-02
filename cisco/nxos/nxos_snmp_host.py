@@ -203,13 +203,13 @@ class NxosSnmpHost(Task):
 
     def final_verification(self):
         if self.community == None:
-            self.task_log.error('exiting. Set instance.community before calling instance.update()')
+            self.task_log.error('exiting. Set instance.community before calling instance.commit()')
             exit(1)
         if self.snmp_host == None:
-            self.task_log.error('exiting. Set instance.snmp_host before calling instance.update()')
+            self.task_log.error('exiting. Set instance.snmp_host before calling instance.commit()')
             exit(1)
         if self.state == None:
-            self.task_log.error('exiting. Set instance.state before calling instance.update()')
+            self.task_log.error('exiting. Set instance.state before calling instance.commit()')
             exit(1)
         if self.task_name == None:
             self.task_name = 'NxosSnmpHost {}'.format(self.snmp_host)

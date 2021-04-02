@@ -145,7 +145,7 @@ class NxosEvpnGlobal(Task):
 
     def final_verification(self):
         if self.nv_overlay_evpn == None:
-            self.task_log.error('exiting. instance.nv_overlay_evpn must be set before calling instance.update()')
+            self.task_log.error('exiting. instance.nv_overlay_evpn must be set before calling instance.commit()')
             exit(1)
 
     def commit(self):

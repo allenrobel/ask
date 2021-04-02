@@ -124,7 +124,7 @@ class NxosNtpOptions(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.stratum != None and self.master != True:
             self.task_log.error('exiting. If instance.stratum is set, instance.master must be set to True')

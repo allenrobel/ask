@@ -308,7 +308,7 @@ class NxosInterface(Task):
         It performs a final verification across the properties that the user has or hasn't set
         '''
         if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
+            self.task_log.error('exiting. call instance.name before calling instance.commit()')
             exit(1)
         if self.mode == 'layer2' and self.ip_forward == 'enable':
             self.task_log.error('exiting. mode is layer2 and ip_forward is enable.  Either set mode to layer3 or set ip_forward to either None or disable')

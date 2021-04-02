@@ -89,7 +89,7 @@ class NxosOverlayGlobal(Task):
 
     def final_verification(self):
         if self.anycast_gateway_mac == None:
-            self.task_log.error('exiting. instance.anycast_gateway_mac must be set prior to calling instance.update()')
+            self.task_log.error('exiting. instance.anycast_gateway_mac must be set prior to calling instance.commit()')
             exit(1)
 
     def commit(self):

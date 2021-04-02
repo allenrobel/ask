@@ -267,7 +267,7 @@ class NxosEvpnVni(Task):
 
     def final_verification(self):
         if self.vni == None:
-            self.task_log.error('exiting. instance.vni must be set before calling instance.update()')
+            self.task_log.error('exiting. instance.vni must be set before calling instance.commit()')
             exit(1)
 
     def commit(self):

@@ -186,7 +186,7 @@ class NxosSystem(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
 
         # Ensure at least one property is configured by the user or that state == absent

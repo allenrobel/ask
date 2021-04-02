@@ -493,13 +493,13 @@ class NxosBgpNeighbor(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.asn == None:
-            self.task_log.error('exiting. call instance.asn before calling instance.update()')
+            self.task_log.error('exiting. call instance.asn before calling instance.commit()')
             exit(1)
         if self.neighbor == None:
-            self.task_log.error('exiting. call instance.neighbor before calling instance.update()')
+            self.task_log.error('exiting. call instance.neighbor before calling instance.commit()')
             exit(1)
         self.final_verification_nxos_bgp_neighbor_maximum_peers()
 

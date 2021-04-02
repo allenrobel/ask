@@ -291,10 +291,10 @@ class NxosInterfaces(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if len(self.interface_list) == 0:
-            self.task_log.error('exiting. call instance.add_interface() at least once before calling instance.update()')
+            self.task_log.error('exiting. call instance.add_interface() at least once before calling instance.commit()')
             exit(1)
 
     def commit(self):

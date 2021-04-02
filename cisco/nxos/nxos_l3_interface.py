@@ -56,10 +56,10 @@ class NxosL3Interface(Task):
 
     def final_verification(self):
         if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
+            self.task_log.error('exiting. call instance.name before calling instance.commit()')
             exit(1)
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.ipv4 == None and self.ipv6 == None:
             self.task_log.error('exiting. at least one of [ipv4, ipv6] must be set.')

@@ -193,7 +193,7 @@ class NxosAaaServer(Task):
 
     def final_verification(self):
         if self.server_type == None:
-            self.task_log.error('exiting. Set instance.server_type before calling instance.update()')
+            self.task_log.error('exiting. Set instance.server_type before calling instance.commit()')
             exit(1)
         if self.task_name == None:
             self.task_name = 'nxos_aaa_server: server_type {}'.format(self.server_type)

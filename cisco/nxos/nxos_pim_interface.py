@@ -261,10 +261,10 @@ class NxosPimInterface(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.interface == None:
-            self.task_log.error('exiting. instance.interface must be set prior to calling instance.update()')
+            self.task_log.error('exiting. instance.interface must be set prior to calling instance.commit()')
             exit(1)
         if self.jp_policy_in != None and self.jp_type_in == None:
             self.task_log.error('exiting. instance.jp_type_in must be set if instance.jp_policy_in is set')

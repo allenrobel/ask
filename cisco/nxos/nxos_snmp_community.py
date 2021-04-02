@@ -129,13 +129,13 @@ class NxosSnmpCommunity(Task):
 
     def final_verification(self):
         if self.access == None:
-            self.task_log.error('exiting. Set instance.access to ro or rw before calling instance.update()')
+            self.task_log.error('exiting. Set instance.access to ro or rw before calling instance.commit()')
             exit(1)
         if self.community == None:
-            self.task_log.error('exiting. Set instance.community before calling instance.update()')
+            self.task_log.error('exiting. Set instance.community before calling instance.commit()')
             exit(1)
         if self.state == None:
-            self.task_log.error('exiting. Set instance.state before calling instance.update()')
+            self.task_log.error('exiting. Set instance.state before calling instance.commit()')
             exit(1)
 
     def commit(self):

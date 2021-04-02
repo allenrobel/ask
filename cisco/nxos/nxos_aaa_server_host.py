@@ -213,10 +213,10 @@ class NxosAaaServerHost(Task):
 
     def final_verification(self):
         if self.address == None:
-            self.task_log.error('exiting. Set instance.address before calling instance.update()')
+            self.task_log.error('exiting. Set instance.address before calling instance.commit()')
             exit(1)
         if self.server_type == None:
-            self.task_log.error('exiting. Set instance.server_type before calling instance.update()')
+            self.task_log.error('exiting. Set instance.server_type before calling instance.commit()')
             exit(1)
         if self.task_name == None:
             self.task_name = 'nxos_aaa_server_host: address {}, server_type {}'.format(self.address, self.server_type)

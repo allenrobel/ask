@@ -548,13 +548,13 @@ class NxosBgpAf(Task):
 
     def final_verification(self):
         if self.asn == None:
-            self.task_log.error('exiting. call instance.asn before calling instance.update()')
+            self.task_log.error('exiting. call instance.asn before calling instance.commit()')
             exit(1)
         if self.afi == None:
-            self.task_log.error('exiting. call instance.afi before calling instance.update()')
+            self.task_log.error('exiting. call instance.afi before calling instance.commit()')
             exit(1)
         if self.safi == None:
-            self.task_log.error('exiting. call instance.safi before calling instance.update()')
+            self.task_log.error('exiting. call instance.safi before calling instance.commit()')
             exit(1)
         self.final_verification_dampening_state()
         self.final_verification_dampening_reuse_vs_suppress()

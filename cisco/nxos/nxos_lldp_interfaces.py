@@ -224,13 +224,13 @@ class NxosLldpInterfaces(Task):
             exit(1)
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.running_config != None:
             self.final_verification_running_config()
         else:
             if len(self.config) == 0 and self.state != 'deleted':
-                self.task_log.error('exiting. call intance.add_interface() at least once before calling instance.update().')
+                self.task_log.error('exiting. call intance.add_interface() at least once before calling instance.commit().')
                 exit(1)
 
     def commit(self):

@@ -269,7 +269,7 @@ class NxosLogging(Task):
 
     def final_verification(self):
         if self.state == None:
-            self.task_log.error('exiting. call instance.state before calling instance.update()')
+            self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
         if self.dest == 'server' and self.remote_server == None:
             self.task_log.error('exiting. instance.dest == server, but instance.remote_server is not set')
