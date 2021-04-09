@@ -113,7 +113,7 @@ add_ipv4()                          Append ivp4 properties to the ipv4
                                             task.state = 'merged'
                                             task.update()
 
-                                        - Resulting playbook task:
+                                        - Resulting playbook task::
 
                                             tasks:
                                             -   cisco.nxos.nxos_l3_interfaces:
