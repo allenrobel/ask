@@ -57,7 +57,7 @@ add_interface()                         Add an interface to the configuration::
                                                 task.enabled = True
                                                 task.add_interface()
                                                 task.state = 'merged'
-                                                task.update()
+                                                task.commit()
                                                 pb.add_task(task)
                                                 pb.append_playbook()
                                                 pb.write_playbook()
@@ -109,7 +109,7 @@ fabric_forwarding_anycast_gateway       Associate SVI with anycast gateway under
                                                     task = NxosFeature(log)
                                                     task.feature = 'fabric forwarding'
                                                     task.state = 'enabled'
-                                                    task.update()
+                                                    task.commit()
                                                     pb.add_task(task)
                                                 - fabric forwarding anycast-gateway-mac
                                                   must be configured
@@ -117,13 +117,13 @@ fabric_forwarding_anycast_gateway       Associate SVI with anycast gateway under
                                                     cfg = list()
                                                     cfg.append('fabric forwarding anycast-gateway-mac 0000.0000.1111')
                                                     task.lines = cfg
-                                                    task.update()
+                                                    task.commit()
                                                     pb.add_task(task)
                                             - Example:
                                                 task = NxosInterfaces(log)
                                                 task.name = 'Vlan222'
                                                 task.fabric_forwarding_anycast_gateway = True
-                                                task.update()
+                                                task.commit()
                                                 pb.add_task(task)
 
 ip_forward                              Disable ``False`` or enable ``True`` IP forward
