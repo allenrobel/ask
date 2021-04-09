@@ -1,5 +1,5 @@
 # NxosInterfaces() - cisco/nxos/nxos_interfaces.py
-our_version = 123
+our_version = 124
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -132,7 +132,7 @@ fabric_forwarding_anycast_gateway       Associate SVI with anycast gateway under
                                                 pb.add_task(task)
 
 ip_forward                              Disable ``False`` or enable ``True`` IP forward
-                                        feature on SVIs::
+                                        feature on the interface::
 
                                             - Type: bool()
                                             - Valid values: False, True

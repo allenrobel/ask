@@ -127,7 +127,7 @@ fabric_forwarding_anycast_gateway       Associate SVI with anycast gateway under
                                                 pb.add_task(task)
 
 ip_forward                              Disable ``False`` or enable ``True`` IP forward
-                                        feature on SVIs::
+                                        feature on the interface::
 
                                             - Type: bool()
                                             - Valid values: False, True
