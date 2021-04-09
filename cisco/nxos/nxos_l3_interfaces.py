@@ -67,7 +67,7 @@ add_interface()                     Add an interface to the configuration::
                                             task.ipv4_address = '10.3.1.1/24'
                                             task.ipv4_tag = 10
                                             task.add_ipv4()
-                                            task.ipv6_address = '2001:cccc::::1/64'
+                                            task.ipv6_address = '2001:cccc\:\:1/64'
                                             task.ipv6_tag = 10
                                             task.add_ipv6()
                                             task.add_interface()
@@ -93,7 +93,7 @@ add_interface()                     Add an interface to the configuration::
                                                     -   address: 10.3.1.1/24
                                                         tag: 10
                                                     ipv6:
-                                                    -   address: 2001:cccc::::1/64
+                                                    -   address: 2001:cccc\:\:1/64
                                                         tag: 10
                                                     name: Vlan3
                                                 state: merged
@@ -140,10 +140,10 @@ add_ipv6()                          Append ivp6 properties to ipv6
                                         - Example (see add_interface() for full example):
 
                                             task.name = 'Ethernet1/49'
-                                            task.ipv6_address = '2001:aaaa::::1/64'
+                                            task.ipv6_address = '2001:aaaa\:\:1/64'
                                             task.ipv6_tag = 10
                                             task.add_ipv6()
-                                            task.ipv6_address = '2001:bbbb::::1/64'
+                                            task.ipv6_address = '2001:bbbb\:\:1/64'
                                             task.ipv6_tag = 20
                                             task.add_ipv6()
                                             task.add_interface()
@@ -156,9 +156,9 @@ add_ipv6()                          Append ivp6 properties to ipv6
                                             -   cisco.nxos.nxos_l3_interfaces:
                                                     config:
                                                     -   ipv6:
-                                                        -   address: 2001:aaaa::::1/64
+                                                        -   address: 2001:aaaa\:\:1/64
                                                             tag: 10
-                                                        -   address: 2001:bbbb::::1/64
+                                                        -   address: 2001:bbbb\:\:1/64
                                                             tag: 20
                                                         name: Ethernet1/49
                                                     state: merged
