@@ -29,69 +29,69 @@ ScriptKit Example
 ================================    ==============================================
 User Methods                        Description
 ================================    ==============================================
-add_interface()                         Add an interface to the configuration::
+add_interface()                     Add an interface to the configuration::
 
-                                            - Type: function()
-                                            - Example:
-                                                #!/usr/bin/env python3
-                                                # Ethernet1/1 - ipv4 interface with secondary
-                                                # Vlan3 - dual-stack interface
-                                                from ask.cisco.nxos.nxos_l3_interfaces import NxosL3Interfaces
-                                                from ask.common.log import Log
-                                                from ask.common.playbook import Playbook
-                                                log_level_console = 'INFO'
-                                                log_level_file = 'DEBUG'
-                                                log = Log('my_log', log_level_console, log_level_file)
-                                                pb = Playbook(log)
-                                                pb.profile_nxos()
-                                                pb.ansible_password = 'mypassword'
-                                                pb.name = 'Example nxos_l3_interfaces'
-                                                pb.add_host('dc-101')
-                                                pb.file = '/tmp/nxos_l3_interfaces.yaml'
-                                                task = NxosL3Interfaces(log)
-                                                task.name = 'Ethernet1/1'
-                                                task.ipv4_address = '10.1.1.1/24'
-                                                task.ipv4_tag = 10
-                                                task.add_ipv4()
-                                                task.ipv4_address = '10.2.1.1/24'
-                                                task.ipv4_tag = 20
-                                                task.ipv4_secondary = True
-                                                task.add_ipv4()
-                                                task.add_interface()
-                                                task.name = 'Vlan3'
-                                                task.ipv4_address = '10.3.1.1/24'
-                                                task.ipv4_tag = 10
-                                                task.add_ipv4()
-                                                task.ipv6_address = '2001:cccc::1/64'
-                                                task.ipv6_tag = 10
-                                                task.add_ipv6()
-                                                task.add_interface()
-                                                task.state = 'merged'
-                                                task.update()
-                                                pb.add_task(task)
-                                                pb.append_playbook()
-                                                pb.write_playbook()
+                                        - Type: function()
+                                        - Example:
+                                            #!/usr/bin/env python3
+                                            # Ethernet1/1 - ipv4 interface with secondary
+                                            # Vlan3 - dual-stack interface
+                                            from ask.cisco.nxos.nxos_l3_interfaces import NxosL3Interfaces
+                                            from ask.common.log import Log
+                                            from ask.common.playbook import Playbook
+                                            log_level_console = 'INFO'
+                                            log_level_file = 'DEBUG'
+                                            log = Log('my_log', log_level_console, log_level_file)
+                                            pb = Playbook(log)
+                                            pb.profile_nxos()
+                                            pb.ansible_password = 'mypassword'
+                                            pb.name = 'Example nxos_l3_interfaces'
+                                            pb.add_host('dc-101')
+                                            pb.file = '/tmp/nxos_l3_interfaces.yaml'
+                                            task = NxosL3Interfaces(log)
+                                            task.name = 'Ethernet1/1'
+                                            task.ipv4_address = '10.1.1.1/24'
+                                            task.ipv4_tag = 10
+                                            task.add_ipv4()
+                                            task.ipv4_address = '10.2.1.1/24'
+                                            task.ipv4_tag = 20
+                                            task.ipv4_secondary = True
+                                            task.add_ipv4()
+                                            task.add_interface()
+                                            task.name = 'Vlan3'
+                                            task.ipv4_address = '10.3.1.1/24'
+                                            task.ipv4_tag = 10
+                                            task.add_ipv4()
+                                            task.ipv6_address = '2001:cccc::1/64'
+                                            task.ipv6_tag = 10
+                                            task.add_ipv6()
+                                            task.add_interface()
+                                            task.state = 'merged'
+                                            task.update()
+                                            pb.add_task(task)
+                                            pb.append_playbook()
+                                            pb.write_playbook()
 
-                                        - Resulting playbook task:
+                                    - Resulting playbook task:
 
-                                            tasks:
-                                            -   cisco.nxos.nxos_l3_interfaces:
-                                                    config:
-                                                    -   ipv4:
-                                                        -   address: 10.1.1.1/24
-                                                            tag: 10
-                                                        -   address: 10.2.1.1/24
-                                                            secondary: true
-                                                            tag: 20
-                                                        name: Ethernet1/1
-                                                    -   ipv4:
-                                                        -   address: 10.3.1.1/24
-                                                            tag: 10
-                                                        ipv6:
-                                                        -   address: 2001:cccc::1/64
-                                                            tag: 10
-                                                        name: Vlan3
-                                                    state: merged
+                                        tasks:
+                                        -   cisco.nxos.nxos_l3_interfaces:
+                                                config:
+                                                -   ipv4:
+                                                    -   address: 10.1.1.1/24
+                                                        tag: 10
+                                                    -   address: 10.2.1.1/24
+                                                        secondary: true
+                                                        tag: 20
+                                                    name: Ethernet1/1
+                                                -   ipv4:
+                                                    -   address: 10.3.1.1/24
+                                                        tag: 10
+                                                    ipv6:
+                                                    -   address: 2001:cccc::1/64
+                                                        tag: 10
+                                                    name: Vlan3
+                                                state: merged
 
 add_ipv4()                          Append ivp4 properties to the ipv4
                                     attributes list and reset the properties
