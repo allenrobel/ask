@@ -52,12 +52,16 @@ def add_task(pb):
     task.nexthop_trigger_delay_critical_delay = 100
     task.nexthop_trigger_delay_non_critical_delay = 3000
     task.redistribute_id = 100
-    task.redistribute_protocol = 'ospf'
+    task.redistribute_protocol = 'ospf'  # comment for negative test
     task.redistribute_route_map = 'REDISTRIBUTE_OSPF_MAP'
     task.add_redistribute()
-    task.redistribute_id = 'Enterprise'
+    task.redistribute_id = 'Enterprise'  # comment for negative test
     task.redistribute_protocol = 'isis'
     task.redistribute_route_map = 'REDISTRIBUTE_ISIS_MAP'
+    task.add_redistribute()
+    # task.redistribute_id = 200 # uncomment for negative test
+    task.redistribute_protocol = 'direct'
+    task.redistribute_route_map = 'DIRECT'
     task.add_redistribute()
     task.timers_bestpath_defer_defer_time = 600
     task.timers_bestpath_defer_maximum_defer_time = 1200

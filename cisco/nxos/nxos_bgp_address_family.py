@@ -1,5 +1,5 @@
 # NxosBgpAddressFamily() - cisco/nxos/nxos_bgp_address_family.py
-our_version = 101
+our_version = 102
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -1292,6 +1292,14 @@ class NxosBgpAddressFamily(Task):
         self.update_address_family_maximum_paths()
         self.update_address_family_nexthop()
         self.update_address_family_timers()
+        if len(self.aggregate_address_list) != 0:
+            self.address_family_dict['aggregate_address'] = deepcopy(self.aggregate_address_list)
+        if len(self.inject_map_list) != 0:
+            self.address_family_dict['inject_map'] = deepcopy(self.inject_map_list)
+        if len(self.networks_list) != 0:
+            self.address_family_dict['networks'] = deepcopy(self.networks_list)
+        if len(self.redistribute_list) != 0:
+            self.address_family_dict['redistribute'] = deepcopy(self.redistribute_list)
 
         if len(self.address_family_dict) == 0:
             self.task_log.error('exiting. One or more address-family properties must be set before calling add_address_family()')
@@ -1361,15 +1369,14 @@ class NxosBgpAddressFamily(Task):
             if self.redistribute_protocol not in self.redistribute_id_required_set:
                 return
             else:
-                self.task_log.error('exiting. instance.redistribute_id {} must be set for instance.redistribute_protocol {}'.format(
-                    self.redistribute_id,
+                self.task_log.error('exiting. instance.redistribute_id must be set for instance.redistribute_protocol [{}]'.format(
                     self.redistribute_protocol))
                 exit(1)
         if self.redistribute_id != None:
             if self.redistribute_protocol in self.redistribute_id_required_set:
                 return
             else:
-                self.task_log.error('exiting. instance.redistribute_id {} cannot be set for instance.redistribute_protocol {}'.format(
+                self.task_log.error('exiting. instance.redistribute_id [{}] cannot be set for instance.redistribute_protocol [{}]'.format(
                     self.redistribute_id,
                     self.redistribute_protocol))
                 exit(1)
