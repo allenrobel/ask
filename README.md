@@ -76,6 +76,7 @@ NX-OS       |    S    | [cisco.nxos.nxos_banner][nxos_banner]
 NX-OS       |    S    | [cisco.nxos.nxos_bfd_global][nxos_bfd_global]
 NX-OS       |    S    | [cisco.nxos.nxos_bfd_interfaces][nxos_bfd_interfaces]
 NX-OS       |    D    | [cisco.nxos.nxos_bgp][nxos_bgp]
+NX-OS       |    B    | [cisco.nxos.nxos_bgp_address_family][nxos_bgp_address_family]
 NX-OS       |    S    | [cisco.nxos.nxos_bgp_af][nxos_bgp_af]
 NX-OS       |    B    | [cisco.nxos.nxos_bgp_global][nxos_bgp_global]
 NX-OS       |    D    | [cisco.nxos.nxos_bgp_neighbor][nxos_bgp_neighbor]
@@ -132,6 +133,7 @@ NX-OS       |    S    | [cisco.nxos.nxos_vxlan_vtep_vni][nxos_vxlan_vtep_vni]
 [nxos_bfd_global]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_bfd_global.rst
 [nxos_bfd_interfaces]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_bfd_interfaces.rst
 [nxos_bgp]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_bgp.rst
+[nxos_bgp_address_family]:https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_bgp_address_family.rst
 [nxos_bgp_af]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_bgp_af.rst
 [nxos_bgp_global]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_bgp_global.rst
 [nxos_bgp_neighbor]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_bgp_neighbor.rst
