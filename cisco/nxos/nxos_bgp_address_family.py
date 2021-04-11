@@ -1,5 +1,5 @@
 # NxosBgpAddressFamily() - cisco/nxos/nxos_bgp_address_family.py
-our_version = 100
+our_version = 101
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -611,6 +611,14 @@ redistribute_id                         The identifier for the specified protoco
                                                 task.redistribute_protocol = 'isis'
                                                 task.redistribute_route_map = 'REDIST_ISIS'
                                                 task.add_redistribute()
+                                                task.redistribute_protocol = 'direct'
+                                                task.redistribute_route_map = 'DIRECT'
+                                                task.add_redistribute()
+                                            - NOTES:
+                                                - redistribute_id required for protocols:
+                                                    - eigrp, isis, ospf, ospfv3
+                                                - redistribute_id disallowed for protocols:
+                                                    - am, amt, direct, lisp, static
 
 redistribute_protocol                   The name of the protocol::
 
@@ -1073,6 +1081,12 @@ class NxosBgpAddressFamily(Task):
         self.timers_bestpath_defer_maximum_defer_time_min = 300
         self.timers_bestpath_defer_maximum_defer_time_max = 300000
 
+        self.redistribute_id_required_set = set()
+        self.redistribute_id_required_set.add('eigrp')
+        self.redistribute_id_required_set.add('isis')
+        self.redistribute_id_required_set.add('ospf')
+        self.redistribute_id_required_set.add('ospfv3')
+
         # Keyed on feature, value is a pointer to the verification
         # method for the feature
         self.verification_dispatch_table = dict()
@@ -1344,8 +1358,21 @@ class NxosBgpAddressFamily(Task):
             self.task_log.error('exiting. Set instance.redistribute_protocol before calling instance.add_redistribute()')
             exit(1)
         if self.redistribute_id == None:
-            self.task_log.error('exiting. Set instance.redistribute_id before calling instance.add_redistribute()')
-            exit(1)
+            if self.redistribute_protocol not in self.redistribute_id_required_set:
+                return
+            else:
+                self.task_log.error('exiting. instance.redistribute_id {} must be set for instance.redistribute_protocol {}'.format(
+                    self.redistribute_id,
+                    self.redistribute_protocol))
+                exit(1)
+        if self.redistribute_id != None:
+            if self.redistribute_protocol in self.redistribute_id_required_set:
+                return
+            else:
+                self.task_log.error('exiting. instance.redistribute_id {} cannot be set for instance.redistribute_protocol {}'.format(
+                    self.redistribute_id,
+                    self.redistribute_protocol))
+                exit(1)
         if self.redistribute_route_map == None:
             self.task_log.error('exiting. Set instance.redistribute_route_map before calling instance.add_redistribute()')
             exit(1)

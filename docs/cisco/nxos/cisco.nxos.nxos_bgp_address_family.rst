@@ -606,6 +606,14 @@ redistribute_id                         The identifier for the specified protoco
                                                 task.redistribute_protocol = 'isis'
                                                 task.redistribute_route_map = 'REDIST_ISIS'
                                                 task.add_redistribute()
+                                                task.redistribute_protocol = 'direct'
+                                                task.redistribute_route_map = 'DIRECT'
+                                                task.add_redistribute()
+                                            - NOTES:
+                                                - redistribute_id required for protocols:
+                                                    - eigrp, isis, ospf, ospfv3
+                                                - redistribute_id disallowed for protocols:
+                                                    - am, amt, direct, lisp, static
 
 redistribute_protocol                   The name of the protocol::
 
