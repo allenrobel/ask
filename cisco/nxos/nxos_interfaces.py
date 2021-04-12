@@ -1,5 +1,5 @@
 # NxosInterfaces() - cisco/nxos/nxos_interfaces.py
-our_version = 124
+our_version = 125
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -189,6 +189,7 @@ state                                   Desired state after task has run::
                                                 - merged
                                                 - overridden
                                                 - parsed
+                                                - purged (introduced v2.1.0)
                                                 - rendered
                                                 - replaced
                                             - Example:
@@ -257,6 +258,7 @@ class NxosInterfaces(Task):
         self.nxos_interfaces_valid_state.add('merged')
         self.nxos_interfaces_valid_state.add('overridden')
         self.nxos_interfaces_valid_state.add('parsed')
+        self.nxos_interfaces_valid_state.add('purged')
         self.nxos_interfaces_valid_state.add('rendered')
         self.nxos_interfaces_valid_state.add('replaced')
 
