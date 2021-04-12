@@ -1,5 +1,5 @@
 # NxosBgpAddressFamily() - cisco/nxos/nxos_bgp_address_family.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -480,7 +480,13 @@ maximum_paths_eibgp_parallel_paths      Number of parallel paths for both EBGP
                                             - Valid values:
                                                 - range: 1-64
                                             - Example:
+                                                task.vrf 'VRF_1'
                                                 task.maximum_paths_eibgp_parallel_paths = 8
+                                            - NOTES:
+                                                1.  Since NX-OS -- as of 9.3(7) -- does not support
+                                                    eiBGP multipath for non-vrf interfaces, the
+                                                    eibgp option is available only in bgp vrf 
+                                                    config mode
 
 maximum_paths_ibgp_parallel_paths       Number of parallel paths for IBGP next-hops::
 
@@ -824,6 +830,7 @@ class NxosBgpAddressFamily(Task):
         self.address_family_set.add('maximum_paths_ibgp_parallel_paths')
         self.address_family_set.add('maximum_paths_local_parallel_paths')
         self.address_family_set.add('maximum_paths_mixed_parallel_paths')
+        self.address_family_set.add('maximum_paths_parallel_paths')
         self.address_family_set.add('networks_prefix')
         self.address_family_set.add('networks_route_map')
         self.address_family_set.add('nexthop_route_map')
@@ -977,6 +984,7 @@ class NxosBgpAddressFamily(Task):
         self.property_map['maximum_paths_ibgp_parallel_paths'] = 'parallel_paths'
         self.property_map['maximum_paths_local_parallel_paths'] = 'parallel_paths'
         self.property_map['maximum_paths_mixed_parallel_paths'] = 'parallel_paths'
+        self.property_map['maximum_paths_parallel_paths'] = 'parallel_paths'
         self.property_map['networks_prefix'] = 'prefix'
         self.property_map['networks_route_map'] = 'route_map'
         self.property_map['nexthop_route_map'] = 'route_map'
@@ -1062,6 +1070,8 @@ class NxosBgpAddressFamily(Task):
         self.maximum_paths_local_parallel_paths_max = 64
         self.maximum_paths_mixed_parallel_paths_min = 1
         self.maximum_paths_mixed_parallel_paths_max = 64
+        self.maximum_paths_parallel_paths_min = 1
+        self.maximum_paths_parallel_paths_max = 64
         self.nexthop_trigger_delay_critical_delay_min = 1
         self.nexthop_trigger_delay_critical_delay_max = 4294967295
         self.nexthop_trigger_delay_non_critical_delay_min = 1
@@ -1214,6 +1224,8 @@ class NxosBgpAddressFamily(Task):
         if self.maximum_paths_mixed_parallel_paths != None:
             d['mixed'] = dict()
             d['mixed']['parallel_paths'] = self.maximum_paths_mixed_parallel_paths
+        if self.maximum_paths_parallel_paths != None:
+            d['parallel_paths'] = self.maximum_paths_parallel_paths
         if len(d) != 0:
             self.address_family_dict['maximum_paths'] = deepcopy(d)
 
@@ -1267,6 +1279,10 @@ class NxosBgpAddressFamily(Task):
         if self.safi == None:
             self.task_log.error('exiting. safi is a mandatory property but is not set.')
             exit(1)
+        if self.vrf == None and self.maximum_paths_eibgp_parallel_paths != None:
+            self.task_log.error('exiting. eibgp option available only if instance.vrf is set.')
+            exit(1)
+
     def add_address_family(self):
         '''
         Add an address-family to self.address_family_list
@@ -1449,8 +1465,6 @@ class NxosBgpAddressFamily(Task):
         range_max = self.dampening_start_suppress_route_max
         self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
 
-
-
     def verify_default_metric(self, x, parameter='default_metric'):
         source_class = self.class_name
         range_min = self.default_metric_min
@@ -1498,6 +1512,12 @@ class NxosBgpAddressFamily(Task):
         source_class = self.class_name
         range_min = self.maximum_paths_mixed_parallel_paths_min
         range_max = self.maximum_paths_mixed_parallel_paths_max
+        self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
+
+    def verify_maximum_paths_parallel_paths(self, x, parameter='maximum_paths_parallel_paths'):
+        source_class = self.class_name
+        range_min = self.maximum_paths_parallel_paths_min
+        range_max = self.maximum_paths_parallel_paths_max
         self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
 
     def verify_networks_prefix(self, x, parameter='networks_prefix'):
@@ -1563,6 +1583,12 @@ class NxosBgpAddressFamily(Task):
         range_min = self.timers_bestpath_defer_maximum_defer_time_min
         range_max = self.timers_bestpath_defer_maximum_defer_time_max
         self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
+
+    def verify_vrf(self, x, paramter='vrf'):
+        if x != 'default':
+            return
+        self.task_log.error('exiting. To add configuration under the default vrf, leave instance.vrf unset.')
+        exit(1)
 
     @property
     def additional_paths_install_backup(self):
@@ -1955,6 +1981,17 @@ class NxosBgpAddressFamily(Task):
         self.properties[parameter] = x
 
     @property
+    def maximum_paths_parallel_paths(self):
+        return self.properties['maximum_paths_parallel_paths']
+    @maximum_paths_parallel_paths.setter
+    def maximum_paths_parallel_paths(self, x):
+        parameter = 'maximum_paths_parallel_paths'
+        if self.set_none(x, parameter):
+            return
+        self.verify_maximum_paths_parallel_paths(x, parameter)
+        self.properties[parameter] = x
+
+    @property
     def networks_prefix(self):
         return self.properties['networks_prefix']
     @networks_prefix.setter
@@ -2143,6 +2180,7 @@ class NxosBgpAddressFamily(Task):
         parameter = 'vrf'
         if self.set_none(x, parameter):
             return
+        self.verify_vrf(x, parameter)
         self.properties[parameter] = x
 
     @property

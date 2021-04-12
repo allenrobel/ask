@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_address_family.py
 # Status = BETA
-our_version = 100
+our_version = 102
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -27,6 +27,7 @@ def add_task(pb):
     task.as_number = '12000.0'
     task.afi = 'ipv4'
     task.safi = 'unicast'
+    #task.vrf = 'default' # uncomment for negative test
     task.append_to_task_name('{}/{}'.format(task.afi, task.safi))
     task.additional_paths_install_backup = True
     task.additional_paths_receive = True
@@ -65,6 +66,7 @@ def add_task(pb):
     task.add_redistribute()
     task.timers_bestpath_defer_defer_time = 600
     task.timers_bestpath_defer_maximum_defer_time = 1200
+    task.vrf = 'FOO' # comment for negative test (maximum_paths_eibgp_parallel_paths requires vrf)
     task.add_address_family()
 
     task.afi = 'l2vpn'
@@ -76,7 +78,7 @@ def add_task(pb):
     task.afi = 'ipv6'
     task.safi = 'unicast'
     task.append_to_task_name('{}/{}'.format(task.afi, task.safi))
-    task.maximum_paths_eibgp_parallel_paths = 32
+    task.maximum_paths_parallel_paths = 32
     for prefix in ['2001::1/128', '2001:aaaa:bbbb::/48']:
         task.networks_prefix = prefix
         task.networks_route_map = 'IPV6_ORIGINATE'

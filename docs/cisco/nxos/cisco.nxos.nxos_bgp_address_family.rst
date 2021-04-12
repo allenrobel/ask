@@ -475,7 +475,13 @@ maximum_paths_eibgp_parallel_paths      Number of parallel paths for both EBGP
                                             - Valid values:
                                                 - range: 1-64
                                             - Example:
+                                                task.vrf 'VRF_1'
                                                 task.maximum_paths_eibgp_parallel_paths = 8
+                                            - NOTES:
+                                                1.  Since NX-OS -- as of 9.3(7) -- does not support
+                                                    eiBGP multipath for non-vrf interfaces, the
+                                                    eibgp option is available only in bgp vrf 
+                                                    config mode
 
 maximum_paths_ibgp_parallel_paths       Number of parallel paths for IBGP next-hops::
 
