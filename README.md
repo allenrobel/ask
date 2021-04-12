@@ -1,6 +1,6 @@
 # ask - Ansible ScriptKit
 
-*README version 102*
+*README version 103*
 
 Ansible ScriptKit is a set of classes and example scripts that can be used to generate playbooks.  We use this internally for some of our customer proof of concepts and thought we'd open-source it for anyone else to use and to contribute to.
 
@@ -77,7 +77,7 @@ NX-OS       |    S    | [cisco.nxos.nxos_bfd_global][nxos_bfd_global]
 NX-OS       |    S    | [cisco.nxos.nxos_bfd_interfaces][nxos_bfd_interfaces]
 NX-OS       |    D    | [cisco.nxos.nxos_bgp][nxos_bgp]
 NX-OS       |    B    | [cisco.nxos.nxos_bgp_address_family][nxos_bgp_address_family]
-NX-OS       |    S    | [cisco.nxos.nxos_bgp_af][nxos_bgp_af]
+NX-OS       |    D    | [cisco.nxos.nxos_bgp_af][nxos_bgp_af]
 NX-OS       |    B    | [cisco.nxos.nxos_bgp_global][nxos_bgp_global]
 NX-OS       |    D    | [cisco.nxos.nxos_bgp_neighbor][nxos_bgp_neighbor]
 NX-OS       |    B    | [cisco.nxos.nxos_bgp_neighbor_address_family][nxos_bgp_neighbor_address_family]
