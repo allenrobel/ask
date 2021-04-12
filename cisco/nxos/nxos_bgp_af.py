@@ -21,7 +21,7 @@ Deprecation
 -----------
 
 - Status: ``DEPRECATED``
-- Alternative: `nxos_bgp_global <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_address_family_module.rst>`_
+- Alternative: `nxos_bgp_address_family <https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_address_family_module.rst>`_
 - 2021-02-24, deprecation date
 - 2023-02-24, removal date (module may be removed after this date)
 
