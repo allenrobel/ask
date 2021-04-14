@@ -8,7 +8,7 @@ NxosBgpGlobal()
 
 Version
 -------
-108
+109
 
 Status
 ------
@@ -118,132 +118,147 @@ NOTES
 
 |
 
-========================    ==============================================
-Method                      Description
-========================    ==============================================
-add_bgp_neighbor()          Add a bgp neighbor into the default/global vrf, and
-                            clear all bgp neighbor properties to make way
-                            for adding the next neighbor::
+=============================== ==============================================
+Method                          Description
+=============================== ==============================================
+add_bgp_neighbor()              Add a bgp neighbor into the default/global vrf, and
+                                clear all bgp neighbor properties to make way
+                                for adding the next neighbor::
 
-                                Example:
-                                    task = NxosBgpGlobal(log)
-                                    task.as_number = '12000.0'
-                                    task.neighbor_address = '10.4.4.0/24'
-                                    task.neighbor_inherit_peer = 'TOR_GLOBAL_VRF'
-                                    task.neighbor_remote_as = '6201.3'
-                                    task.neighbor_update_source = 'Vlan4'
-                                    task.add_bgp_neighbor()
+                                    Example:
+                                        task = NxosBgpGlobal(log)
+                                        task.as_number = '12000.0'
+                                        task.neighbor_address = '10.4.4.0/24'
+                                        task.neighbor_inherit_peer = 'TOR_GLOBAL_VRF'
+                                        task.neighbor_remote_as = '6201.3'
+                                        task.neighbor_update_source = 'Vlan4'
+                                        task.add_bgp_neighbor()
 
-add_vrf_bgp_neighbor()      Add a bgp neighbor into a non-default vrf, and
-                            clear all bgp neighbor properties to make way
-                            for adding the next neighbor::
+add_bgp_neighbor_path_attribute Add a path attribute specification to a
+                                bgp neighbor::
 
-                                Example:
-                                    task = NxosBgpGlobal(log)
-                                    task.as_number = '12000.0'
-                                    task.neighbor_address = '10.4.4.0/24'
-                                    task.neighbor_inherit_peer = 'TOR_VRF_1'
-                                    task.neighbor_remote_as = '6201.3'
-                                    task.neighbor_update_source = 'Ethernet1/1'
-                                    task.add_vrf_bgp_neighbor()
-                                    task.vrf = 'VRF_1'
-                                    task.add_vrf()
+                                    Example:
+                                        task = NxosBgpGlobal(log)
+                                        task.as_number = '12000.0'
+                                        task.neighbor_address = '10.4.4.0/24'
+                                        task.neighbor_remote_as = '6201.3'
+                                        task.neighbor_update_source = 'Vlan4'
+                                        task.neighbor_path_attribute_range_end = 255
+                                        task.neighbor_path_attribute_range_start = 1
+                                        task.neighbor_path_attribute_action = 'treat-as-withdraw'
+                                        task.add_bgp_neighbor_path_attribute()
+                                        task.add_bgp_neighbor()
 
-add_vrf()                   Add all currently-set properties, and all bgp
-                            neighbors added up to this point with
-                            ``add_vrf_bgp_neighbor()``, to the current ``vrf``.
-                            Any properties that are set, but are not supported
-                            under vrf configuration are not added to the vrf
-                            and are not cleared::
+add_vrf_bgp_neighbor()          Add a bgp neighbor into a non-default vrf, and
+                                clear all bgp neighbor properties to make way
+                                for adding the next neighbor::
 
-                                Example (add one neighbor and one global property
-                                (bestpath_med_non_deterministic) to vrf VRF_1):
+                                    Example:
+                                        task = NxosBgpGlobal(log)
+                                        task.as_number = '12000.0'
+                                        task.neighbor_address = '10.4.4.0/24'
+                                        task.neighbor_inherit_peer = 'TOR_VRF_1'
+                                        task.neighbor_remote_as = '6201.3'
+                                        task.neighbor_update_source = 'Ethernet1/1'
+                                        task.add_vrf_bgp_neighbor()
+                                        task.vrf = 'VRF_1'
+                                        task.add_vrf()
 
-                                    pb = Playbook(log)
-                                    task = NxosBgpGlobal(log)
-                                    # as_number is not supported under vrf config,
-                                    # so is not added to the vrf and is not otherwise
-                                    # altered by add_vrf()
-                                    task.as_number = '12000.0'
+add_vrf()                       Add all currently-set properties, and all bgp
+                                neighbors added up to this point with
+                                ``add_vrf_bgp_neighbor()``, to the current ``vrf``.
+                                Any properties that are set, but are not supported
+                                under vrf configuration are not added to the vrf
+                                and are not cleared::
 
-                                    # bestpath_med_non_deterministic is supported
-                                    # under vrf config, so is added to the vrf,
-                                    # and is cleared so that it can later be set
-                                    # for another vrf, or the default vrf.
-                                    task.bestpath_med_non_deterministic = False
+                                    Example (add one neighbor and one global property
+                                    (bestpath_med_non_deterministic) to vrf VRF_1):
 
-                                    task.neighbor_address = '10.4.4.0/24'
-                                    task.neighbor_inherit_peer = 'TOR_VRF_1'
-                                    task.neighbor_remote_as = '6201.3'
-                                    task.neighbor_update_source = 'Ethernet1/1'
-                                    task.add_vrf_bgp_neighbor()
-                                    task.vrf = 'VRF_1'
-                                    task.add_vrf()
-                                    task.commit()
-                                    pb.add_task(task)
+                                        pb = Playbook(log)
+                                        task = NxosBgpGlobal(log)
+                                        # as_number is not supported under vrf config,
+                                        # so is not added to the vrf and is not otherwise
+                                        # altered by add_vrf()
+                                        task.as_number = '12000.0'
 
-commit()                    Perform final verification and prepare the task
-                            to be added to a playbook::
+                                        # bestpath_med_non_deterministic is supported
+                                        # under vrf config, so is added to the vrf,
+                                        # and is cleared so that it can later be set
+                                        # for another vrf, or the default vrf.
+                                        task.bestpath_med_non_deterministic = False
 
-                                - Type: function()
-                                - Alias: update()
-                                - Example:
-                                    #!/usr/bin/env python3
-                                    # Configure two bgp neighbors
-                                    from ask.cisco.nxos.nxos_bgp_global import NxosBgpGlobal
-                                    from ask.common.log import Log
-                                    from ask.common.playbook import Playbook
+                                        task.neighbor_address = '10.4.4.0/24'
+                                        task.neighbor_inherit_peer = 'TOR_VRF_1'
+                                        task.neighbor_remote_as = '6201.3'
+                                        task.neighbor_update_source = 'Ethernet1/1'
+                                        task.add_vrf_bgp_neighbor()
+                                        task.vrf = 'VRF_1'
+                                        task.add_vrf()
+                                        task.commit()
+                                        pb.add_task(task)
 
-                                    log_level_console = 'INFO'
-                                    log_level_file = 'DEBUG'
-                                    log = Log('my_log', log_level_console, log_level_file)
+commit()                        Perform final verification and prepare the task
+                                to be added to a playbook::
 
-                                    pb = Playbook(log)
-                                    pb.profile_nxos()
-                                    pb.ansible_password = 'mypassword'
-                                    pb.name = 'Example nxos_bgp_global'
-                                    pb.add_host('dc-101')
-                                    pb.file = '/tmp/nxos_bgp_global.yaml'
+                                    - Type: function()
+                                    - Alias: update()
+                                    - Example:
+                                        #!/usr/bin/env python3
+                                        # Configure two bgp neighbors
+                                        from ask.cisco.nxos.nxos_bgp_global import NxosBgpGlobal
+                                        from ask.common.log import Log
+                                        from ask.common.playbook import Playbook
 
-                                    task = NxosBgpGlobal(log)
-                                    task.neighbor_address = '2001:aaaa::1'
-                                    task.neighbor_remote_as = 65003
-                                    task.neighbor_update_source = 'Vlan20'
-                                    task.add_bgp_neighbor()
+                                        log_level_console = 'INFO'
+                                        log_level_file = 'DEBUG'
+                                        log = Log('my_log', log_level_console, log_level_file)
 
-                                    task.neighbor_address = '10.1.1.0/25'
-                                    task.neighbor_remote_as = '2301.1'
-                                    task.neighbor_update_source = 'Ethernet1/2'
-                                    task.add_bgp_neighbor()
+                                        pb = Playbook(log)
+                                        pb.profile_nxos()
+                                        pb.ansible_password = 'mypassword'
+                                        pb.name = 'Example nxos_bgp_global'
+                                        pb.add_host('dc-101')
+                                        pb.file = '/tmp/nxos_bgp_global.yaml'
 
-                                    task.as_number = '12000.0'
-                                    task.state = 'merged'
-                                    task.vrf = 'default'
-                                    task.task_name = 'example task'
-                                    task.commit()
+                                        task = NxosBgpGlobal(log)
+                                        task.neighbor_address = '2001:aaaa::1'
+                                        task.neighbor_remote_as = 65003
+                                        task.neighbor_update_source = 'Vlan20'
+                                        task.add_bgp_neighbor()
 
-                                    pb.add_task(task)
-                                    pb.append_playbook()
-                                    pb.write_playbook()
+                                        task.neighbor_address = '10.1.1.0/25'
+                                        task.neighbor_remote_as = '2301.1'
+                                        task.neighbor_update_source = 'Ethernet1/2'
+                                        task.add_bgp_neighbor()
 
-                                - Resulting task:
-                                    hosts: dc-101
-                                    name: Example nxos_bgp_global
-                                    tasks:
-                                    -   cisco.nxos.nxos_bgp_global:
-                                            config:
-                                                as_number: '12000.0'
-                                                neighbors:
-                                                -   neighbor_address: 2001:aaaa::1
-                                                    remote_as: 65003
-                                                    update_source: Vlan20
-                                                -   neighbor_address: 10.1.1.0/25
-                                                    remote_as: '2301.1'
-                                                    update_source: Ethernet1/2
-                                            state: merged
-                                        name: example task
+                                        task.as_number = '12000.0'
+                                        task.state = 'merged'
+                                        task.vrf = 'default'
+                                        task.task_name = 'example task'
+                                        task.commit()
 
-========================    ==============================================
+                                        pb.add_task(task)
+                                        pb.append_playbook()
+                                        pb.write_playbook()
+
+                                    - Resulting task:
+                                        hosts: dc-101
+                                        name: Example nxos_bgp_global
+                                        tasks:
+                                        -   cisco.nxos.nxos_bgp_global:
+                                                config:
+                                                    as_number: '12000.0'
+                                                    neighbors:
+                                                    -   neighbor_address: 2001:aaaa::1
+                                                        remote_as: 65003
+                                                        update_source: Vlan20
+                                                    -   neighbor_address: 10.1.1.0/25
+                                                        remote_as: '2301.1'
+                                                        update_source: Ethernet1/2
+                                                state: merged
+                                            name: example task
+
+=============================== ==============================================
 
 |
 

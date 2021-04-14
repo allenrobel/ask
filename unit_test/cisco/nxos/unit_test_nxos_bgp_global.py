@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_global.py
 # Status = BETA
-our_version = 105
+our_version = 106
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -25,6 +25,45 @@ def add_task_name(task):
     task.append_to_task_name(ansible_host)
     for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
+
+def neighbor_bfd(task):
+    task.neighbor_bfd_singlehop = True
+    task.neighbor_bfd_set = True
+    task.neighbor_bfd_multihop_set = True
+    task.neighbor_bfd_multihop_interval_tx_interval = 300
+    task.neighbor_bfd_multihop_interval_min_rx_interval = 300
+    task.neighbor_bfd_multihop_interval_multiplier = 6
+def neighbor_graceful_shutdown(task):
+    task.neighbor_graceful_shutdown_activate_route_map = 'SHUTDOWN_RM'
+    task.neighbor_graceful_shutdown_activate_set = False
+def neighbor_log(task):
+    task.neighbor_log_neighbor_changes_disable = True
+    task.neighbor_log_neighbor_changes_set = True
+def neighbor_password(task):
+    task.neighbor_password_encryption = 0
+    task.neighbor_password_key = 'wings'
+def neighbor_path_attribute(task):
+    '''
+    comment one of range_end or range_start for negative test
+    comment attribute_action for negative test 
+    '''
+    task.neighbor_path_attribute_range_end = 255
+    task.neighbor_path_attribute_range_start = 1
+    task.neighbor_path_attribute_action = 'treat-as-withdraw'
+    task.add_bgp_neighbor_path_attribute()
+def neighbor_remove_private_as(task):
+    task.neighbor_remove_private_as_all = True
+    task.neighbor_remove_private_as_replace_as = True
+    task.neighbor_remove_private_as_set = True
+def neighbor_timers(task):
+    task.timers_prefix_peer_timeout = 10
+    task.timers_prefix_peer_wait = 30
+    task.neighbor_timers_holdtime = 20
+    task.neighbor_timers_keepalive = 5
+
+def timers(task):
+    task.timers_prefix_peer_timeout = 10
+    task.timers_prefix_peer_wait = 30
 
 def ipv4_neighbors(pb):
     task = NxosBgpGlobal(log)
@@ -50,31 +89,19 @@ def ipv4_neighbors(pb):
     task.confederation_identifier = 65000
     task.confederation_peers = [65001, 65002]
     task.neighbor_down_fib_accelerate = True
-    task.timers_prefix_peer_timeout = 10
-    task.timers_prefix_peer_wait = 30
-
+    timers(task)
     # add a bgp neighbor in the global/default vrf
     task.neighbor_affinity_group_group_id = 200
-    task.neighbor_bfd_singlehop = True
-    task.neighbor_bfd_set = True
-    task.neighbor_bfd_multihop_set = True
-    task.neighbor_bfd_multihop_interval_tx_interval = 300
-    task.neighbor_bfd_multihop_interval_min_rx_interval = 300
-    task.neighbor_bfd_multihop_interval_multiplier = 6
+    neighbor_bfd(task)
     task.neighbor_address = '10.1.1.1'
-    task.neighbor_graceful_shutdown_activate_route_map = 'SHUTDOWN_RM'
-    task.neighbor_graceful_shutdown_activate_set = False
-    task.neighbor_log_neighbor_changes_disable = True
-    task.neighbor_log_neighbor_changes_set = True
+    neighbor_graceful_shutdown(task)
+    neighbor_log(task)
     task.neighbor_low_memory_exempt = True
-    task.neighbor_password_encryption = 0
-    task.neighbor_password_key = 'wings'
+    neighbor_password(task)
     task.neighbor_remote_as = '6201.1'
-    task.neighbor_remove_private_as_all = True
-    task.neighbor_remove_private_as_replace_as = True
-    task.neighbor_remove_private_as_set = True
-    task.neighbor_timers_holdtime = 20
-    task.neighbor_timers_keepalive = 5
+    neighbor_path_attribute(task)
+    neighbor_remove_private_as(task)
+    neighbor_timers(task)
     task.neighbor_transport_connection_mode_passive = False
     task.neighbor_ttl_security_hops = 1
     task.neighbor_update_source = 'Vlan2'
