@@ -1,5 +1,5 @@
 # NxosBgpAddressFamily() - cisco/nxos/nxos_bgp_address_family.py
-our_version = 103
+our_version = 104
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -13,7 +13,7 @@ NxosBgpAddressFamily()
 
 Version
 -------
-100
+104
 
 Status
 ------
@@ -888,6 +888,18 @@ class NxosBgpAddressFamily(Task):
         self.aggregate_address_set.add('aggregate_address_summary_only')
         self.aggregate_address_set.add('aggregate_address_suppress_map')
 
+        # Used in verify_dampening()
+        self.verify_dampening_set = set()
+        self.verify_dampening_set.add('dampening_decay_half_life')
+        self.verify_dampening_set.add('dampening_max_suppress_time')
+        self.verify_dampening_set.add('dampening_start_reuse_route')
+        self.verify_dampening_set.add('dampening_start_suppress_route')
+
+        self.verify_distance_set = set()
+        self.verify_distance_set.add('distance_ebgp_routes')
+        self.verify_distance_set.add('distance_ibgp_routes')
+        self.verify_distance_set.add('distance_local_routes')
+
         # The set of atomic -- not members of a dict() --
         # inject_map properties.
         # Written when the user calls instance.add_inject_map().
@@ -1058,10 +1070,14 @@ class NxosBgpAddressFamily(Task):
         self.dampening_start_suppress_route_max = 20000
         self.default_metric_min = 1
         self.default_metric_max = 4294967295
+
         self.distance_ebgp_routes_min = 1
         self.distance_ebgp_routes_max = 255
         self.distance_ibgp_routes_min = 1
         self.distance_ibgp_routes_max = 255
+        self.distance_local_routes_min = 1
+        self.distance_local_routes_max = 255
+
         self.maximum_paths_eibgp_parallel_paths_min = 1
         self.maximum_paths_eibgp_parallel_paths_max = 64
         self.maximum_paths_ibgp_parallel_paths_min = 1
@@ -1141,6 +1157,31 @@ class NxosBgpAddressFamily(Task):
     def init_redistribute(self):
         for p in self.redistribute_set:
             self.properties[p] = None
+
+    def verify_all_or_none(self, verify_set):
+        '''
+        if any property in verify_set is set, all properties
+        in verify_set must be set.
+        '''
+        current_set = set()
+        for p in verify_set:
+            if p not in self.properties:
+                self.task_log.error('exiting. Unknown property {}'.format(p))
+                exit(1)
+            if self.properties[p] != None:
+                current_set.add(p)
+        if len(current_set) == 0:
+            return
+        if len(current_set) == len(verify_set):
+            return
+        self.task_log.error('exiting.  If one of the following is set, all must be set: {}'.format(
+            sorted(verify_set)))
+        exit(1)
+
+    def verify_dampening(self):
+        self.verify_all_or_none(self.verify_dampening_set)
+    def verify_distance(self):
+        self.verify_all_or_none(self.verify_distance_set)
 
     def final_verification(self):
         if self.state == None:
@@ -1282,6 +1323,8 @@ class NxosBgpAddressFamily(Task):
         if self.vrf == None and self.maximum_paths_eibgp_parallel_paths != None:
             self.task_log.error('exiting. eibgp option available only if instance.vrf is set.')
             exit(1)
+        self.verify_dampening()
+        self.verify_distance()
 
     def add_address_family(self):
         '''
