@@ -895,6 +895,7 @@ class NxosBgpAddressFamily(Task):
         self.verify_dampening_set.add('dampening_start_reuse_route')
         self.verify_dampening_set.add('dampening_start_suppress_route')
 
+        # Used in verify_distance()
         self.verify_distance_set = set()
         self.verify_distance_set.add('distance_ebgp_routes')
         self.verify_distance_set.add('distance_ibgp_routes')
