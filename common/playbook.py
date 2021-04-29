@@ -1,5 +1,5 @@
 # Playbook() - common/playbook.py
-our_version = 114
+our_version = 115
 from copy import deepcopy
 from os import path # write_playbook()
 import yaml
@@ -102,6 +102,17 @@ class Playbook(object):
         self.ansible_ssh_common_args = '/bin/ssh'
         self.ansible_paramiko_pty = 'no'
         self.ansible_user = 'admin'
+        self.ansible_password = None
+        self.ansible_network_os = None
+        self.ansible_httpapi_validate_certs = None
+        self.ansible_httpapi_use_ssl = None
+
+    def profile_local(self):
+        self.ansible_connection = None
+        self.ansible_host_key_checking = None
+        self.ansible_ssh_pass = None
+        self.ansible_ssh_common_args = None
+        self.ansible_paramiko_pty = None
         self.ansible_password = None
         self.ansible_network_os = None
         self.ansible_httpapi_validate_certs = None
