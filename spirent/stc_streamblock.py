@@ -1,5 +1,5 @@
 # StcStreamblock() - spirent/stc_streamblock.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -494,39 +494,39 @@ class StcStreamblock(Task):
     def final_verification(self):
         if self.action == 'delete':
             if self.name == None:
-                self.task_log.error('exiting. call instance.name before calling instance.update()')
+                self.task_log.error('exiting. call instance.name before calling instance.commit()')
                 exit(1)
             return
 
         if self.tx_name == None:
-            self.task_log.error('exiting. call instance.tx_name before calling instance.update()')
+            self.task_log.error('exiting. call instance.tx_name before calling instance.commit()')
             exit(1)
         if self.tx_type == None:
-            self.task_log.error('exiting. call instance.tx_type before calling instance.update()')
+            self.task_log.error('exiting. call instance.tx_type before calling instance.commit()')
             exit(1)
         if self.tx_protocol == None:
-            self.task_log.error('exiting. call instance.tx_protocol before calling instance.update()')
+            self.task_log.error('exiting. call instance.tx_protocol before calling instance.commit()')
             exit(1)
         if self.rx_name == None:
-            self.task_log.error('exiting. call instance.rx_name before calling instance.update()')
+            self.task_log.error('exiting. call instance.rx_name before calling instance.commit()')
             exit(1)
         if self.rx_type == None:
-            self.task_log.error('exiting. call instance.rx_type before calling instance.update()')
+            self.task_log.error('exiting. call instance.rx_type before calling instance.commit()')
             exit(1)
         if self.rx_protocol == None:
-            self.task_log.error('exiting. call instance.rx_protocol before calling instance.update()')
+            self.task_log.error('exiting. call instance.rx_protocol before calling instance.commit()')
             exit(1)
         if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
+            self.task_log.error('exiting. call instance.name before calling instance.commit()')
             exit(1)
         if self.load == None:
-            self.task_log.error('exiting. call instance.load before calling instance.update()')
+            self.task_log.error('exiting. call instance.load before calling instance.commit()')
             exit(1)
         if self.load_unit == None:
-            self.task_log.error('exiting. call instance.load_unit before calling instance.update()')
+            self.task_log.error('exiting. call instance.load_unit before calling instance.commit()')
             exit(1)
         if self.traffic_pattern == None:
-            self.task_log.error('exiting. call instance.traffic_pattern before calling instance.update()')
+            self.task_log.error('exiting. call instance.traffic_pattern before calling instance.commit()')
             exit(1)
 
         if self.action == None:
@@ -555,6 +555,8 @@ class StcStreamblock(Task):
         self.ansible_task[self.ansible_module]['objects'].append(deepcopy(streamblock))
         self.ansible_task[self.ansible_module]['action'] = self.action
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()

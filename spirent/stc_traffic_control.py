@@ -1,5 +1,5 @@
 # StcTrafficControl() - spirent/stc_traffic_control.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -125,10 +125,12 @@ class StcTrafficControl(Task):
         if self.generator_list == None:
             self.generator_list = 'ref:/project'
         if self.command == None:
-            self.task_log.error('exiting. Call instance.command before calling instance.update()')
+            self.task_log.error('exiting. Call instance.command before calling instance.commit()')
             self.task_log.error('Valid values for instance.command: {}'.format(','.join(self.stc_traffic_control_valid_command)))
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()

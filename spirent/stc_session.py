@@ -1,5 +1,5 @@
 # StcSession() - spirent/stc_session.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -174,16 +174,18 @@ class StcSession(Task):
             self.task_log.error('exiting. delete is not currently supported for instance.command')
             exit(1)
         if self.name == None:
-            self.task_log.error('exiting. call instance.name before calling instance.update()')
+            self.task_log.error('exiting. call instance.name before calling instance.commit()')
             exit(1)
         if self.user == None:
-            self.task_log.error('exiting. call instance.user before calling instance.update()')
+            self.task_log.error('exiting. call instance.user before calling instance.commit()')
             exit(1)
         if self.command == None:
             self.command = 'create'
         if self.chassis == None:
             self.chassis = "{{ hostvars[inventory_hostname].chassis }}"
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()
