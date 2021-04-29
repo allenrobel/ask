@@ -1,5 +1,5 @@
 # StcPortControl() - spirent/stc_port_control.py
-our_version = 104
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -187,14 +187,19 @@ class StcPortControl(Task):
 
     def final_verification(self):
         if self.command == None:
-            self.task_log.error('exiting. Call instance.command before calling instance.update()')
+            self.task_log.error('exiting. Call instance.command before calling instance.commit()')
             self.task_log.error('instance.command valid values: '.format(','.join(self.stc_port_control_valid_command)))
+            exit(1)
+        if self.command == 'detach' and self.revoke_owner == True:
+            self.task_log.error('exiting. instance.revoke_owner must be False if instance.command is attach')
             exit(1)
         if self.auto_connect == None:
             self.auto_connect = True
         if self.revoke_owner == None:
             self.revoke_owner = False
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()
