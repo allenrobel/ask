@@ -1,5 +1,6 @@
+
 # StcDrvCreate() - spirent/stc_drv_create.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -200,8 +201,10 @@ class StcDrvCreate(Task):
         self.scriptkit_properties.update(self.presentation_result_query_set)
 
         self.stc_drv_create_valid_sort_direction = set()
+        #self.stc_drv_create_valid_sort_direction.add('ASCENDING')
+        #self.stc_drv_create_valid_sort_direction.add('DESCENDING')
         self.stc_drv_create_valid_sort_direction.add('ASCENDING')
-        self.stc_drv_create_valid_sort_direction.add('DESCENDING')
+        self.stc_drv_create_valid_sort_direction.add('DESC')
 
         self.valid_select_properties = set()
         self.valid_select_properties.add('StreamBlock.StreamId')
@@ -287,7 +290,7 @@ class StcDrvCreate(Task):
  
         if self.sort_by != None:
             if self.sort_by not in self.select_properties_set:
-                self.task_log.error('exiting. instance.sort_by not found in instance.select_properties. Add it before calling instance.update()')
+                self.task_log.error('exiting. instance.sort_by not found in instance.select_properties. Add it before calling instance.commit()')
                 self.task_log.error('instance.sort_by: {}'.format(self.sort_by))
                 self.task_log.error('instance.select_properties: {}'.format(self.select_properties))
                 exit(1)
@@ -314,6 +317,8 @@ class StcDrvCreate(Task):
         d['objects'].append(deepcopy(drv))
         return deepcopy(d)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()
