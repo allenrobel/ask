@@ -1,5 +1,5 @@
 # StcDeviceControl() - spirent/stc_device_control.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -110,6 +110,8 @@ class StcDeviceControl(Task):
             self.task_log.error('Valid values for command: {}'.format(','.join(self.stc_device_control_valid_command)))
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

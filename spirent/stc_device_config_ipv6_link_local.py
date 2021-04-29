@@ -1,5 +1,5 @@
 # StcDeviceConfigIpv6LinkLocal() - spirent/stc_device_config_ipv6_link_local.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -140,6 +140,8 @@ class StcDeviceConfigIpv6LinkLocal(Task):
         if self.link_local_gateway == None:
             self.link_local_gateway = '::1'
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

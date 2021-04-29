@@ -1,5 +1,5 @@
 # StcDrvDelete() - spirent/stc_drv_delete.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -99,6 +99,8 @@ class StcDrvDelete(Task):
         if self.reset_existing == None:
             self.reset_existing = False
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()

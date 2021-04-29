@@ -1,5 +1,5 @@
 # StcDeviceConfig() - spirent/stc_device_config.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -154,6 +154,8 @@ class StcDeviceConfig(Task):
             self.task_log.error('exiting. call instance.prefixlen before calling instance.update()')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

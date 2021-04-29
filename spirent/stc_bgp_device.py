@@ -1,5 +1,5 @@
 # StcBgpDevice() - spirent/stc_bgp_device.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -185,6 +185,8 @@ class StcBgpDevice(Task):
                 self.task_log.error('exiting. call instance.{} before calling instance.update()'.format(p))
                 exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

@@ -1,5 +1,5 @@
 # StcDrvSubscribe() - spirent/stc_drv_subscribe.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -93,6 +93,8 @@ class StcDrvSubscribe(Task):
         if self.reset_existing == None:
             self.reset_existing = False
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()

@@ -1,5 +1,5 @@
 # StcDrvClear() - spirent/stc_drv_clear.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -87,6 +87,8 @@ class StcDrvClear(Task):
         if self.properties['port_list'] == None:
             self.properties['port_list'] = 'ref:/port'
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()

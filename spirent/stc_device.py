@@ -1,5 +1,5 @@
 # StcDevice() - spirent/stc_device.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -189,6 +189,8 @@ class StcDevice(Task):
             self.task_log.error('exiting. call instance.port_name before calling instance.update()')
             exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         call final_verification()

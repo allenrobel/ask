@@ -1,5 +1,5 @@
 # StcPorts() - spirent/stc_ports.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -160,13 +160,15 @@ class StcPorts(Task):
 
     def final_verification(self):
         if len(self.port_list) == 0:
-            self.task_log.error('exiting. call instance.add_port() at least once before calling instance.update()')
+            self.task_log.error('exiting. call instance.add_port() at least once before calling instance.commit()')
             exit(1)
         if self.action == None:
-            self.task_log.error('exiting. call instance.action before calling instance.update()')
+            self.task_log.error('exiting. call instance.action before calling instance.commit()')
             exit(1)
 
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()

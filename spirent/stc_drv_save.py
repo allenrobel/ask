@@ -1,5 +1,5 @@
 # StcDrvSave() - spirent/stc_drv_save.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -89,6 +89,8 @@ class StcDrvSave(Task):
                 self.log.error('exiting. call instance.{} before calling update()'.format(p))
                 exit(1)
 
+    def commit(self):
+        self.update()
     def update(self):
         '''
         Call self.final_verification()
