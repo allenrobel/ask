@@ -193,9 +193,12 @@ class StcPortControl(Task):
         if self.command == 'detach' and self.revoke_owner == True:
             self.task_log.error('exiting. instance.revoke_owner must be False if instance.command is attach')
             exit(1)
-        if self.auto_connect == None:
+        if self.command == 'detach' and self.auto_connect == True:
+            self.task_log.error('exiting. instance.auto_connect must be False if instance.command is attach')
+            exit(1)
+        if self.auto_connect == None and self.command != 'detach':
             self.auto_connect = True
-        if self.revoke_owner == None:
+        if self.revoke_owner == None and self.command != 'detach':
             self.revoke_owner = False
 
     def commit(self):
