@@ -1,5 +1,5 @@
 # NxosOspfInterfaces() - cisco/nxos/nxos_ospf_interfaces.py
-our_version = 107
+our_version = 109
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -301,6 +301,8 @@ default_passive_interface               Remove any passive-interface configurati
                                             - cisco.nxos collection version: v2.0.2 ?
                                             - Example:
                                                 task.default_passive_interface = True
+                                            - NOTES:
+                                                1. mutually-exclusive with passive_interface
 
 hello_interval                          Frequency of hello message transmission::
 
@@ -380,6 +382,8 @@ passive_interface                       Suppress routing updates on the interfac
                                                 - True
                                             - Example:
                                                 task.passive_interface = False
+                                            - NOTES:
+                                                1. mutually-exclusive with default_passive_interface
 
 priority                                Router priority::
 
@@ -690,9 +694,13 @@ class NxosOspfInterfaces(Task):
         if self.process_area_id == None:
             self.task_log.error('exiting. instance.process_area_id must be set prior to adding area info to an ospf process')
             exit(1)
+
     def verify_address_family(self):
         if self.afi == None:
             self.task_log.error('exiting. instance.afi must be set prior to calling instance.add_address_family()')
+            exit(1)
+        if self.passive_interface != None and self.default_passive_interface != None:
+            self.task_log.error('exiting. instance.passive_interface is mutually-exclusive with instance.default_passive_interface.  Unset one or the other.')
             exit(1)
 
     def verify_process(self):
@@ -767,7 +775,6 @@ class NxosOspfInterfaces(Task):
                 d[p] = self.properties[p]
         self.address_family.append(deepcopy(d))
         self.init_properties_address_family()
-
 
     def final_verification(self):
         if self.state == None:

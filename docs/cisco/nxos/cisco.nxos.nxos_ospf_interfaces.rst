@@ -296,6 +296,8 @@ default_passive_interface               Remove any passive-interface configurati
                                             - cisco.nxos collection version: v2.0.2 ?
                                             - Example:
                                                 task.default_passive_interface = True
+                                            - NOTES:
+                                                1. mutually-exclusive with passive_interface
 
 hello_interval                          Frequency of hello message transmission::
 
@@ -375,6 +377,8 @@ passive_interface                       Suppress routing updates on the interfac
                                                 - True
                                             - Example:
                                                 task.passive_interface = False
+                                            - NOTES:
+                                                1. mutually-exclusive with default_passive_interface
 
 priority                                Router priority::
 
