@@ -6,6 +6,10 @@ NxosOspfInterfaces()
    :local:
    :depth: 1
 
+Version
+-------
+107
+
 ScriptKit Synopsis
 ------------------
 - NxosOspfInterfaces() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_ospf_interfaces
@@ -279,6 +283,19 @@ dead_interval                           OSPF dead interval::
                                                 - range: 1-65535
                                             - Example:
                                                 task.dead_interval = 3
+
+default_passive_interface               Remove any passive-interface configuration from the interface.
+                                        This issues the following on the interface
+                                        'default ip ospf passive-interface'
+                                        'default ipv6 ospf passive-interface'::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - cisco.nxos collection version: v2.0.2 ?
+                                            - Example:
+                                                task.default_passive_interface = True
 
 hello_interval                          Frequency of hello message transmission::
 

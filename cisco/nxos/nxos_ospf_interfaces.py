@@ -1,5 +1,5 @@
 # NxosOspfInterfaces() - cisco/nxos/nxos_ospf_interfaces.py
-our_version = 106
+our_version = 107
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -10,6 +10,10 @@ NxosOspfInterfaces()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+107
 
 ScriptKit Synopsis
 ------------------
@@ -285,6 +289,19 @@ dead_interval                           OSPF dead interval::
                                             - Example:
                                                 task.dead_interval = 3
 
+default_passive_interface               Remove any passive-interface configuration from the interface.
+                                        This issues the following on the interface
+                                        'default ip ospf passive-interface'
+                                        'default ipv6 ospf passive-interface'::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - cisco.nxos collection version: v2.0.2 ?
+                                            - Example:
+                                                task.default_passive_interface = True
+
 hello_interval                          Frequency of hello message transmission::
 
                                             - Type: int()
@@ -536,6 +553,7 @@ class NxosOspfInterfaces(Task):
         self.properties_address_family.add('afi')
         self.properties_address_family.add('cost')
         self.properties_address_family.add('dead_interval')
+        self.properties_address_family.add('default_passive_interface')
         self.properties_address_family.add('hello_interval')
         self.properties_address_family.add('instance')
         self.properties_address_family.add('mtu_ignore')
@@ -1032,6 +1050,17 @@ class NxosOspfInterfaces(Task):
         if self.set_none(x, parameter):
             return
         self.verify_nxos_ospf_interfaces_dead_interval(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def default_passive_interface(self):
+        return self.properties['default_passive_interface']
+    @default_passive_interface.setter
+    def default_passive_interface(self, x):
+        parameter = 'default_passive_interface'
+        if self.set_none(x, parameter):
+            return
+        self.verify_boolean(x, parameter)
         self.properties[parameter] = x
 
     @property

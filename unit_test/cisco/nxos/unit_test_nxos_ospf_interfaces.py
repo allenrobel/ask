@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_ospf_interfaces.py
-our_version = 106
+our_version = 107
 '''
 ----
 Name
@@ -89,10 +89,17 @@ def add_timers(task):
 def add_general_parameters(task):
     task.mtu_ignore = False
     task.network = 'point-to-point'
+    # Starting with Cisco Ansible Collections version 2.0.2
+    # the boolean key default_passive_interface was added to remove
+    # any/all existing ospf passive-interface config from
+    # an interface.   If you are using 'passive-interface default'
+    # under the global ospf instance, then use default_passive_interface
+    # if you want the interface to inherit this global config state
+    # task.default_passive_interface = True
     task.passive_interface = False
     #task.priority = 10
 
-def configure_ospf(pb):
+def ospf_interfaces(pb):
     task = NxosOspfInterfaces(log)
     task.append_to_task_name('v{}, {}'.format(our_version, ansible_host))
     task.append_to_task_name('Configure OSPF interface:')
@@ -109,7 +116,15 @@ def configure_ospf(pb):
         task.add_interface()
     task.state = 'merged'
     task.commit()
-    pb.add_task(task)
+    # pb.add_task() does not know enough about the
+    # internals of NxosOspfInterfaces() to elide
+    # addition of bogus tasks, so it's on us to make
+    # sure we don't pass a task with an empty config()
+    # structure.  In our case, if task.interface_list is 
+    # empty, we want to skip adding the task to the 
+    # playbook.
+    if len(task.interface_list) != 0:
+        pb.add_task(task)
 
 def shutdown_ospf_process(pb):
     task = NxosOspfInterfaces(log)
@@ -123,10 +138,12 @@ def shutdown_ospf_process(pb):
         task.add_interface()
     task.state = 'merged'
     task.commit()
-    pb.add_task(task)
+    # see comment in ospf_interfaces()
+    if len(task.interface_list) != 0:
+        pb.add_task(task)
 
 pb = playbook()
-configure_ospf(pb)
+ospf_interfaces(pb)
 shutdown_ospf_process(pb)
 pb.append_playbook()
 pb.write_playbook()
