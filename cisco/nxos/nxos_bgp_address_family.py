@@ -1,5 +1,5 @@
 # NxosBgpAddressFamily() - cisco/nxos/nxos_bgp_address_family.py
-our_version = 104
+our_version = 105
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -1285,6 +1285,18 @@ class NxosBgpAddressFamily(Task):
         if len(d) != 0:
             self.address_family_dict['nexthop'] = deepcopy(d)
 
+    def update_address_family_retain_route_target(self):
+        d = dict()
+        route_target = dict()
+        if self.retain_route_target_retain_all != None:
+            route_target['retain_all'] = self.retain_route_target_retain_all
+        if self.retain_route_target_route_map != None:
+            route_target['route_map'] = self.retain_route_target_route_map
+        if len(route_target) != 0:
+            d['route_target'] = deepcopy(route_target)
+        if len(d) != 0:
+            self.address_family_dict['retain'] = deepcopy(d)
+
     def update_address_family_timers(self):
         d = dict()
         bestpath_defer = dict()
@@ -1351,6 +1363,7 @@ class NxosBgpAddressFamily(Task):
         self.update_address_family_additional_paths()
         self.update_address_family_maximum_paths()
         self.update_address_family_nexthop()
+        self.update_address_family_retain_route_target()
         self.update_address_family_timers()
         if len(self.aggregate_address_list) != 0:
             self.address_family_dict['aggregate_address'] = deepcopy(self.aggregate_address_list)
