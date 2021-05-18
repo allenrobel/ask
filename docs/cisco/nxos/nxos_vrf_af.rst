@@ -6,6 +6,14 @@ NxosVrfAf()
    :local:
    :depth: 1
 
+Version
+-------
+101
+
+Caveats
+-------
+1. The ``evpn`` keyword for route-target is not currently supported by the Ansible module.  You will need to use NxosConfig module to configure this.
+
 ScriptKit Synopsis
 ------------------
 NxosVrfAf() generates Ansible task instances conformant with its identically-named Ansible module.

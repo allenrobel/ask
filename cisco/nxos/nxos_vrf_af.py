@@ -1,5 +1,5 @@
 # NxosVrfAf() - cisco/nxos/nxos_vrf_af.py
-our_version = 100
+our_version = 101
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -10,6 +10,14 @@ NxosVrfAf()
 .. contents::
    :local:
    :depth: 1
+
+Version
+-------
+101
+
+Caveats
+-------
+1. The ``evpn`` keyword for route-target is not currently supported by the Ansible module.  You will need to use NxosConfig module to configure this.
 
 ScriptKit Synopsis
 ------------------
@@ -199,6 +207,9 @@ class NxosVrfAf(Task):
         self.properties['task_name'] = None
 
     def final_verification(self):
+        if self.afi == None:
+            self.task_log.error('exiting. call instance.afi before calling instance.commit()')
+            exit(1)
         if self.state == None:
             self.task_log.error('exiting. call instance.state before calling instance.commit()')
             exit(1)
