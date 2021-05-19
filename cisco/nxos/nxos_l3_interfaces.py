@@ -1,5 +1,5 @@
 # NxosL3Interfaces() - cisco/nxos/nxos_l3_interfaces.py
-our_version = 110
+our_version = 111
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -370,12 +370,11 @@ class NxosL3Interfaces(Task):
         else:
             if self.state == 'deleted':
                 return
-            for d in self.interface_list:
-                if 'ipv4' not in d and 'ipv6' not in d:
-                    self.task_log.error('exiting. {} at least one of [ipv4 attributes, ipv6 attributes] must be set.'.format(d['name']))
-                    self.task_log.error('ipv4_attribute properties: ipv4_address, ipv4_secondary, ipv4_tag')
-                    self.task_log.error('ipv6_attribute properties: ipv6_address, ipv6_tag')
-                    exit(1)
+            # We used to check below that all dict() in interface_list
+            # contained at least one ipv4 or one ipv6 address.  But,
+            # there are valid cases where an L3 address is not configured
+            # on L3 interfaces. For example, EVPN L3 SVI uses 'ip forward'
+            # (from nxos_interfaces).
 
     def commit(self):
         self.update()
