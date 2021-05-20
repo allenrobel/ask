@@ -746,7 +746,8 @@ timers_bestpath_defer_maximum_defer_time        Bestpath defer time for batch pr
 ====================================    =========================================
 Property                                Description
 ====================================    =========================================
-vrf                                     Name of VRF in which bgp neighbor resides::
+vrf                                     Name of VRF into which current properties
+                                        will be added::
 
                                             - Type: str()
                                             - Examples:
