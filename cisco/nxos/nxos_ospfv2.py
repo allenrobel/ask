@@ -1,10 +1,10 @@
-# NxosOspfv2() - cisco/nxos/nxos_ospfv2.py
-our_version = 108
+# NxosOspfV2() - cisco/nxos/nxos_ospfv2.py
+our_version = 109
 from copy import deepcopy
 from ask.common.task import Task
 '''
 ***********************************
-NxosOspfv2 - nxos_ospfv2.py
+NxosOspfV2 - nxos_ospfv2.py
 ***********************************
 
 .. contents::
@@ -13,7 +13,7 @@ NxosOspfv2 - nxos_ospfv2.py
 
 ScriptKit Synopsis
 ------------------
-- NxosOspfv2() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_ospfv2
+- NxosOspfV2() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_ospfv2
 - These can then be passed to Playbook().add_task()
 
 
@@ -966,7 +966,7 @@ class NxosOspfV2(Task):
         for p in self.properties_set:
             if self.properties[p] != None:
                 self.task_log.error('exiting. Cannot mix running_config with other configuration.')
-                self.task_log.error('Instantiate a separate NxosOspfv2() instance and configure it solely for running_config.')
+                self.task_log.error('Instantiate a separate NxosOspfV2() instance and configure it solely for running_config.')
                 exit(1)
 
     def final_verification(self):

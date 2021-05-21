@@ -1,5 +1,5 @@
 ***********************************
-NxosOspfv2 - nxos_ospfv2.py
+NxosOspfV2 - nxos_ospfv2.py
 ***********************************
 
 .. contents::
@@ -8,7 +8,7 @@ NxosOspfv2 - nxos_ospfv2.py
 
 ScriptKit Synopsis
 ------------------
-- NxosOspfv2() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_ospfv2
+- NxosOspfV2() generates Ansible Playbook tasks conformant with cisco.nxos.nxos_ospfv2
 - These can then be passed to Playbook().add_task()
 
 
