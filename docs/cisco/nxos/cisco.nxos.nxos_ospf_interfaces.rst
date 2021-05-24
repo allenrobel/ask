@@ -8,7 +8,7 @@ NxosOspfInterfaces()
 
 Version
 -------
-109
+110
 
 ScriptKit Synopsis
 ------------------
@@ -293,7 +293,7 @@ default_passive_interface               Remove any passive-interface configurati
                                             - Valid values:
                                                 - False
                                                 - True
-                                            - cisco.nxos collection version: v2.0.2 ?
+                                            - cisco.nxos collection version:  v2.3.0
                                             - Example:
                                                 task.default_passive_interface = True
                                             - NOTES:
