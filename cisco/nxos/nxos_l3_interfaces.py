@@ -1,5 +1,5 @@
 # NxosL3Interfaces() - cisco/nxos/nxos_l3_interfaces.py
-our_version = 111
+our_version = 112
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -434,6 +434,8 @@ class NxosL3Interfaces(Task):
             d['ipv6'] = deepcopy(self.ipv6)
         if self.redirects != None:
             d['redirects'] = self.redirects
+        if self.evpn_multisite_tracking != None:
+            d['evpn_multisite_tracking'] = self.evpn_multisite_tracking
         if self.unreachables != None:
             d['unreachables'] = self.unreachables
         if len(d) == 0:
