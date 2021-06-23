@@ -1,5 +1,5 @@
 # Playbook() - common/playbook.py
-our_version = 115
+our_version = 116
 from copy import deepcopy
 from os import path # write_playbook()
 import yaml
@@ -51,6 +51,8 @@ task.neighbor_port = neighbor_interface
 task.add_neighbor()
 
 pb.add_task(task)
+pb.add_environment('my_key', 'my_value')
+pb.add_environment('no_proxy', '*')
 pb.append_playbook()
 pb.write_playbook()
 '''
@@ -73,8 +75,7 @@ class Playbook(object):
         self.playbook['name'] = 'ansible_playbook'
         self.playbook['gather_facts'] = False
         self.playbook['hosts'] = None
-        self.playbook['environment'] = dict()
-        self.playbook['environment']['no_proxy'] = "*"
+        self._environment = dict() # see add_environment(), append_playbook()
         # Added for Spirent
         # ansible_host_key_checking:no
         # ansible_ssh_pass:spirent
@@ -240,10 +241,17 @@ class Playbook(object):
 
     @property
     def no_proxy(self):
-        return self.playbook['environment']['no_proxy']
+        '''
+        conveniemce property.  User can also use the following instead:
+        pb.add_environment('no_proxy', 'value')
+        '''
+        if 'no_proxy' in self._environment:
+            return self._environment['no_proxy']
+        self.log.error('exiting. Set instance.no_proxy before attempting to use it')
+        exit(1)
     @no_proxy.setter
     def no_proxy(self, x):
-        self.playbook['environment']['no_proxy'] = x
+        self._environment['no_proxy'] = x
 
     @property
     def gather_facts(self):
@@ -277,6 +285,14 @@ class Playbook(object):
         '''
         self._ansible_module = x
 
+    def add_environment(self, key, value):
+        '''
+        Add a key,value pair to the environment dict()
+
+        instance.add_environment('no_proxy', '*')
+        '''
+        self._environment[key] = value
+
     def write_playbook(self):
         '''
         write the playbook.yaml file
@@ -308,5 +324,7 @@ class Playbook(object):
                 new_vars[var] = self.playbook['vars'][var]
         self.playbook['vars'] = new_vars
         self.playbook['hosts'] = ','.join(self._hosts)
+        if len(self._environment) != 0:
+            self.playbook['environment'] = deepcopy(self._environment)
         self.stream.append(deepcopy(self.playbook))
         self.init_playbook()
