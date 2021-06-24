@@ -67,6 +67,14 @@ add_task()                  Add a task to the current playbook.::
                                     pb.append_playbook()
                                     pb.write_playbook()
 
+add_vars()                  Add a key,value to the playbook's vars dict()::
+
+                                - Type: function()
+                                - Example:
+                                    pb = Playbook(log)
+                                    pb.add_vars('my_var1', 'my_var_value1')
+                                    pb.add_vars('my_var2', 'my_var_value2')
+
 append_playbook()           Append the current set of tasks as a playbook.
                             Ansible playbook files can contain several 
                             playbooks (in which case, they are called

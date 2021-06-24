@@ -1,5 +1,5 @@
 # Playbook() - common/playbook.py
-our_version = 117
+our_version = 118
 from copy import deepcopy
 from os import path # write_playbook()
 import yaml
@@ -72,6 +72,14 @@ add_task()                  Add a task to the current playbook.::
 
                                     pb.append_playbook()
                                     pb.write_playbook()
+
+add_vars()                  Add a key,value to the playbook's vars dict()::
+
+                                - Type: function()
+                                - Example:
+                                    pb = Playbook(log)
+                                    pb.add_vars('my_var1', 'my_var_value1')
+                                    pb.add_vars('my_var2', 'my_var_value2')
 
 append_playbook()           Append the current set of tasks as a playbook.
                             Ansible playbook files can contain several 
@@ -454,6 +462,14 @@ class Playbook(object):
         instance.add_environment('no_proxy', '*')
         '''
         self._environment[key] = value
+
+    def add_vars(self, key, value):
+        '''
+        Add a key,value pair to the vars dict()
+
+        instance.add_vars('my_var', 'my_var_value')
+        '''
+        self.playbook['vars'][key] = value
 
     def write_playbook(self):
         '''

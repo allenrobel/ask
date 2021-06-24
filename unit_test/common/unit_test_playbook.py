@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+our_version = 101
 from ask.common.log import Log
 from ask.common.playbook import Playbook
 from ask.cisco.nxos.nxos_interfaces import NxosInterfaces
@@ -49,6 +50,8 @@ task_nxos_interfaces(pb)
 task_nxos_bfd_interfaces(pb)
 pb.add_host('t301')  # host in Ansible inventory
 pb.add_environment('no_proxy', '*')
+pb.add_vars('my_var1', 'my_var_value1')
+pb.add_vars('my_var2', 'my_var_value2')
 pb.append_playbook()
 pb.write_playbook()
 
@@ -59,12 +62,16 @@ pb.write_playbook()
 # task_nxos_interfaces(pb)
 # pb.add_environment('no_proxy', '*')
 # pb.add_host('t301')  # host in Ansible inventory
+# pb.add_vars('my_var1', 'my_var_value1')
+# pb.add_vars('my_var2', 'my_var_value2')
 # pb.append_playbook()
 
 # task_nxos_bfd_interfaces(pb)
 # pb.add_environment('no_proxy', '*')
+# pb.add_vars('my_var3', 'my_var_value3')
+# pb.add_vars('my_var4', 'my_var_value4')
 # pb.add_host('t301')  # host in Ansible inventory
 # pb.append_playbook()
 
-pb.write_playbook()
+# pb.write_playbook()
 
