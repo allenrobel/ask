@@ -126,6 +126,13 @@ NX-OS       |    S    | [cisco.nxos.nxos_vrf_interface][nxos_vrf_interface]
 NX-OS       |    S    | [cisco.nxos.nxos_vxlan_vtep][nxos_vxlan_vtep]
 NX-OS       |    S    | [cisco.nxos.nxos_vxlan_vtep_vni][nxos_vxlan_vtep_vni]
 
+## ScriptKit Classes
+
+Status  | Name
+------- | ------------------------------------------------------
+   S    | [Playbook()][playbook]
+
+
 [nxos_aaa_server]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_aaa_server.rst
 [nxos_aaa_server_host]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_aaa_server_host.rst
 [nxos_acl_interfaces]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_acl_interfaces.rst
@@ -183,3 +190,4 @@ NX-OS       |    S    | [cisco.nxos.nxos_vxlan_vtep_vni][nxos_vxlan_vtep_vni]
 [nxos_vrf_interface]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vrf_interface.rst
 [nxos_vxlan_vtep]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vxlan_vtep.rst
 [nxos_vxlan_vtep_vni]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vxlan_vtep_vni.rst
+[playbook]: https://github.com/allenrobel/ask/blob/main/docs/common/playbook.rst
