@@ -1,4 +1,4 @@
-our_version = 100
+our_version = 101
 from ask.common.task import Task
 '''
 Name: pause.py
@@ -33,11 +33,11 @@ Example usage:
     def pause_10(task):
         task.seconds = 10
         task.task_name = 'pause_10_seconds'
-        task.update()
+        task.commit()
     def pause_20(task):
         task.seconds = 20
         task.task_name = 'pause_20_seconds'
-        task.update()
+        task.commit()
 
     pb = playbook()
     task = Pause(log)
