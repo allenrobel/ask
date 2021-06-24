@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/common/unit_test_pause.py
-our_version = 100
+our_version = 101
 from ask.common.playbook import Playbook
 from ask.common.pause import Pause
 from ask.common.log import Log
@@ -23,13 +23,13 @@ def playbook():
 def pause_10(pb):
     task = Pause(log)
     task.seconds = 10
-    task.task_name = 'pause_10_seconds'
+    task.task_name = 'Pause 10 seconds'
     task.commit()
     pb.add_task(task)
 def pause_20(pb):
     task = Pause(log)
     task.seconds = 20
-    task.task_name = 'pause_20_seconds'
+    task.task_name = 'Pause 20 seconds'
     task.commit()
     pb.add_task(task)
 

@@ -130,8 +130,8 @@ NX-OS       |    S    | [cisco.nxos.nxos_vxlan_vtep_vni][nxos_vxlan_vtep_vni]
 
 Status  | Name
 ------- | ------------------------------------------------------
+   S    | [Pause()][pause]
    S    | [Playbook()][playbook]
-
 
 [nxos_aaa_server]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_aaa_server.rst
 [nxos_aaa_server_host]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_aaa_server_host.rst
@@ -190,4 +190,5 @@ Status  | Name
 [nxos_vrf_interface]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vrf_interface.rst
 [nxos_vxlan_vtep]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vxlan_vtep.rst
 [nxos_vxlan_vtep_vni]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vxlan_vtep_vni.rst
+[pause]: https://github.com/allenrobel/ask/blob/main/docs/common/pause.rst
 [playbook]: https://github.com/allenrobel/ask/blob/main/docs/common/playbook.rst
