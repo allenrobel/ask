@@ -519,6 +519,8 @@ send_community_set                      Set send-community attribute::
                                                 - True
                                             - Example:
                                                 task.send_community_set = False
+                                            - NOTES:
+                                                1. mutually-exclusive with send_community_standard
 
 send_community_standard                 Send only Standard Community attributes::
 
@@ -528,6 +530,8 @@ send_community_standard                 Send only Standard Community attributes:
                                                 - True
                                             - Example:
                                                 task.send_community_standard = False
+                                            - NOTES:
+                                                1. mutually-exclusive with send_community_set
 
 soft_reconfiguration_inbound_always     Always perform inbound soft reconfiguration::
 

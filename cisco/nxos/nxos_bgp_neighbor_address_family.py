@@ -1,5 +1,5 @@
 # NxosBgpNeighborAddressFamily() - cisco/nxos/nxos_bgp_neighbor_address_family.py
-our_version = 102
+our_version = 103
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -525,6 +525,8 @@ send_community_set                      Set send-community attribute::
                                                 - True
                                             - Example:
                                                 task.send_community_set = False
+                                            - NOTES:
+                                                1. mutually-exclusive with send_community_standard
 
 send_community_standard                 Send only Standard Community attributes::
 
@@ -534,6 +536,8 @@ send_community_standard                 Send only Standard Community attributes:
                                                 - True
                                             - Example:
                                                 task.send_community_standard = False
+                                            - NOTES:
+                                                1. mutually-exclusive with send_community_set
 
 soft_reconfiguration_inbound_always     Always perform inbound soft reconfiguration::
 
@@ -992,6 +996,9 @@ class NxosBgpNeighborAddressFamily(Task):
             exit(1)
         if self.safi == None:
             self.task_log.error('exiting. safi is a mandatory property but is not set.')
+            exit(1)
+        if self.send_community_set == True and self.send_community_standard == True:
+            self.task_log.error('exiting send_community_set and send_community_standard are mutually-exclusive.')
             exit(1)
     def add_address_family(self):
         '''
