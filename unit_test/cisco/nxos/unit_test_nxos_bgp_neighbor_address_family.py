@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_bgp_neighbor_address_family.py
 # Status = BETA
-our_version = 101
+our_version = 102
  
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -26,7 +26,7 @@ def add_task_name(task):
     for key in sorted(task.scriptkit_properties):
         task.append_to_task_name(key)
 
-def add_task(pb):
+def example_task(pb):
     task = NxosBgpNeighborAddressFamily(log)
     task.as_number = '12000.0'
     task.afi = 'ipv4'
@@ -92,9 +92,21 @@ def add_task(pb):
     task.commit()
     pb.add_task(task)
 
+def test_mutually_exclusive_properties(pb):
+    task = NxosBgpNeighborAddressFamily(log)
+    task.as_number = '12000.0'
+    task.afi = 'ipv4'
+    task.safi = 'unicast'
+    task.send_community_set = True
+    task.send_community_standard = True
+    task.state = 'merged'
+    task.task_name = 'test_mutual_exclusion'
+    task.commit()
+    pb.add_task(task)
 
 pb = playbook()
-add_task(pb)
+example_task(pb)
+#test_mutually_exclusive_properties(pb)
 
 pb.append_playbook()
 pb.write_playbook()
