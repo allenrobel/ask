@@ -1,5 +1,5 @@
 # NxosGirProfileManagement() - cisco/nxos/nxos_gir_profile_management.py
-our_version = 100
+our_version = 101
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -13,7 +13,7 @@ NxosGirProfileManagement()
 
 Version
 -------
-100
+101
 
 Status
 ------
@@ -90,13 +90,12 @@ commit()                    Perform final verification and commit the
                                     name: nxos_gir_profile_management example
                                     tasks:
                                     -   cisco.nxos.nxos_gir_profile_management:
-                                            feature: bgp
-                                            state: enabled
-                                        name: configure feature bgp
-
-                                - Resulting config:
-
-                                    feature bgp
+                                            commands:
+                                            - router ospf 1
+                                            - isolate
+                                            mode: maintenance
+                                            state: present
+                                        name: gir mode maintenance state present
 
 ========================    ============================================
 
