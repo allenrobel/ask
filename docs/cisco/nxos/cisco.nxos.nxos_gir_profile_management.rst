@@ -119,7 +119,7 @@ mode                                Configure the profile as Maintenance or Norm
                                             task.mode = 'maintenance'
                                         - Required
 
-state                               Desired state of ``feature``::
+state                               Desired state::
 
                                         - Type: str()
                                         - Valid values:
