@@ -1,5 +1,5 @@
 # NxosBgpAddressFamily() - cisco/nxos/nxos_bgp_address_family.py
-our_version = 105
+our_version = 106
 from copy import deepcopy
 from ask.common.task import Task
 '''
@@ -181,6 +181,16 @@ additional_paths_send                   Additional paths send capability::
 |
 
 ================================    ==============================================
+advertise_l2vpn_evpn                Enable advertising EVPN routes::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - NX-OS Collections version added: 2.4.0
+                                            - Example:
+                                                task.advertise_l2vpn_evpn = True
+
 advertise_pip                       Advertise physical ip for type-5 route::
 
                                             - Type: bool()
@@ -800,6 +810,7 @@ class NxosBgpAddressFamily(Task):
         self.address_family_set.add('additional_paths_receive')
         self.address_family_set.add('additional_paths_selection_route_map')
         self.address_family_set.add('additional_paths_send')
+        self.address_family_set.add('advertise_l2vpn_evpn')
         self.address_family_set.add('advertise_pip')
         self.address_family_set.add('advertise_system_mac')
         self.address_family_set.add('afi')
@@ -855,6 +866,7 @@ class NxosBgpAddressFamily(Task):
         # properties.  Written when the user calls
         # instance.add_address_family().
         self.address_family_atomic_properties = set()
+        self.address_family_atomic_properties.add('advertise_l2vpn_evpn')
         self.address_family_atomic_properties.add('advertise_pip')
         self.address_family_atomic_properties.add('advertise_system_mac')
         self.address_family_atomic_properties.add('afi')
@@ -967,6 +979,7 @@ class NxosBgpAddressFamily(Task):
         self.property_map['additional_paths_receive'] = 'receive'
         self.property_map['additional_paths_selection_route_map'] = 'route_map'
         self.property_map['additional_paths_send'] = 'send'
+        self.property_map['advertise_l2vpn_evpn'] = 'advertise_l2vpn_evpn'
         self.property_map['advertise_pip'] = 'advertise_pip'
         self.property_map['advertise_system_mac'] = 'advertise_system_mac'
         self.property_map['afi'] = 'afi'
@@ -1686,6 +1699,17 @@ class NxosBgpAddressFamily(Task):
     @additional_paths_send.setter
     def additional_paths_send(self, x):
         parameter = 'additional_paths_send'
+        if self.set_none(x, parameter):
+            return
+        self.verify_boolean(x, parameter)
+        self.properties[parameter] = x
+
+    @property
+    def advertise_l2vpn_evpn(self):
+        return self.properties['advertise_l2vpn_evpn']
+    @advertise_l2vpn_evpn.setter
+    def advertise_l2vpn_evpn(self, x):
+        parameter = 'advertise_l2vpn_evpn'
         if self.set_none(x, parameter):
             return
         self.verify_boolean(x, parameter)

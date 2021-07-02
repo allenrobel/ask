@@ -176,6 +176,16 @@ additional_paths_send                   Additional paths send capability::
 |
 
 ================================    ==============================================
+advertise_l2vpn_evpn                Enable advertising EVPN routes::
+
+                                            - Type: bool()
+                                            - Valid values:
+                                                - False
+                                                - True
+                                            - NX-OS Collections version added: 2.4.0
+                                            - Example:
+                                                task.advertise_l2vpn_evpn = True
+
 advertise_pip                       Advertise physical ip for type-5 route::
 
                                             - Type: bool()
