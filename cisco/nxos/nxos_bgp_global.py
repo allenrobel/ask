@@ -1,5 +1,5 @@
 # NxosBgpGlobal() - cisco/nxos/nxos_bgp_global.py
-our_version = 109
+our_version = 110
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -1067,7 +1067,6 @@ neighbor_timers_holdtime                        Set BGP holddown timer for this 
                                                     - Type: int() or str()
                                                     - Valid values:
                                                         - int() range 3-3600
-                                                        - str() keyword: default
                                                     - Units: seconds
                                                     - Default: 180
                                                     - Example:
@@ -1083,7 +1082,6 @@ neighbor_timers_keepalive                       Set BGP keepalive timer for this
                                                     - Type: int() or str()
                                                     - Valid values:
                                                         - int() range 1-3599
-                                                        - str() keyword: default
                                                     - Units: seconds
                                                     - Default: 60
                                                     - Example:
@@ -1242,7 +1240,6 @@ timers_bgp_holdtime                     BGP holddown timer.
                                             - Type: int() or str()
                                             - Valid values:
                                                 - int() range 3-3600
-                                                - str() keyword: default
                                             - Units: seconds
                                             - Default: 180
                                             - Example:
@@ -2459,16 +2456,12 @@ class NxosBgpGlobal(Task):
         self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
 
     def verify_nxos_bgp_global_timers_bgp_holdtime(self, x, parameter='timers_bgp_holdtime'):
-        if self.is_default(x):
-            return
         source_class = self.class_name
         range_min = self.nxos_bgp_global_timers_bgp_holdtime_min
         range_max = self.nxos_bgp_global_timers_bgp_holdtime_max
         self.verify_integer_range(x, range_min, range_max, self.class_name, parameter)
 
     def verify_nxos_bgp_global_timers_bgp_keepalive(self, x, parameter='timers_bgp_keepalive'):
-        if self.is_default(x):
-            return
         source_class = self.class_name
         range_min = self.nxos_bgp_global_timers_bgp_keepalive_min
         range_max = self.nxos_bgp_global_timers_bgp_keepalive_max

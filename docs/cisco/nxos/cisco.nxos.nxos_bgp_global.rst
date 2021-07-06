@@ -1061,7 +1061,6 @@ neighbor_timers_holdtime                        Set BGP holddown timer for this 
                                                     - Type: int() or str()
                                                     - Valid values:
                                                         - int() range 3-3600
-                                                        - str() keyword: default
                                                     - Units: seconds
                                                     - Default: 180
                                                     - Example:
@@ -1077,7 +1076,6 @@ neighbor_timers_keepalive                       Set BGP keepalive timer for this
                                                     - Type: int() or str()
                                                     - Valid values:
                                                         - int() range 1-3599
-                                                        - str() keyword: default
                                                     - Units: seconds
                                                     - Default: 60
                                                     - Example:
@@ -1236,7 +1234,6 @@ timers_bgp_holdtime                     BGP holddown timer.
                                             - Type: int() or str()
                                             - Valid values:
                                                 - int() range 3-3600
-                                                - str() keyword: default
                                             - Units: seconds
                                             - Default: 180
                                             - Example:
