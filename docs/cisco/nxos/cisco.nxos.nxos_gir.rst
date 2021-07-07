@@ -140,7 +140,12 @@ system_mode_maintenance_dont_generate_profile       If True, prevents the dynami
 system_mode_maintenance_on_reload_reset_reason      Boots the switch into maintenance mode
                                                     automatically in the event of a specified
                                                     system crash. Note that not all reset reasons
-                                                    are applicable for all platforms. Also if reset reason is set to match_any, it is not idempotent as it turns on all reset reasons. If reset reason is match_any and state is absent, it turns off all the reset reasons.
+                                                    are applicable for all platforms. Also if
+                                                    reset reason is set to ``match_any``, it is
+                                                    not idempotent as it turns on all reset
+                                                    reasons. If reset reason is ``match_any``
+                                                    and state is ``absent``, it turns off all
+                                                    the reset reasons.::
 
                                                         - Type: str()
                                                         - Valid values:
