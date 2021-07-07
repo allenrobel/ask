@@ -87,6 +87,7 @@ NX-OS       |    S    | [cisco.nxos.nxos_config][nxos_config]
 NX-OS       |    S    | [cisco.nxos.nxos_evpn_global][nxos_evpn_global]
 NX-OS       |    S    | [cisco.nxos.nxos_evpn_vni][nxos_evpn_vni]
 NX-OS       |    S    | [cisco.nxos.nxos_feature][nxos_feature]
+NX-OS       |    B    | [cisco.nxos.nxos_gir][nxos_gir]
 NX-OS       |    B    | [cisco.nxos.nxos_gir_profile_management][nxos_gir_profile_management]
 NX-OS       |    S    | [cisco.nxos.nxos_hsrp][nxos_hsrp]
 NX-OS       |    S    | [cisco.nxos.nxos_hsrp_interfaces][nxos_hsrp_interfaces]
@@ -153,6 +154,7 @@ Status  | Name
 [nxos_evpn_global]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_evpn_global.rst
 [nxos_evpn_vni]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_evpn_vni.rst
 [nxos_feature]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_feature.rst
+[nxos_gir]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_gir.rst
 [nxos_gir_profile_management]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_gir_profile_management.rst
 [nxos_hsrp]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_hsrp.rst
 [nxos_hsrp_interfaces]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_hsrp_interfaces.rst
