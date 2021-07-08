@@ -4,7 +4,7 @@ NxosAcls()
 
 Version
 -------
-109
+110
 
 ScriptKit Synopsis
 ------------------
@@ -17,8 +17,14 @@ ScriptKit Example
 
 Caveats
 -------
-- dscp int() values are currently broken in the cisco.nxos.nxos_acls module.  The following issue has been filed:
-   `#253 nxos_acls : dscp: 31 results in KeyError on Nexus9000 <https://github.com/ansible-collections/cisco.nxos/issues/253>`_
+
+- See TODO
+
+TODO
+----
+
+- 20200104: Add verification for address properties
+- 20200104: Add verification for wildcard_bits properties
 
 Ansible Module Documentation
 ----------------------------
@@ -482,6 +488,9 @@ icmp_echo
                                         - True
                                     - Example:
                                         task.icmp_echo = False
+                                    - NOTES:
+                                        1. Valid only for ipv4 afi
+                                        2. Use icmp_echo_request for ipv6 afi
 
 icmp_echo_reply
                                     - Type: bool()
@@ -901,15 +910,6 @@ tcp_urg
 
 ============================    ==============================================
 
-
-TODO
-----
-
-- 20200104: Add verification for address properties
-- 20200104: Add verification for wildcard_bits properties
-- 20200107: icmp_echo for afi = 'ipv6' is currently broken in the 
-  Ansible module.  Make any modifications to this library
-  once a fix is available in the module.
 
 Authors
 ~~~~~~~

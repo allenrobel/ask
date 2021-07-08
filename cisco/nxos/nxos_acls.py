@@ -1,5 +1,5 @@
 # NxosAcls() - cisco/nxos/nxos_acls.py
-our_version = 109
+our_version = 110
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -10,7 +10,7 @@ NxosAcls()
 
 Version
 -------
-109
+110
 
 ScriptKit Synopsis
 ------------------
@@ -23,8 +23,14 @@ ScriptKit Example
 
 Caveats
 -------
-- dscp int() values are currently broken in the cisco.nxos.nxos_acls module.  The following issue has been filed:
-   `#253 nxos_acls : dscp: 31 results in KeyError on Nexus9000 <https://github.com/ansible-collections/cisco.nxos/issues/253>`_
+
+- See TODO
+
+TODO
+----
+
+- 20200104: Add verification for address properties
+- 20200104: Add verification for wildcard_bits properties
 
 Ansible Module Documentation
 ----------------------------
@@ -488,6 +494,9 @@ icmp_echo
                                         - True
                                     - Example:
                                         task.icmp_echo = False
+                                    - NOTES:
+                                        1. Valid only for ipv4 afi
+                                        2. Use icmp_echo_request for ipv6 afi
 
 icmp_echo_reply
                                     - Type: bool()
@@ -907,15 +916,6 @@ tcp_urg
 
 ============================    ==============================================
 
-
-TODO
-----
-
-- 20200104: Add verification for address properties
-- 20200104: Add verification for wildcard_bits properties
-- 20200107: icmp_echo for afi = 'ipv6' is currently broken in the 
-  Ansible module.  Make any modifications to this library
-  once a fix is available in the module.
 
 Authors
 ~~~~~~~
@@ -1458,6 +1458,11 @@ class NxosAcls(Task):
             self.task_log.warning('setting instance.protocol = tcp due to tcp options are set')
             self.protocol = 'tcp'
 
+    def verify_ace_icmp_echo(self):
+        if self.afi == 'ipv6' and self.icmp_echo != None:
+            self.task_log.error('exiting. icmp_echo is not valid when afi is set to ipv6.  Use icmp_echo_request instead.')
+            exit(1)
+
     def verify_ace(self):
         if self.protocol == None:
             self.task_log.error('exiting. instance.protocol must be set before calling intance.add_ace()')
@@ -1469,6 +1474,7 @@ class NxosAcls(Task):
         self.verify_ace_protocol_options()
         self.verify_ace_sequence()
         self.verify_ace_source()
+        self.verify_ace_icmp_echo()
 
     def add_ace(self):
         d = dict()
