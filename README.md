@@ -111,6 +111,7 @@ NX-OS       |    S    | [cisco.nxos.nxos_overlay_global][nxos_overlay_global]
 NX-OS       |    S    | [cisco.nxos.nxos_pim][nxos_pim]
 NX-OS       |    S    | [cisco.nxos.nxos_pim_interface][nxos_pim_interface]
 NX-OS       |    S    | [cisco.nxos.nxos_pim_rp_address][nxos_pim_rp_address]
+NX-OS       |    B    | [cisco.nxos.nxos_prefix_lists][nxos_prefix_lists]
 NX-OS       |    S    | [cisco.nxos.nxos_reboot][nxos_reboot]
 NX-OS       |    S    | [cisco.nxos.nxos_snmp_community][nxos_snmp_community]
 NX-OS       |    S    | [cisco.nxos.nxos_snmp_contact][nxos_snmp_contact]
@@ -178,6 +179,7 @@ Status  | Name
 [nxos_pim]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_pim.rst
 [nxos_pim_interface]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_pim_interface.rst
 [nxos_pim_rp_address]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_pim_rp_address.rst
+[nxos_prefix_lists]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_prefix_lists.rst
 [nxos_reboot]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_reboot.rst
 [nxos_snmp_community]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_snmp_community.rst
 [nxos_snmp_contact]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_snmp_contact.rst
