@@ -128,6 +128,7 @@ NX-OS       |    S    | [cisco.nxos.nxos_vrf_af][nxos_vrf_af]
 NX-OS       |    S    | [cisco.nxos.nxos_vrf_interface][nxos_vrf_interface]
 NX-OS       |    S    | [cisco.nxos.nxos_vtp_domain][nxos_vtp_domain]
 NX-OS       |    S    | [cisco.nxos.nxos_vtp_password][nxos_vtp_password]
+NX-OS       |    S    | [cisco.nxos.nxos_vtp_version][nxos_vtp_version]
 NX-OS       |    S    | [cisco.nxos.nxos_vxlan_vtep][nxos_vxlan_vtep]
 NX-OS       |    S    | [cisco.nxos.nxos_vxlan_vtep_vni][nxos_vxlan_vtep_vni]
 
@@ -198,6 +199,7 @@ Status  | Name
 [nxos_vrf_interface]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vrf_interface.rst
 [nxos_vtp_domain]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vtp_domain.rst
 [nxos_vtp_password]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vtp_password.rst
+[nxos_vtp_version]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vtp_version.rst
 [nxos_vxlan_vtep]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vxlan_vtep.rst
 [nxos_vxlan_vtep_vni]: https://github.com/allenrobel/ask/blob/main/docs/cisco/nxos/cisco.nxos.nxos_vxlan_vtep_vni.rst
 [pause]: https://github.com/allenrobel/ask/blob/main/docs/common/pause.rst
