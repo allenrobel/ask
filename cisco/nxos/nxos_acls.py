@@ -1,5 +1,5 @@
 # NxosAcls() - cisco/nxos/nxos_acls.py
-our_version = 110
+our_version = 111
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -1054,14 +1054,30 @@ class NxosAcls(Task):
         #     destination_address -> address
         #     source_address      -> address
         self.property_map = dict()
-        for p in self.properties_destination:
-            mapped_p = re.sub('destination_', '', p)
-            mapped_p = re.sub('port_range_', '', mapped_p)
-            self.property_map[p] = mapped_p
-        for p in self.properties_source:
-            mapped_p = re.sub('source_', '', p)
-            mapped_p = re.sub('port_range_', '', mapped_p)
-            self.property_map[p] = mapped_p
+        self.property_map['destination_address'] = 'address'
+        self.property_map['destination_any'] = 'any'
+        self.property_map['destination_host'] = 'host'
+        self.property_map['destination_port_eq'] = 'eq'
+        self.property_map['destination_port_gt'] = 'gt'
+        self.property_map['destination_port_lt'] = 'lt'
+        self.property_map['destination_port_neq'] = 'neq'
+        self.property_map['destination_port_range_end'] = 'end'
+        self.property_map['destination_port_range_start'] = 'start'
+        self.property_map['destination_prefix'] = 'prefix'
+        self.property_map['destination_wildcard_bits'] = 'wildcard_bits'
+
+        self.property_map['source_address'] = 'address'
+        self.property_map['source_any'] = 'any'
+        self.property_map['source_host'] = 'host'
+        self.property_map['source_port_eq'] = 'eq'
+        self.property_map['source_port_gt'] = 'gt'
+        self.property_map['source_port_lt'] = 'lt'
+        self.property_map['source_port_neq'] = 'neq'
+        self.property_map['source_port_range_end'] = 'end'
+        self.property_map['source_port_range_start'] = 'start'
+        self.property_map['source_prefix'] = 'prefix'
+        self.property_map['source_wildcard_bits'] = 'wildcard_bits'
+
         for p in self.properties_icmp:
             self.property_map[p] = re.sub('icmp_', '', p)
         for p in self.properties_igmp:
@@ -1496,11 +1512,19 @@ class NxosAcls(Task):
         for p in self.properties_source:
             if self.properties[p] != None:
                 mapped_p = self.get_mapped_property(p)
-                source[mapped_p] = self.properties[p]
+                if mapped_p in ['eq', 'neq', 'gt', 'lt']:
+                    source['port_protocol'] = dict()
+                    source['port_protocol'][mapped_p] = self.properties[p]
+                else:
+                    source[mapped_p] = self.properties[p]
         for p in self.properties_destination:
             if self.properties[p] != None:
                 mapped_p = self.get_mapped_property(p)
-                destination[mapped_p] = self.properties[p]
+                if mapped_p in ['eq', 'neq', 'gt', 'lt']:
+                    source['port_protocol'] = dict()
+                    source['port_protocol'][mapped_p] = self.properties[p]
+                else:
+                    destination[mapped_p] = self.properties[p]
         for p in self.properties_icmp:
             if self.properties[p] != None:
                 mapped_p = self.get_mapped_property(p)
