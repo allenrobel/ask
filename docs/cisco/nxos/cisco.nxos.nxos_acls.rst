@@ -4,7 +4,7 @@ NxosAcls()
 
 Version
 -------
-110
+111
 
 ScriptKit Synopsis
 ------------------
@@ -23,6 +23,8 @@ Caveats
 TODO
 ----
 
+- 20210627: Add handling for port_protocol range start/end
+- 20210627: Improve handling for port_protocol
 - 20200104: Add verification for address properties
 - 20200104: Add verification for wildcard_bits properties
 

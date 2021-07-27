@@ -71,7 +71,7 @@ Platform    | Status  | Name
 NX-OS       |    S    | [cisco.nxos.nxos_aaa_server][nxos_aaa_server]
 NX-OS       |    S    | [cisco.nxos.nxos_aaa_server_host][nxos_aaa_server_host]
 NX-OS       |    S    | [cisco.nxos.nxos_acl_interfaces][nxos_acl_interfaces]
-NX-OS       |    S    | [cisco.nxos.nxos_acls][nxos_acls]
+NX-OS       |    B    | [cisco.nxos.nxos_acls][nxos_acls]
 NX-OS       |    S    | [cisco.nxos.nxos_banner][nxos_banner]
 NX-OS       |    S    | [cisco.nxos.nxos_bfd_global][nxos_bfd_global]
 NX-OS       |    S    | [cisco.nxos.nxos_bfd_interfaces][nxos_bfd_interfaces]
