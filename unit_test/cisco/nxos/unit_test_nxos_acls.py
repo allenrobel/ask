@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # unit_test/cisco/nxos/unit_test_nxos_acls.py
-our_version = 107
+our_version = 108
 
 from ask.common.playbook import Playbook
 from ask.common.log import Log
@@ -77,6 +77,20 @@ def add_ipv4_ace_50(task):
     task.source_address = '2.1.1.1'
     task.source_wildcard_bits = '0.0.0.255'
     task.add_ace()
+def add_ipv4_ace_60(task):
+    task.afi = 'ipv4'
+    task.grant = 'deny'
+    task.sequence = 60
+    task.protocol = 'ip'
+    task.destination_prefix = '2.2.2.0/24'
+    task.destination_port_range_start = 34900
+    task.destination_port_range_end = 44000
+    #task.destination_port_neq = 4000
+    task.source_prefix = '2.1.1.0/24'
+    task.source_port_range_start = 34900
+    #task.source_port_eq = 100
+    task.source_port_range_end = 44000
+    task.add_ace()
 
 def add_ipv6_remark(task):
     task.remark = 'example ipv6 access-list'
@@ -126,6 +140,7 @@ add_ipv4_ace_20(task)
 add_ipv4_ace_30(task)
 add_ipv4_ace_40(task)
 add_ipv4_ace_50(task)
+add_ipv4_ace_60(task)
 task.name = 'IPv4_ACL'
 task.add_acl()
 

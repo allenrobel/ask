@@ -1,5 +1,5 @@
 # NxosAcls() - cisco/nxos/nxos_acls.py
-our_version = 111
+our_version = 113
 from copy import deepcopy
 import re
 from ask.common.task import Task
@@ -1362,6 +1362,40 @@ class NxosAcls(Task):
             for p in s:
                 self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
+    def verify_ace_destination_port_range(self):
+        s = set()
+        for p in ['destination_port_range_end', 'destination_port_range_start']:
+            if self.properties[p] != None:
+                s.add(p)
+        if len(s) == 2:
+            if self.properties['destination_port_range_start'] > self.properties['destination_port_range_end']:
+                self.task_log.error('exiting. range_start must be less than range_end.')
+                for p in s:
+                    self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+                exit(1)
+        if len(s) in [0,2]:
+            return s
+        self.task_log.error('exiting. Both destination_port_range_start and destination_port_range_end must be set or unset.')
+        for p in s:
+            self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+        exit(1)
+    def verify_ace_destination_port(self, s_pr):
+        s = set()
+        for p in ['destination_port_eq', 'destination_port_gt', 'destination_port_lt', 'destination_port_neq']:
+            if self.properties[p] != None:
+                s.add(p)
+        if len(s) > 1:
+            self.task_log.error('exiting. Only one destination_port property can be set.')
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+            exit(1)
+        if len(s) != 0 and len(s_pr) != 0:
+            self.task_log.error('exiting. Only one destination_port property can be set.')
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+            for p in ['destination_port_range_end', 'destination_port_range_start']:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+            exit(1)
 
     def verify_ace_source_any(self):
         s = set()
@@ -1396,6 +1430,40 @@ class NxosAcls(Task):
             for p in s:
                 self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
             exit(1)
+    def verify_ace_source_port_range(self):
+        s = set()
+        for p in ['source_port_range_end', 'source_port_range_start']:
+            if self.properties[p] != None:
+                s.add(p)
+        if len(s) == 2:
+            if self.properties['source_port_range_start'] > self.properties['source_port_range_end']:
+                self.task_log.error('exiting. range_start must be less than range_end.')
+                for p in s:
+                    self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+                exit(1)
+        if len(s) in [0,2]:
+            return s
+        self.task_log.error('exiting. Both source_port_range_start and source_port_range_end must be set or unset.')
+        for p in s:
+            self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+        exit(1)
+    def verify_ace_source_port(self, s_pr):
+        s = set()
+        for p in ['source_port_eq', 'source_port_gt', 'source_port_lt', 'source_port_neq']:
+            if self.properties[p] != None:
+                s.add(p)
+        if len(s) > 1:
+            self.task_log.error('exiting. Only one source_port property can be set.')
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+            exit(1)
+        if len(s) != 0 and len(s_pr) != 0:
+            self.task_log.error('exiting. Only one source_port property can be set.')
+            for p in s:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+            for p in ['source_port_range_end', 'source_port_range_start']:
+                self.task_log.error('   property {}: {}'.format(p, self.properties[p]))
+            exit(1)
 
     def verify_ace_afi(self):
         if self.afi == None:
@@ -1405,10 +1473,14 @@ class NxosAcls(Task):
         self.verify_ace_destination_any()
         self.verify_ace_destination_address()
         self.verify_ace_destination_prefix()
+        s_pr = self.verify_ace_destination_port_range()
+        self.verify_ace_destination_port(s_pr)
     def verify_ace_source(self):
         self.verify_ace_source_any()
         self.verify_ace_source_address()
         self.verify_ace_source_prefix()
+        s_pr = self.verify_ace_source_port_range()
+        self.verify_ace_source_port(s_pr)
     def verify_ace_grant(self):
         if self.remark != None:
             return
@@ -1517,14 +1589,28 @@ class NxosAcls(Task):
                 if mapped_p in ['eq', 'neq', 'gt', 'lt']:
                     source['port_protocol'] = dict()
                     source['port_protocol'][mapped_p] = self.properties[p]
+                elif mapped_p in ['start', 'end']:
+                    try:
+                        source['port_protocol']['range'][mapped_p] = self.properties[p]
+                    except:
+                        source['port_protocol'] = dict()
+                        source['port_protocol']['range'] = dict()
+                        source['port_protocol']['range'][mapped_p] = self.properties[p]
                 else:
                     source[mapped_p] = self.properties[p]
         for p in self.properties_destination:
             if self.properties[p] != None:
                 mapped_p = self.get_mapped_property(p)
                 if mapped_p in ['eq', 'neq', 'gt', 'lt']:
-                    source['port_protocol'] = dict()
-                    source['port_protocol'][mapped_p] = self.properties[p]
+                    destination['port_protocol'] = dict()
+                    destination['port_protocol'][mapped_p] = self.properties[p]
+                elif mapped_p in ['start', 'end']:
+                    try:
+                        destination['port_protocol']['range'][mapped_p] = self.properties[p]
+                    except:
+                        destination['port_protocol'] = dict()
+                        destination['port_protocol']['range'] = dict()
+                        destination['port_protocol']['range'][mapped_p] = self.properties[p]
                 else:
                     destination[mapped_p] = self.properties[p]
         for p in self.properties_icmp:
