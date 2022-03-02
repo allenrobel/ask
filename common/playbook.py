@@ -187,7 +187,6 @@ write_playbook()            Write the playbook file to disk.::
 ============================    ==============================================
 Property                        Description
 ============================    ==============================================
-
 file                            Filename to which playbook contents are written.
                                 If set to the string "STDOUT", write to standard
                                 output instead of to a file::
