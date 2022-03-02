@@ -8,7 +8,7 @@ Playbook()
 
 Version
 -------
-117
+118
 
 ScriptKit Synopsis
 ------------------
@@ -20,7 +20,7 @@ ScriptKit Example
 
 TODO
 ----
-- This documentation is not yet complete.  ETA: 2021-06-26 
+- This documentation is not yet complete.  ETA: 2021-06-26
 
 |
 
@@ -181,6 +181,15 @@ write_playbook()            Write the playbook file to disk.::
 ============================    ==============================================
 Property                        Description
 ============================    ==============================================
+file                            Filename to which playbook contents are written.
+                                If set to the string 'STDOUT', write to standard
+                                output instead of to a file.
+
+                                    - Type: str()
+                                    - Examples:
+                                        pb.file = '/tmp/playbook.yaml'
+                                        pb.file = 'STDOUT'
+
 gather_facts                    Set the Ansible gather_facts key::
 
                                     - Type: bool()
