@@ -14,7 +14,7 @@ Playbook()
 
 Version
 -------
-117
+118
 
 ScriptKit Synopsis
 ------------------
@@ -26,7 +26,7 @@ ScriptKit Example
 
 TODO
 ----
-- This documentation is not yet complete.  ETA: 2021-06-26 
+- This documentation is not yet complete.  ETA: 2021-06-26
 
 |
 
@@ -187,6 +187,15 @@ write_playbook()            Write the playbook file to disk.::
 ============================    ==============================================
 Property                        Description
 ============================    ==============================================
+file                            Filename to which playbook contents are written.
+                                If set to the string 'STDOUT', write to standard
+                                output instead of to a file.
+
+                                    - Type: str()
+                                    - Examples:
+                                        pb.file = '/tmp/playbook.yaml'
+                                        pb.file = 'STDOUT'
+
 gather_facts                    Set the Ansible gather_facts key::
 
                                     - Type: bool()
@@ -479,15 +488,19 @@ class Playbook(object):
         if self.file == None:
             self.log.error('exiting. call pb.file = <filename> before calling pb.write_playbook()')
             exit(1)
-        import os
-        if path.exists(self.file):
-            self.log.error('exiting. refusing to overwrite playbook file {}. delete it first.'.format(self.file))
-            exit(1)
         if len(self.stream) == 0:
             self.log.error('exiting. nothing to write.')
             exit(1)
-        with open(self.file, 'w') as fh:
-            yaml.dump(self.stream, fh, indent=4, allow_unicode=True, explicit_end=True, explicit_start=True, default_flow_style=False) 
+        if self.file == 'STDOUT':
+            import sys
+            print('{}'.format(yaml.dump(self.stream)))
+        else:
+            import os
+            if path.exists(self.file):
+                self.log.error('exiting. refusing to overwrite playbook file {}. delete it first.'.format(self.file))
+                exit(1)
+            with open(self.file, 'w') as fh:
+                yaml.dump(self.stream, fh, indent=4, allow_unicode=True, explicit_end=True, explicit_start=True, default_flow_style=False) 
 
     def append_playbook(self):
         if len(self._hosts) == 0:

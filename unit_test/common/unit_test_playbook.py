@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-our_version = 101
+our_version = 102
 from ask.common.log import Log
 from ask.common.playbook import Playbook
 from ask.cisco.nxos.nxos_interfaces import NxosInterfaces
@@ -43,8 +43,8 @@ pb = Playbook(log)
 pb.profile_nxos() # commonly used NXOS settings
 pb.ansible_connection = 'network_cli' # profile_nxos() sets this to httpapi
 pb.ansible_password = 'mypassword'
+# write the playbook to a file
 pb.file = '/tmp/playbook.yaml'
-
 # Creates a single playbook with two tasks
 task_nxos_interfaces(pb)
 task_nxos_bfd_interfaces(pb)
@@ -53,6 +53,9 @@ pb.add_environment('no_proxy', '*')
 pb.add_vars('my_var1', 'my_var_value1')
 pb.add_vars('my_var2', 'my_var_value2')
 pb.append_playbook()
+pb.write_playbook()
+# We can also write the playbook to standard output
+pb.file = 'STDOUT'
 pb.write_playbook()
 
 # Alternatively, you can create two playbooks, each with a 
