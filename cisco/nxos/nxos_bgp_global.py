@@ -2332,6 +2332,7 @@ class NxosBgpGlobal(Task):
         if x in verify_set:
             return
         source_class = self.class_name
+        source_method = 'verify_nxos_bgp_global_neighbor_path_attribute_action'
         expectation = ','.join(verify_set)
         self.fail(source_class, source_method, x, parameter, expectation)
 
