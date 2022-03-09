@@ -8,7 +8,7 @@ Playbook()
 
 Version
 -------
-118
+119
 
 ScriptKit Synopsis
 ------------------
@@ -159,11 +159,14 @@ profile_nxos()              Set various variables appropriately for a
                                     pb.ansible_command_timeout = 180
                                     pb.ansible_httpapi_validate_certs = True
 
-write_playbook()            Write the playbook file to disk.::
+write_playbook()            Write the playbook file to disk or STDOUT::
 
                                 - Type: function()
                                 - Example:
                                     pb = Playbook(log)
+                                    pb.file = '/tmp/myplaybook.yaml'
+                                    # If writing to STDOUT, change pb.file per below
+                                    # pb.file = 'STDOUT'
                                     task = NxosBfdGlobal(log)
                                     task.task_name = 'my bfd task'
                                     task.bfd_interval = 150
@@ -173,6 +176,21 @@ write_playbook()            Write the playbook file to disk.::
                                     pb.add_task(task)
                                     pb.append_playbook()
                                     pb.write_playbook()
+
+write_vars()            Write the current playbook vars section to disk or STDOUT::
+
+                                - Type: function()
+                                - Example:
+                                    pb = Playbook(log)
+                                    # add some custom key value pairs to vars
+                                    pb.add_vars('key1', 'value1')
+                                    pb.add_vars('key2', 'value2')
+                                    # add standard NXOS profile to vars
+                                    pb.profile_nxos()
+                                    pb.file = '/tmp/myvars.yaml'
+                                    # If writing to STDOUT, change pb.file per below
+                                    # pb.file = 'STDOUT'
+                                    pb.write_vars()
 
 ========================    ============================================
 

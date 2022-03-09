@@ -1,7 +1,7 @@
 # Playbook() - common/playbook.py
-our_version = 118
+our_version = 119
 from copy import deepcopy
-from os import path # write_playbook()
+from os import path # write_playbook(), write_vars()
 import yaml
 '''
 ***********************************
@@ -14,7 +14,7 @@ Playbook()
 
 Version
 -------
-118
+119
 
 ScriptKit Synopsis
 ------------------
@@ -165,11 +165,14 @@ profile_nxos()              Set various variables appropriately for a
                                     pb.ansible_command_timeout = 180
                                     pb.ansible_httpapi_validate_certs = True
 
-write_playbook()            Write the playbook file to disk.::
+write_playbook()            Write the playbook file to disk or STDOUT::
 
                                 - Type: function()
                                 - Example:
                                     pb = Playbook(log)
+                                    pb.file = '/tmp/myplaybook.yaml'
+                                    # If writing to STDOUT, change pb.file per below
+                                    # pb.file = 'STDOUT'
                                     task = NxosBfdGlobal(log)
                                     task.task_name = 'my bfd task'
                                     task.bfd_interval = 150
@@ -179,6 +182,21 @@ write_playbook()            Write the playbook file to disk.::
                                     pb.add_task(task)
                                     pb.append_playbook()
                                     pb.write_playbook()
+
+write_vars()            Write the current playbook vars section to disk or STDOUT::
+
+                                - Type: function()
+                                - Example:
+                                    pb = Playbook(log)
+                                    # add some custom key value pairs to vars
+                                    pb.add_vars('key1', 'value1')
+                                    pb.add_vars('key2', 'value2')
+                                    # add standard NXOS profile to vars
+                                    pb.profile_nxos()
+                                    pb.file = '/tmp/myvars.yaml'
+                                    # If writing to STDOUT, change pb.file per below
+                                    # pb.file = 'STDOUT'
+                                    pb.write_vars()
 
 ========================    ============================================
 
@@ -480,6 +498,29 @@ class Playbook(object):
         '''
         self.playbook['vars'][key] = value
 
+    def write_vars(self):
+        '''
+        write only the current playbook vars section to a file.
+        If the file already exists, exit with error.
+        '''
+        if self.file == None:
+            self.log.error('exiting. call pb.file = <filename> before calling pb.write_vars()')
+            exit(1)
+        if len(self.playbook['vars']) == 0:
+            self.log.error('exiting. nothing to write.')
+            exit(1)
+        d = dict()
+        d['vars'] = self.playbook['vars']
+        if self.file == 'STDOUT':
+            print('{}'.format(yaml.dump(d)))
+        else:
+            import os
+            if path.exists(self.file):
+                self.log.error('exiting. refusing to overwrite vars file {}. delete it first.'.format(self.file))
+                exit(1)
+            with open(self.file, 'w') as fh:
+                yaml.dump(d, fh, indent=4, allow_unicode=True, explicit_end=False, explicit_start=False, default_flow_style=False) 
+
     def write_playbook(self):
         '''
         write the playbook.yaml file
@@ -492,7 +533,6 @@ class Playbook(object):
             self.log.error('exiting. nothing to write.')
             exit(1)
         if self.file == 'STDOUT':
-            import sys
             print('{}'.format(yaml.dump(self.stream)))
         else:
             import os
