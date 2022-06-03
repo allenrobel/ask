@@ -1,8 +1,8 @@
 # ask - Ansible ScriptKit
 
-*README version 103*
+*README version 104*
 
-Ansible ScriptKit is a set of classes and example scripts that can be used to generate playbooks.  We use this internally for some of our customer proof of concepts and thought we'd open-source it for anyone else to use and to contribute to.
+Ansible ScriptKit is a set of classes and example scripts that can be used to generate Ansible playbooks conformant with the Ansible Cisco NX-OS Collection (cisco.nxos).  We use this internally for some of our customer proof of concepts and thought we'd open-source it for anyone else to use and to contribute to.
 
 Goals:
    - Remove the need to understand/remember the YAML structure for each of the supported modules
