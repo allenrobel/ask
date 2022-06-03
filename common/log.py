@@ -15,7 +15,7 @@ from ask.common.log import Log
 
 # create a log instance which will log INFO messages to the console and 
 # DEBUG messages to a rotating logfile /tmp/my_logger_name.log
-log = Log('my_logger_name', INFO', 'DEBUG')
+log = Log('my_logger_name', 'INFO', 'DEBUG')
 
 Notes
 -----
