@@ -1,10 +1,10 @@
-# ask - Ansible ScriptKit
+# ask - Ansible ScriptKit for NX-OS
 
 *README version 104*
 
 Ansible ScriptKit is a set of classes and example scripts that can be used to generate Ansible playbooks conformant with the Ansible Cisco NX-OS Collection (cisco.nxos).  We use this internally for some of our customer proof of concepts and thought we'd open-source it for anyone else to use and to contribute to.
 
-Goals:
+### Goals
    - Remove the need to understand/remember the YAML structure for each of the supported modules
    - Allow for programatic construction of playbooks using familiar python logic constructs
    - Fail quickly. Catch many errors without having to run the playbook against a device
@@ -15,11 +15,15 @@ Goals:
 
 Hence, creating an nxos_ospfv2 playbook looks and feels the same as creating a nxos_feature playbook.
 
+## Status
+
 We have completed the initial commit for all NX-OS Ansible modules supported to date.  We will be adding support for the remaining modules over the coming weeks/months.  We actively monitor the NX-OS Ansible Collections repo and will strive for quick turnaround on additions/changes to the modules that ScriptKit supports.
 
 Also, we've developed a set of classes that can be used to generate Spirent Ansible playbooks (e.g. reserve ports, create emulated devices (including BGP), create StreamBlocks, and start/stop devices and traffic).  These are NOT comprehensive.  Rather, they focus on our (perhaps relatively simple) use-cases.  These get the job done for us for things like ipv4/ipv6 traffic, and convergence test cases.  We have added about 50% of what we have, and will try to add the remaining by 2021.02.21.  At that time, we will also add a few complete convergence test case playbook generation scripts (configure DUT(s), configure Spirent, start traffic, initiate perturbance, stop traffic, collect statistics).
 
-Over time (longer-term roadmap) we hope to add support for ACI, DCNM, etc.  We welcome contributions in these and other areas.
+Roadmap
+
+Over time we hope to add support for ACI, NDFC, etc.  We welcome contributions in these and other areas.
 
 Suggestions and bug reports very much appreciated!
 
