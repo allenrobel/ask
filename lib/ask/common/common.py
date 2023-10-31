@@ -26,24 +26,24 @@ class Common(object):
         self.properties_set = set()
 
         self.platform_buffer_boost = [9372]
-        self.re_digits = re.compile('^\d+$')
-        self.re_ipv4 = re.compile('^\s*\d+\.\d+\.\d+\.\d+\s*$')
-        self.re_ipv4_with_mask = re.compile('^\s*(\d+\.\d+\.\d+\.\d+)\/(\d+)\s*$')
-        self.re_ethernet_module_port                      = re.compile('^[Ee]thernet\d+\/\d+$')
-        self.re_ethernet_module_port_subinterface         = re.compile('^[Ee]thernet\d+\/\d+\.\d+$')
-        self.re_ethernet_module_port_subport              = re.compile('^[Ee]thernet\d+\/\d+\/\d+$')
-        self.re_ethernet_module_port_subport_subinterface = re.compile('^[Ee]thernet\d+\/\d+\/\d+\.\d+$')
-        self.re_loopback_interface = re.compile('^[Ll]oopback\d+$')
-        self.re_management_interface = re.compile('^[Mm]gmt\d+$')
-        self.re_nve_interface = re.compile('^[Nn]ve\d+$')
-        self.re_vlan_interface = re.compile('^[Vv]lan\d+$')
-        self.re_port_channel_interface = re.compile('^[Pp]ort-channel\d+$')
-        self.re_port_channel_subinterface = re.compile('^[Pp]ort-channel\d+\.\d+$')
+        self.re_digits = re.compile(r'^\d+$')
+        self.re_ipv4 = re.compile(r'^\s*\d+\.\d+\.\d+\.\d+\s*$')
+        self.re_ipv4_with_mask = re.compile(r'^\s*(\d+\.\d+\.\d+\.\d+)\/(\d+)\s*$')
+        self.re_ethernet_module_port                      = re.compile(r'^[Ee]thernet\d+\/\d+$')
+        self.re_ethernet_module_port_subinterface         = re.compile(r'^[Ee]thernet\d+\/\d+\.\d+$')
+        self.re_ethernet_module_port_subport              = re.compile(r'^[Ee]thernet\d+\/\d+\/\d+$')
+        self.re_ethernet_module_port_subport_subinterface = re.compile(r'^[Ee]thernet\d+\/\d+\/\d+\.\d+$')
+        self.re_loopback_interface = re.compile(r'^[Ll]oopback\d+$')
+        self.re_management_interface = re.compile(r'^[Mm]gmt\d+$')
+        self.re_nve_interface = re.compile(r'^[Nn]ve\d+$')
+        self.re_vlan_interface = re.compile(r'^[Vv]lan\d+$')
+        self.re_port_channel_interface = re.compile(r'^[Pp]ort-channel\d+$')
+        self.re_port_channel_subinterface = re.compile(r'^[Pp]ort-channel\d+\.\d+$')
 
-        self.re_mac_format_a = re.compile('^[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}$')
-        self.re_mac_format_b = re.compile('^[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}$')
-        self.re_mac_format_c = re.compile('^[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}$')
-        self.re_mac_format_d = re.compile('^[0-9a-fA-F]\.[0-9a-fA-F]\.[0-9a-fA-F]$')
+        self.re_mac_format_a = re.compile(r'^[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4}$')
+        self.re_mac_format_b = re.compile(r'^[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}\:[0-9a-fA-F]{2}$')
+        self.re_mac_format_c = re.compile(r'^[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}\-[0-9a-fA-F]{2}$')
+        self.re_mac_format_d = re.compile(r'^[0-9a-fA-F]\.[0-9a-fA-F]\.[0-9a-fA-F]$')
 
         self.min_vlan = 1
         self.max_vlan = 4094
@@ -313,7 +313,7 @@ class Common(object):
             bad_type = 'is_unspecified'
         elif _ip_unicast.is_link_local:
             bad_type = 'is_link_local'
-        elif re.search('\/',x):
+        elif re.search(r'\/',x):
             bad_type = 'is_subnet'
         if bad_type != '':
             self.task_log.debug("{} not a unicast ipv4 address -> {}".format(x, bad_type))
@@ -538,7 +538,7 @@ class Common(object):
         if self.is_digits(x):
             if self.is_32_bit and int(x) >= 1:
                 return True
-        m = re.search('^(\d+)\.(\d+)$', str(x))
+        m = re.search(r'^(\d+)\.(\d+)$', str(x))
         if not m:
             return False
         if not self.is_16_bit(m.group(1)):
@@ -813,7 +813,7 @@ class Common(object):
         '''given ipv4/ipv6 address with /mask, strip /mask and return only address portion
            For example, given 10.0.1.1/31, return 10.0.1.1
         '''
-        return re.sub('\/\d+','',ip)
+        return re.sub(r'\/\d+','',ip)
 
 
     def list_to_str(self, l):
